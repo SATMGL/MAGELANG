@@ -649,32 +649,7 @@
     </div>
 
     <script>
-        const form = document.getElementById('formBackup');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const alertSuccess = document.getElementById('alertSuccess');
-        const alertError = document.getElementById('alertError');
-        const loading = document.getElementById('loading');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            alertSuccess.style.display = 'none';
-            alertError.style.display = 'none';
-            loading.style.display = 'block';
-            btnSubmit.disabled = true;
-
-            const formData = {
-                nama: document.getElementById('nama').value.trim(),
-                tanggalBackup: document.getElementById('tanggalBackup').value,
-                backupUnit: document.getElementById('backupUnit').value.trim(),
-                backupPersonil: document.getElementById('backupPersonil').value.trim(),
-                shiftBackup: document.getElementById('shiftBackup').value.trim(),
-                keteranganBackup: document.getElementById('keteranganBackup').value.trim(),
-                mengetahui: document.getElementById('mengetahui').value.trim()
-            };
-
-            <script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbw-ti_x49acipHyNMAhRDLypgVTpUFofCL5sr6eZLve5xa8-olQFBLMFa4o4jJOC0xb/exec";
+const GS_URL = "https://script.google.com/macros/s/AKfycbwtInZRkYQo1oDWOTjfkaRHPGlVpW7CK3SjOtqgdcmjDScTaoSAfuewVCUT4JV8ervW/exec";
 
 const form = document.getElementById('formBackup');
 const btnSubmit = document.getElementById('btnSubmit');
@@ -703,35 +678,30 @@ form.addEventListener('submit', async function(e) {
   try {
     const res = await fetch(GS_URL, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
 
     const result = await res.json();
-
     loading.style.display = 'none';
 
-    if (result.status === "sukses" || result.status === "success") {
+    if (result.status === "success") {
       alertSuccess.style.display = 'block';
       form.reset();
-
-      setTimeout(() => {
-        alertSuccess.style.display = 'none';
-        document.querySelector('.container').scrollTop = 0;
-      }, 3000);
+      setTimeout(() => alertSuccess.style.display = 'none', 3000);
     } else {
       alertError.style.display = 'block';
-      alertError.textContent = "⚠️ GAGAL MENYIMPAN DATA";
     }
 
   } catch (err) {
     loading.style.display = 'none';
     alertError.style.display = 'block';
-    alertError.textContent = "⚠️ ERROR KONEKSI";
   }
 
   btnSubmit.disabled = false;
 });
 </script>
+
 
 </body>
 </html>
