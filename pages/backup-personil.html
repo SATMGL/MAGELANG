@@ -563,7 +563,7 @@
         <div id="alert-container"></div>
         
         <div class="card">
-            <h2>✏️ Input Data Baru</h2>
+            <h2>✏️ Input Data Backup</h2>
             <form id="backupForm">
                 <div class="form-group">
                     <label for="nama">👤 Nama</label>
@@ -650,19 +650,27 @@
             }
         }
         
-        function formatDateIfISO(value) {
-            // Cek apakah string dan mengandung format ISO
-            if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)) {
-                // Parse tanggal langsung dari string untuk menghindari timezone issue
-                const dateParts = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
-                if (dateParts) {
-                    const year = dateParts[1];
-                    const month = dateParts[2];
-                    const day = dateParts[3];
-                    return `${day}/${month}/${year}`;
-                }
+        function formatCell(value) {
+            if (!value) return '-';
+            
+            const valueStr = String(value);
+            
+            // Cek jika masih format ISO dari server
+            if (valueStr.includes('T') && valueStr.includes('Z')) {
+                // Parse sebagai Date dan tambahkan offset timezone Indonesia (UTC+7)
+                const date = new Date(valueStr);
+                
+                // Tambahkan 7 jam untuk WIB
+                date.setHours(date.getHours() + 7);
+                
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                
+                return `${day}/${month}/${year}`;
             }
-            return value;
+            
+            return valueStr;
         }
         
         function displayData(values) {
@@ -688,8 +696,8 @@
             for (let i = values.length - 1; i >= 1; i--) {
                 html += '<tr>';
                 values[i].forEach((cell, index) => {
-                    // Format semua cell yang terdeteksi sebagai ISO date
-                    const displayValue = formatDateIfISO(cell) || '-';
+                    // Format cell dengan fungsi baru
+                    const displayValue = formatCell(cell);
                     html += `<td data-label="${headers[index]}">${displayValue}</td>`;
                 });
                 html += '</tr>';
