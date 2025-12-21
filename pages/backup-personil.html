@@ -1,97 +1,730 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Form Backup Personil</title>
-<style>
-    body { font-family: Arial, sans-serif; background: #0a0a0a; color: #00ffff; margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh; }
-    .card { background: rgba(15,15,25,0.95); padding:30px; border-radius:16px; width:100%; max-width:500px; box-shadow:0 0 20px #00ffff; }
-    h1 { text-align:center; margin-bottom:20px; color:#00ffff; }
-    label { display:block; margin:12px 0 6px; }
-    input, textarea { width:100%; padding:12px; border-radius:8px; border:1px solid #00ffff; background: rgba(10,10,20,0.8); color:#00ffff; }
-    button { width:100%; padding:12px; margin-top:20px; border:none; border-radius:8px; background:#00ffff; color:#000; font-weight:bold; cursor:pointer; }
-    .alert { display:none; padding:10px; border-radius:8px; margin-top:15px; text-align:center; font-weight:bold; }
-    .success { background:#00ff66; color:#000; }
-    .error { background:#ff0066; color:#fff; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Personil Backup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background circles */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        body::before {
+            width: 300px;
+            height: 300px;
+            background: white;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        
+        body::after {
+            width: 200px;
+            height: 200px;
+            background: white;
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            background: linear-gradient(145deg, #ffffff 0%, #f0f4ff 100%);
+            padding: 30px 25px;
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.8),
+                0 1px 0 rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
+            transform: translateY(0);
+            transition: all 0.3s;
+        }
+        
+        .header:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 25px 70px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        
+        .header h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            margin-bottom: 10px;
+            font-weight: 900;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            color: #555;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: 600;
+        }
+        
+        .card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
+            padding: clamp(25px, 5vw, 35px);
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.8),
+                0 1px 0 rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transform: translateY(0);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 25px 70px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        
+        .card h2 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 25px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.15s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.25s; }
+        .form-group:nth-child(5) { animation-delay: 0.3s; }
+        .form-group:nth-child(6) { animation-delay: 0.35s; }
+        .form-group:nth-child(7) { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2d3748;
+            font-weight: 700;
+            font-size: clamp(0.95rem, 3vw, 1.1rem);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: clamp(0.95rem, 3vw, 1.05rem);
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, #ffffff 0%, #f7fafc 100%);
+            box-shadow: 
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 1px 2px rgba(0,0,0,0.05);
+            color: #2d3748;
+        }
+        
+        /* Warna berbeda untuk setiap input */
+        #nama {
+            background: linear-gradient(145deg, #fff5f5 0%, #ffe5e5 100%);
+            border-color: #feb2b2;
+        }
+        
+        #nama:focus {
+            border-color: #fc8181;
+            background: linear-gradient(145deg, #ffffff 0%, #fff5f5 100%);
+            box-shadow: 
+                0 0 0 4px rgba(252, 129, 129, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(252, 129, 129, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        #tanggalBackup {
+            background: linear-gradient(145deg, #fffaf0 0%, #feebc8 100%);
+            border-color: #fbd38d;
+        }
+        
+        #tanggalBackup:focus {
+            border-color: #f6ad55;
+            background: linear-gradient(145deg, #ffffff 0%, #fffaf0 100%);
+            box-shadow: 
+                0 0 0 4px rgba(246, 173, 85, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(246, 173, 85, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        #unitBackup {
+            background: linear-gradient(145deg, #fffff0 0%, #fefcbf 100%);
+            border-color: #faf089;
+        }
+        
+        #unitBackup:focus {
+            border-color: #f6e05e;
+            background: linear-gradient(145deg, #ffffff 0%, #fffff0 100%);
+            box-shadow: 
+                0 0 0 4px rgba(246, 224, 94, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(246, 224, 94, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        #personilBackup {
+            background: linear-gradient(145deg, #f0fff4 0%, #c6f6d5 100%);
+            border-color: #9ae6b4;
+        }
+        
+        #personilBackup:focus {
+            border-color: #68d391;
+            background: linear-gradient(145deg, #ffffff 0%, #f0fff4 100%);
+            box-shadow: 
+                0 0 0 4px rgba(104, 211, 145, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(104, 211, 145, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        #shiftBackup {
+            background: linear-gradient(145deg, #e6fffa 0%, #b2f5ea 100%);
+            border-color: #81e6d9;
+        }
+        
+        #shiftBackup:focus {
+            border-color: #4fd1c5;
+            background: linear-gradient(145deg, #ffffff 0%, #e6fffa 100%);
+            box-shadow: 
+                0 0 0 4px rgba(79, 209, 197, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(79, 209, 197, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        #keteranganBackup {
+            background: linear-gradient(145deg, #ebf8ff 0%, #bee3f8 100%);
+            border-color: #90cdf4;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        #keteranganBackup:focus {
+            border-color: #63b3ed;
+            background: linear-gradient(145deg, #ffffff 0%, #ebf8ff 100%);
+            box-shadow: 
+                0 0 0 4px rgba(99, 179, 237, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(99, 179, 237, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        #mengetahui {
+            background: linear-gradient(145deg, #faf5ff 0%, #e9d8fd 100%);
+            border-color: #d6bcfa;
+        }
+        
+        #mengetahui:focus {
+            border-color: #b794f4;
+            background: linear-gradient(145deg, #ffffff 0%, #faf5ff 100%);
+            box-shadow: 
+                0 0 0 4px rgba(183, 148, 244, 0.2),
+                inset 0 2px 4px rgba(0,0,0,0.06),
+                0 10px 25px rgba(183, 148, 244, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .btn {
+            background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: clamp(16px, 4vw, 20px) 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: clamp(1.05rem, 3vw, 1.3rem);
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            box-shadow: 
+                0 10px 30px rgba(102, 126, 234, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(102, 126, 234, 0.5),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+        
+        table th {
+            background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: clamp(14px, 3vw, 18px);
+            text-align: left;
+            font-weight: 900;
+            white-space: nowrap;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        table th:first-child {
+            border-top-left-radius: 15px;
+        }
+        
+        table th:last-child {
+            border-top-right-radius: 15px;
+        }
+        
+        table td {
+            padding: clamp(12px, 3vw, 16px);
+            border-bottom: 2px solid #f0f4f8;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        table tr {
+            transition: all 0.3s;
+        }
+        
+        table tr:hover {
+            background: linear-gradient(90deg, #f7fafc 0%, #edf2f7 100%);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        table tr:last-child td:first-child {
+            border-bottom-left-radius: 15px;
+        }
+        
+        table tr:last-child td:last-child {
+            border-bottom-right-radius: 15px;
+        }
+        
+        .alert {
+            padding: clamp(14px, 3vw, 18px);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 2px solid;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(145deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border-color: #28a745;
+        }
+        
+        .alert-error {
+            background: linear-gradient(145deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border-color: #dc3545;
+        }
+        
+        .alert-info {
+            background: linear-gradient(145deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border-color: #17a2b8;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: clamp(25px, 5vw, 35px);
+            color: #667eea;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            font-weight: 700;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: clamp(35px, 8vw, 55px);
+            color: #a0aec0;
+        }
+        
+        .empty-state p {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .empty-state small {
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+                margin-bottom: 20px;
+            }
+            
+            .card {
+                margin-bottom: 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 18px;
+            }
+            
+            table {
+                display: block;
+            }
+            
+            table thead {
+                display: none;
+            }
+            
+            table tr {
+                display: block;
+                margin-bottom: 20px;
+                border: 3px solid #e2e8f0;
+                border-radius: 15px;
+                padding: 15px;
+                background: linear-gradient(145deg, #ffffff 0%, #f7fafc 100%);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            }
+            
+            table td {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+                border: none;
+                border-bottom: 2px solid #f0f4f8;
+            }
+            
+            table td:last-child {
+                border-bottom: none;
+            }
+            
+            table td::before {
+                content: attr(data-label);
+                font-weight: 900;
+                color: #667eea;
+                margin-right: 15px;
+                text-transform: uppercase;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Form Personil Backup</h1>
+            <p>Sistem Pencatatan Personil Backup Online</p>
+        </div>
+        
+        <div id="alert-container"></div>
+        
+        <div class="card">
+            <h2>✏️ Input Data Baru</h2>
+            <form id="backupForm">
+                <div class="form-group">
+                    <label for="nama">👤 Nama</label>
+                    <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tanggalBackup">📅 Tanggal Backup</label>
+                    <input type="date" id="tanggalBackup" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="unitBackup">🏢 Unit Backup</label>
+                    <input type="text" id="unitBackup" required placeholder="Contoh: Unit A, Unit B">
+                </div>
+                
+                <div class="form-group">
+                    <label for="personilBackup">👥 Personil Backup</label>
+                    <input type="text" id="personilBackup" required placeholder="Nama personil yang dibackup">
+                </div>
+                
+                <div class="form-group">
+                    <label for="shiftBackup">⏰ Shift Backup</label>
+                    <select id="shiftBackup" required>
+                        <option value="">-- Pilih Shift --</option>
+                        <option value="Pagi">☀️ Pagi</option>
+                        <option value="Siang">🌤️ Siang</option>
+                        <option value="Malam">🌙 Malam</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="keteranganBackup">📝 Keterangan Backup (Opsional)</label>
+                    <textarea id="keteranganBackup" placeholder="Keterangan tambahan..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mengetahui">✅ Mengetahui</label>
+                    <input type="text" id="mengetahui" required placeholder="Nama atasan/supervisor">
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">💾 Simpan Data</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Data Personil Backup</h2>
+            <div id="loading" class="loading">⏳ Memuat data...</div>
+            <div id="data-container"></div>
+        </div>
+    </div>
 
-<div class="card">
-    <h1>Form Backup Personil</h1>
-
-    <div id="alertSuccess" class="alert success">✅ Data tersimpan!</div>
-    <div id="alertError" class="alert error">⚠️ Gagal menyimpan data</div>
-
-    <form id="formBackup">
-        <label>Nama *</label>
-        <input type="text" id="nama" name="nama" required>
-
-        <label>Tanggal Backup *</label>
-        <input type="date" id="tanggalBackup" name="tanggalBackup" required>
-
-        <label>Backup Unit *</label>
-        <input type="text" id="backupUnit" name="backupUnit" required>
-
-        <label>Backup Personil *</label>
-        <input type="text" id="backupPersonil" name="backupPersonil" required>
-
-        <label>Shift Backup *</label>
-        <input type="text" id="shiftBackup" name="shiftBackup" required>
-
-        <label>Keterangan Backup *</label>
-        <textarea id="keteranganBackup" name="keteranganBackup" required></textarea>
-
-        <label>Mengetahui *</label>
-        <input type="text" id="mengetahui" name="mengetahui" required>
-
-        <button type="submit">Kirim Data</button>
-    </form>
-</div>
-
-<script>
-const GS_URL = "https://script.google.com/macros/s/AKfycbxhMzwg7or1DLLXexCgpUAZwh1IzqBZK1LRAAWoHeV7Qi6z1jFCl0IkVnExvEaLFbe-/exec";
-
-const form = document.getElementById('formBackup');
-const alertSuccess = document.getElementById('alertSuccess');
-const alertError = document.getElementById('alertError');
-
-form.addEventListener('submit', async function(e){
-    e.preventDefault();
-
-    alertSuccess.style.display = 'none';
-    alertError.style.display = 'none';
-
-    const data = {
-        nama: document.getElementById('nama').value.trim(),
-        tanggalBackup: document.getElementById('tanggalBackup').value,
-        backupUnit: document.getElementById('backupUnit').value.trim(),
-        backupPersonil: document.getElementById('backupPersonil').value.trim(),
-        shiftBackup: document.getElementById('shiftBackup').value.trim(),
-        keteranganBackup: document.getElementById('keteranganBackup').value.trim(),
-        mengetahui: document.getElementById('mengetahui').value.trim()
-    };
-
-    try {
-        const res = await fetch(GS_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        if(result.status === "success"){
-            alertSuccess.style.display = 'block';
-            form.reset();
-            setTimeout(()=> alertSuccess.style.display='none',3000);
-        } else {
-            alertError.style.display = 'block';
+    <script>
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0h_t8GAssD6Xrni_4W1qkY6KkhoyaR7DJ-U2MSg1QygfIxx5JVvsJaqOwiv6YEOKB/exec';
+        
+        document.getElementById('tanggalBackup').valueAsDate = new Date();
+        
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alert-container');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
         }
-    } catch(err){
-        alertError.style.display = 'block';
-    }
-});
-</script>
-
+        
+        async function loadData() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL);
+                
+                if (!response.ok) {
+                    throw new Error('Gagal memuat data');
+                }
+                
+                const data = await response.json();
+                displayData(data || []);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<div class="alert alert-error">❌ Gagal memuat data. Pastikan Apps Script sudah di-deploy dengan akses "Anyone"</div>';
+            }
+        }
+        
+        function displayData(values) {
+            const container = document.getElementById('data-container');
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+            
+            if (values.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>📭 Belum ada data</p><small>Silakan input data pertama Anda</small></div>';
+                return;
+            }
+            
+            const headers = values[0];
+            let html = '<div class="table-container"><table>';
+            
+            html += '<thead><tr>';
+            headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead>';
+            
+            html += '<tbody>';
+            for (let i = values.length - 1; i >= 1; i--) {
+                html += '<tr>';
+                values[i].forEach((cell, index) => {
+                    html += `<td data-label="${headers[index]}">${cell || '-'}</td>`;
+                });
+                html += '</tr>';
+            }
+            html += '</tbody></table></div>';
+            
+            container.innerHTML = html;
+        }
+        
+        document.getElementById('backupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Menyimpan...';
+            
+            const waktuInput = new Date().toLocaleString('id-ID', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const nama = document.getElementById('nama').value;
+            const tanggalBackup = document.getElementById('tanggalBackup').value;
+            const unitBackup = document.getElementById('unitBackup').value;
+            const personilBackup = document.getElementById('personilBackup').value;
+            const shiftBackup = document.getElementById('shiftBackup').value;
+            const keteranganBackup = document.getElementById('keteranganBackup').value;
+            const mengetahui = document.getElementById('mengetahui').value;
+            
+            const rowData = [
+                waktuInput,
+                nama,
+                tanggalBackup,
+                unitBackup,
+                personilBackup,
+                shiftBackup,
+                keteranganBackup,
+                mengetahui
+            ];
+            
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        values: rowData
+                    })
+                });
+                
+                showAlert('✅ Data berhasil disimpan!', 'success');
+                document.getElementById('backupForm').reset();
+                document.getElementById('tanggalBackup').valueAsDate = new Date();
+                
+                setTimeout(() => {
+                    loadData();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Gagal menyimpan data. Silakan coba lagi.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Simpan Data';
+            }
+        });
+        
+        loadData();
+    </script>
 </body>
 </html>
