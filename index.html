@@ -1,81 +1,142 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard Satpam</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f5f9;
-    }
+<meta charset="UTF-8">
+<title>Dashboard Layanan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    header {
-      background: #0a3d91;
-      color: white;
-      padding: 25px;
-      text-align: center;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f7f9ff, #eef3ff);
+  color: #2b2f4b;
+}
 
-    header p {
-      margin-top: 8px;
-      font-size: 14px;
-      opacity: 0.9;
-    }
+header {
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff, #ff9acb);
+  color: white;
+}
 
-    .menu {
-      padding: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-    }
+header h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+}
 
-    .menu a {
-      background: white;
-      color: #0a3d91;
-      text-decoration: none;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: bold;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    }
+header p {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.95;
+}
 
-    .menu a:hover {
-      background: #e7efff;
-    }
+/* GRID MENU UTAMA */
+.menu {
+  padding: 35px 25px 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 25px;
+}
 
-    footer {
-      text-align: center;
-      padding: 12px;
-      font-size: 12px;
-      color: #666;
-    }
-  </style>
+/* KARTU MENU */
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 28px 20px;
+  text-decoration: none;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+}
+
+/* WARNA TIAP MENU */
+.kerja { color:#3f51b5; }
+.absensi { color:#009688; }
+.backup { color:#ff7043; }
+.timesheet { color:#8e24aa; }
+.unit { color:#1565c0; }
+.personil { color:#2e7d32; }
+
+.card::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(120deg, transparent, rgba(0,0,0,0.06), transparent);
+  opacity:0;
+  transition:.3s;
+}
+
+.card:hover::before {
+  opacity:1;
+}
+
+/* HUBUNGI ADMIN */
+.admin-wrap {
+  padding: 10px 25px 30px;
+  text-align: center;
+}
+
+.admin {
+  display: inline-block;
+  background: white;
+  padding: 14px 26px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #d81b60;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  transition: 0.3s;
+}
+
+.admin:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  color: #777;
+}
+</style>
 </head>
+
 <body>
 
 <header>
   <h1>Selamat Datang</h1>
-  <p>Sistem Informasi Jadwal & Personil</p>
+  <p>Layanan Informasi & Manajemen Personil</p>
 </header>
 
 <section class="menu">
-  <a href="pages/jadwal-kerja.html">JADWAL PELAKSANAAN KERJA</a>
-  <a href="pages/jadwal-absensi.html">JADWAL PENGIRIMAN ABSENSI</a>
-  <a href="pages/backup-personil.html">FORM PERSONIL BACKUP</a>
-  <a href="pages/timesheet.html">TIMESHEET MAKER</a>
-  <a href="pages/hubungi-admin.html">HUBUNGI ADMIN</a>
+  <a href="pages/jadwal-kerja.html" class="card kerja">JADWAL PELAKSANAAN KERJA</a>
+  <a href="pages/jadwal-absensi.html" class="card absensi">JADWAL PENGIRIMAN ABSENSI</a>
+  <a href="pages/backup-personil.html" class="card backup">FORM PERSONIL BACKUP</a>
+  <a href="pages/timesheet.html" class="card timesheet">TIMESHEET MAKER</a>
+  <a href="pages/data-unit.html" class="card unit">DATA UNIT</a>
+  <a href="pages/data-personil.html" class="card personil">DATA PERSONIL</a>
 </section>
 
+<div class="admin-wrap">
+  <a href="pages/hubungi-admin.html" class="admin">HUBUNGI ADMIN</a>
+</div>
+
 <footer>
-  © 2025 Dashboard Satpam
+  © 2025 Layanan Terpadu
 </footer>
 
 </body>
