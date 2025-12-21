@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <title>Form Backup Personil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            touch-action: pan-y;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Mysterious floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float 15s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.3), transparent);
+            top: -50px;
+            right: -50px;
+        }
+
+        .orb-2 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.3), transparent);
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255, 0, 255, 0.2), transparent);
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+        }
+
+        /* Custom Scrollbar */
+        .container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00ffff, #8a2be2);
+            border-radius: 10px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 100%;
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 36px 24px;
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.2),
+                0 0 30px rgba(138, 43, 226, 0.3),
+                inset 0 0 40px rgba(0, 255, 255, 0.05),
+                inset 0 0 0 1px rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            animation: cardAppear 0.8s ease-out;
+            position: relative;
+            min-height: calc(100vh - 40px);
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                transparent,
+                rgba(0, 255, 255, 0.1),
+                transparent,
+                rgba(138, 43, 226, 0.1),
+                transparent
+            );
+            border-radius: 24px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+            position: relative;
+        }
+
+        .header-icon {
+            font-size: 80px;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: iconPulse 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+            }
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 30px rgba(138, 43, 226, 1));
+            }
+        }
+
+        .header h1 {
+            background: linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #ff00ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 36px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+
+        .header p {
+            color: #00ffff;
+            font-size: 18px;
+            opacity: 0.9;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            letter-spacing: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #00ffff;
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .label-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
+        }
+
+        .required {
+            color: #ff00ff;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+            font-size: 22px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 22px 20px;
+            background: rgba(10, 10, 20, 0.8);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            font-size: 16px;
+            color: #00ffff;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 0.5),
+                0 0 10px rgba(0, 255, 255, 0.1);
+            font-weight: 500;
+            line-height: 1.5;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 16px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            background: rgba(0, 20, 40, 0.9);
+            border-color: #00ffff;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 255, 255, 0.1),
+                0 0 25px rgba(0, 255, 255, 0.5);
+            color: #00ffff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.6;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 24px;
+            background: linear-gradient(135deg, 
+                rgba(0, 255, 255, 0.2) 0%, 
+                rgba(138, 43, 226, 0.3) 50%,
+                rgba(255, 0, 255, 0.2) 100%
+            );
+            color: #00ffff;
+            border: 3px solid rgba(0, 255, 255, 0.6);
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.4),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+            touch-action: manipulation;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(0, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: buttonShine 3s linear infinite;
+        }
+
+        @keyframes buttonShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.6),
+                inset 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .btn-submit:disabled {
+            background: rgba(50, 50, 50, 0.5);
+            border-color: rgba(100, 100, 100, 0.5);
+            color: rgba(150, 150, 150, 0.5);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .alert {
+            padding: 22px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+            display: none;
+            animation: alertSlide 0.5s ease-out;
+            border: 2px solid;
+            backdrop-filter: blur(10px);
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        @keyframes alertSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 100, 0.15);
+            color: #00ff66;
+            border-color: #00ff66;
+            box-shadow: 0 0 35px rgba(0, 255, 100, 0.4);
+            text-shadow: 0 0 10px rgba(0, 255, 100, 0.5);
+        }
+
+        .alert-error {
+            background: rgba(255, 0, 100, 0.15);
+            color: #ff0066;
+            border-color: #ff0066;
+            box-shadow: 0 0 35px rgba(255, 0, 100, 0.4);
+            text-shadow: 0 0 10px rgba(255, 0, 100, 0.5);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px 20px;
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .loading-spinner::before,
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loading-spinner::before {
+            width: 90px;
+            height: 90px;
+            border-top-color: #00ffff;
+            border-right-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+        }
+
+        .loading-spinner::after {
+            width: 70px;
+            height: 70px;
+            top: 10px;
+            left: 10px;
+            border-bottom-color: #8a2be2;
+            border-left-color: #8a2be2;
+            animation-direction: reverse;
+            animation-duration: 1s;
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.6);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #00ffff;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Small mobile adjustments */
+        @media (max-width: 400px) {
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 30px 20px;
+            }
+
+            .header-icon {
+                font-size: 70px;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            label {
+                font-size: 18px;
+            }
+
+            .label-icon {
+                font-size: 26px;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            textarea {
+                padding: 20px 18px;
+                font-size: 16px;
+            }
+
+            .btn-submit {
+                padding: 22px;
+                font-size: 20px;
+            }
+        }
+
+        /* Landscape mode */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 28px 20px;
+            }
+
+            .header-icon {
+                font-size: 60px;
+                margin-bottom: 12px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+
+            .header {
+                margin-bottom: 28px;
+            }
+
+            .form-group {
+                margin-bottom: 24px;
+            }
+
+            label {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+            input[type="text"],
+            input[type="date"],
+            textarea {
+                padding: 18px 16px;
+                font-size: 16px;
+            }
+
+            textarea {
+                min-height: 100px;
+            }
+
+            .btn-submit {
+                padding: 20px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="header-icon">🛡️</div>
+                <h1>Form Backup Personil</h1>
+                <p>[ PENDAFTARAN BACKUP ]</p>
+            </div>
+
+            <div id="alertSuccess" class="alert alert-success">
+                ✅ DATA TERSIMPAN | SISTEM BERHASIL DIPERBARUI
+            </div>
+
+            <div id="alertError" class="alert alert-error">
+                ⚠️ ERROR | GAGAL MENYIMPAN DATA
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">MENGIRIM DATA...</div>
+            </div>
+
+            <form id="formBackup">
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">👤</span>
+                        Nama <span class="required">*</span>
+                    </label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">📅</span>
+                        Tanggal Backup <span class="required">*</span>
+                    </label>
+                    <input type="date" id="tanggalBackup" name="tanggalBackup" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">🏢</span>
+                        Backup Unit <span class="required">*</span>
+                    </label>
+                    <input type="text" id="backupUnit" name="backupUnit" placeholder="Contoh: Unit 1, Pos A, dll" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">👥</span>
+                        Backup Personil <span class="required">*</span>
+                    </label>
+                    <input type="text" id="backupPersonil" name="backupPersonil" placeholder="Nama personil yang di-backup" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">🕐</span>
+                        Shift Backup <span class="required">*</span>
+                    </label>
+                    <input type="text" id="shiftBackup" name="shiftBackup" placeholder="Contoh: Pagi, Siang, Malam" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">📝</span>
+                        Keterangan Backup <span class="required">*</span>
+                    </label>
+                    <textarea id="keteranganBackup" name="keteranganBackup" placeholder="Alasan backup, kondisi, atau informasi penting lainnya" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">✅</span>
+                        Mengetahui <span class="required">*</span>
+                    </label>
+                    <input type="text" id="mengetahui" name="mengetahui" placeholder="Nama supervisor/koordinator" required>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    [ KIRIM DATA ]
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('formBackup');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const alertSuccess = document.getElementById('alertSuccess');
+        const alertError = document.getElementById('alertError');
+        const loading = document.getElementById('loading');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            alertSuccess.style.display = 'none';
+            alertError.style.display = 'none';
+            loading.style.display = 'block';
+            btnSubmit.disabled = true;
+
+            const formData = {
+                nama: document.getElementById('nama').value.trim(),
+                tanggalBackup: document.getElementById('tanggalBackup').value,
+                backupUnit: document.getElementById('backupUnit').value.trim(),
+                backupPersonil: document.getElementById('backupPersonil').value.trim(),
+                shiftBackup: document.getElementById('shiftBackup').value.trim(),
+                keteranganBackup: document.getElementById('keteranganBackup').value.trim(),
+                mengetahui: document.getElementById('mengetahui').value.trim()
+            };
+
+            <script>
+const GS_URL = "https://script.google.com/macros/s/AKfycbw-ti_x49acipHyNMAhRDLypgVTpUFofCL5sr6eZLve5xa8-olQFBLMFa4o4jJOC0xb/exec";
+
+const form = document.getElementById('formBackup');
+const btnSubmit = document.getElementById('btnSubmit');
+const alertSuccess = document.getElementById('alertSuccess');
+const alertError = document.getElementById('alertError');
+const loading = document.getElementById('loading');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  alertSuccess.style.display = 'none';
+  alertError.style.display = 'none';
+  loading.style.display = 'block';
+  btnSubmit.disabled = true;
+
+  const data = {
+    nama: document.getElementById('nama').value.trim(),
+    tanggalBackup: document.getElementById('tanggalBackup').value,
+    backupUnit: document.getElementById('backupUnit').value.trim(),
+    backupPersonil: document.getElementById('backupPersonil').value.trim(),
+    shiftBackup: document.getElementById('shiftBackup').value.trim(),
+    keteranganBackup: document.getElementById('keteranganBackup').value.trim(),
+    mengetahui: document.getElementById('mengetahui').value.trim()
+  };
+
+  try {
+    const res = await fetch(GS_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    loading.style.display = 'none';
+
+    if (result.status === "sukses" || result.status === "success") {
+      alertSuccess.style.display = 'block';
+      form.reset();
+
+      setTimeout(() => {
+        alertSuccess.style.display = 'none';
+        document.querySelector('.container').scrollTop = 0;
+      }, 3000);
+    } else {
+      alertError.style.display = 'block';
+      alertError.textContent = "⚠️ GAGAL MENYIMPAN DATA";
+    }
+
+  } catch (err) {
+    loading.style.display = 'none';
+    alertError.style.display = 'block';
+    alertError.textContent = "⚠️ ERROR KONEKSI";
+  }
+
+  btnSubmit.disabled = false;
+});
+</script>
+
+</body>
+</html>
