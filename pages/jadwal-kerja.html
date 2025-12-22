@@ -2,231 +2,542 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jadwal Pelaksanaan Kerja</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #f0f4ff; }
-h1 { text-align: center; }
-.controls { display: flex; gap: 20px; margin-bottom: 20px; justify-content: center; }
-select, button { padding: 10px; font-size: 1rem; }
-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 20px; }
-th, td { border: 1px solid #999; padding: 8px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-th { background: #667eea; color: white; }
-td.editable { background: #fffbe0; cursor: pointer; }
-td.editable:focus { outline: 2px solid #667eea; }
-.actions { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-#saveIndicator { position: fixed; bottom: 20px; right: 20px; background: #667eea; color: #fff; padding: 10px 15px; border-radius: 10px; display: none; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f7f9ff, #eef3ff);
+  color: #2b2f4b;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+header {
+  padding: 30px 20px;
+  text-align: center;
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  border-radius: 18px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 25px rgba(95, 124, 255, 0.3);
+}
+
+header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+header p {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 35px 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #2b2f4b;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e0e6f0;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  background: white;
+  color: #2b2f4b;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #5f7cff;
+  box-shadow: 0 0 0 3px rgba(95, 124, 255, 0.1);
+}
+
+.form-group select:disabled {
+  background: #f5f7fa;
+  cursor: not-allowed;
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  box-shadow: 0 6px 20px rgba(95, 124, 255, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(95, 124, 255, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-back {
+  background: white;
+  color: #5f7cff;
+  border: 2px solid #5f7cff;
+  margin-top: 15px;
+}
+
+.btn-back:hover {
+  background: #5f7cff;
+  color: white;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.loading::after {
+  content: '...';
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+/* Modal Password */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 18px;
+  padding: 35px 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content h3 {
+  margin-bottom: 10px;
+  color: #2b2f4b;
+  font-size: 20px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e0e6f0;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: #5f7cff;
+  box-shadow: 0 0 0 3px rgba(95, 124, 255, 0.1);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-modal-cancel {
+  background: #f5f7fa;
+  color: #666;
+}
+
+.btn-modal-cancel:hover {
+  background: #e0e6f0;
+}
+
+.btn-modal-submit {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+}
+
+.btn-modal-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(95, 124, 255, 0.3);
+}
+
+.error-message {
+  color: #ff4757;
+  font-size: 13px;
+  margin-top: -15px;
+  margin-bottom: 15px;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+.info-box {
+  background: #e8f4ff;
+  border-left: 4px solid #5f7cff;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #2b2f4b;
+}
+
+.info-box strong {
+  display: block;
+  margin-bottom: 5px;
+}
 </style>
 </head>
 <body>
 
-<h1>📋 Jadwal Pelaksanaan Kerja</h1>
+<header>
+  <h1>Jadwal Pelaksanaan Kerja</h1>
+  <p>Pilih bulan dan unit untuk melihat jadwal</p>
+</header>
 
-<div class="controls">
-  <div>
-    <label>📅 Pilih Periode</label><br>
-    <select id="selectPeriode"><option value="">-- Pilih Periode --</option></select>
+<div class="container">
+  <div class="card">
+    <form id="filterForm">
+      <div class="form-group">
+        <label for="bulan">Pilih Bulan</label>
+        <select id="bulan" required disabled>
+          <option value="">Memuat data...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="unit">Pilih Unit</label>
+        <select id="unit" required disabled>
+          <option value="">Memuat data...</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="btnLihat" disabled>
+        Lihat Jadwal
+      </button>
+
+      <a href="../index.html" class="btn btn-back">
+        Kembali ke Dashboard
+      </a>
+    </form>
+
+    <div class="info-box">
+      <strong>Informasi:</strong>
+      Setelah memilih bulan dan unit, Anda akan diminta memasukkan password untuk mengakses jadwal.
+    </div>
   </div>
-  <div>
-    <label>🏢 Pilih Unit</label><br>
-    <select id="selectUnit"><option value="">-- Pilih Unit --</option></select>
+</div>
+
+<!-- Modal Password -->
+<div class="modal" id="modalPassword">
+  <div class="modal-content">
+    <h3>Masukkan Password</h3>
+    <p>Unit: <strong id="modalUnitName"></strong><br>
+       Bulan: <strong id="modalBulanName"></strong></p>
+    
+    <input 
+      type="password" 
+      id="inputPassword" 
+      placeholder="Masukkan password unit"
+      autocomplete="off"
+    >
+    
+    <div class="error-message" id="errorPassword">
+      Password salah! Silakan coba lagi.
+    </div>
+
+    <div class="modal-buttons">
+      <button type="button" class="btn-modal-cancel" id="btnCancel">Batal</button>
+      <button type="button" class="btn-modal-submit" id="btnSubmitPassword">Login</button>
+    </div>
   </div>
 </div>
-
-<div id="tableContainer">
-  <p style="text-align:center; color:#555;">Pilih periode dan unit untuk menampilkan jadwal</p>
-</div>
-
-<div class="actions">
-  <button id="btnEdit" onclick="toggleEditMode()">✏️ Edit Jadwal</button>
-  <button onclick="saveAll()">💾 Simpan Semua</button>
-  <button onclick="downloadPNG()">📷 Download PNG</button>
-  <button onclick="downloadExcel()">📊 Download Excel</button>
-  <button onclick="downloadPDF()">📄 Download PDF</button>
-</div>
-
-<div id="saveIndicator"></div>
 
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbwgiV7lP6JnF6LwFzz6y3fo0l2s4unYuDfSPV8PZufVsyT8Jds4WOEy8yZDQSXEJwjjtw/exec';
+// API Configuration
+const API_URL = 'https://script.google.com/macros/s/AKfycbwgHWP4PcL8oYMlDFUpPv6RfJrHoQythO9DxHzNZ1afPaz_HRnNThKHS_n4tsZe59LA/exec';
 
-let currentJadwal = null;
-let isEditMode = false;
+let dataUnit = [];
+let dataBulan = [];
+let selectedUnit = '';
+let selectedBulan = '';
 
-async function init() {
+// Load data saat halaman dibuka
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadMapping();
+  await loadAvailableMonths();
+});
+
+// Load mapping unit dari API
+async function loadMapping() {
   try {
-    // load periode
-    const r1 = await fetch(`${API}?action=getAvailableMonths&mode=PEL`);
-    const pData = await r1.json();
-    const perEl = document.getElementById('selectPeriode');
-    pData.forEach(p => {
-      const o = document.createElement('option');
-      o.value = p.value;
-      o.textContent = p.label;
-      perEl.appendChild(o);
-    });
-
-    // load units
-    const r2 = await fetch(`${API}?action=getUnits`);
-    const uData = await r2.json();
-    const unitEl = document.getElementById('selectUnit');
-    uData.forEach(u => {
-      const o = document.createElement('option');
-      o.value = u;
-      o.textContent = u;
-      unitEl.appendChild(o);
-    });
-
-  } catch(e) {
-    console.error(e);
-    showSaveIndicator('Gagal load dropdown', 3000);
+    const response = await fetch(API_URL + '?action=getMapping');
+    const result = await response.json();
+    
+    if (result.success) {
+      dataUnit = result.data.filter(u => u.unit && u.lokasi); // Filter unit valid
+      populateUnitDropdown();
+    } else {
+      alert('Gagal memuat data unit: ' + result.message);
+    }
+  } catch (error) {
+    console.error('Error loading mapping:', error);
+    alert('Terjadi kesalahan saat memuat data unit');
   }
 }
 
-async function loadJadwal() {
-  const sheetName = document.getElementById('selectPeriode').value;
-  const unit = document.getElementById('selectUnit').value;
-  if (!sheetName || !unit) return;
-
+// Load available months dari API
+async function loadAvailableMonths() {
   try {
-    const res = await fetch(`${API}?action=getJadwal&mode=PEL&sheetName=${sheetName}&unit=${unit}`);
-    currentJadwal = await res.json();
-    renderTable();
-  } catch(e) {
-    console.error(e);
-    showSaveIndicator('Gagal load jadwal', 3000);
+    const response = await fetch(API_URL + '?action=getAvailableMonths');
+    const result = await response.json();
+    
+    if (result.success) {
+      // Ambil data pelaksanaan dan filter yang valid
+      dataBulan = result.data.pelaksanaan.filter(m => m.code.length === 4);
+      populateBulanDropdown();
+    } else {
+      alert('Gagal memuat data bulan: ' + result.message);
+    }
+  } catch (error) {
+    console.error('Error loading months:', error);
+    alert('Terjadi kesalahan saat memuat data bulan');
   }
 }
 
-function renderTable() {
-  const c = document.getElementById('tableContainer');
-  c.innerHTML = '';
-  if (!currentJadwal) return;
-
-  const t = document.createElement('table');
-  const thead = document.createElement('thead');
-  const rowh = document.createElement('tr');
-  rowh.appendChild(document.createElement('th')).textContent='No';
-  rowh.appendChild(document.createElement('th')).textContent='Nama';
-  currentJadwal.headerTanggal.forEach(d => rowh.appendChild(document.createElement('th')).textContent=d);
-  thead.appendChild(rowh);
-  t.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  currentJadwal.personil.forEach((p,pi)=>{
-    const tr = document.createElement('tr');
-    tr.appendChild(document.createElement('td')).textContent=p.no;
-    tr.appendChild(document.createElement('td')).textContent=p.nama;
-    p.jadwal.forEach((val,ci)=>{
-      const td = document.createElement('td');
-      td.textContent = val;
-      td.classList.add('editable');
-      td.contentEditable = isEditMode;
-      td.addEventListener('blur',()=>saveCell(pi,ci,td.textContent));
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
+// Populate dropdown bulan
+function populateBulanDropdown() {
+  const select = document.getElementById('bulan');
+  select.innerHTML = '<option value="">-- Pilih Bulan --</option>';
+  
+  dataBulan.forEach(bulan => {
+    const option = document.createElement('option');
+    option.value = bulan.code;
+    option.textContent = bulan.name;
+    select.appendChild(option);
   });
-  t.appendChild(tbody);
-  c.appendChild(t);
+  
+  select.disabled = false;
+  checkFormReady();
 }
 
-function toggleEditMode() {
-  isEditMode = !isEditMode;
-  document.querySelectorAll('td.editable').forEach(td=>td.contentEditable=isEditMode);
-  document.getElementById('btnEdit').textContent = isEditMode ? '✔️ Selesai Edit' : '✏️ Edit Jadwal';
-  if(!isEditMode) showSaveIndicator('Mode edit off');
+// Populate dropdown unit
+function populateUnitDropdown() {
+  const select = document.getElementById('unit');
+  select.innerHTML = '<option value="">-- Pilih Unit --</option>';
+  
+  dataUnit.forEach(unit => {
+    const option = document.createElement('option');
+    option.value = unit.unit;
+    option.textContent = unit.unit;
+    select.appendChild(option);
+  });
+  
+  select.disabled = false;
+  checkFormReady();
 }
 
-function showSaveIndicator(msg='Tersimpan',dur=2000) {
-  const el = document.getElementById('saveIndicator');
-  el.textContent = msg;
-  el.style.display='block';
-  setTimeout(()=>el.style.display='none',dur);
-}
-
-// per‑cell save
-async function saveCell(pIdx,jIdx,value) {
-  try {
-    await fetch(API+'?action=saveCell', {
-      method: 'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        mode:'PEL',
-        sheetName: document.getElementById('selectPeriode').value,
-        unit: document.getElementById('selectUnit').value,
-        rowIdx:pIdx,
-        colIdx:jIdx,
-        value
-      })
-    });
-    showSaveIndicator();
-  } catch(e) {
-    console.error(e);
-    showSaveIndicator('Gagal simpan',2000);
+// Check apakah form sudah siap
+function checkFormReady() {
+  const bulanSelect = document.getElementById('bulan');
+  const unitSelect = document.getElementById('unit');
+  const btnLihat = document.getElementById('btnLihat');
+  
+  if (!bulanSelect.disabled && !unitSelect.disabled) {
+    btnLihat.disabled = false;
   }
 }
 
-// save all
-async function saveAll() {
-  if(!currentJadwal) return;
+// Handle form submit
+document.getElementById('filterForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  selectedBulan = document.getElementById('bulan').value;
+  selectedUnit = document.getElementById('unit').value;
+  
+  if (!selectedBulan || !selectedUnit) {
+    alert('Silakan pilih bulan dan unit terlebih dahulu');
+    return;
+  }
+  
+  // Tampilkan modal password
+  showPasswordModal();
+});
+
+// Show password modal
+function showPasswordModal() {
+  const modal = document.getElementById('modalPassword');
+  const bulanName = dataBulan.find(b => b.code === selectedBulan)?.name || selectedBulan;
+  
+  document.getElementById('modalUnitName').textContent = selectedUnit;
+  document.getElementById('modalBulanName').textContent = bulanName;
+  document.getElementById('inputPassword').value = '';
+  document.getElementById('errorPassword').classList.remove('show');
+  
+  modal.classList.add('active');
+  document.getElementById('inputPassword').focus();
+}
+
+// Hide password modal
+function hidePasswordModal() {
+  document.getElementById('modalPassword').classList.remove('active');
+}
+
+// Handle cancel button
+document.getElementById('btnCancel').addEventListener('click', hidePasswordModal);
+
+// Handle submit password
+document.getElementById('btnSubmitPassword').addEventListener('click', validatePassword);
+
+// Allow enter key to submit
+document.getElementById('inputPassword').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    validatePassword();
+  }
+});
+
+// Validate password via API
+async function validatePassword() {
+  const password = document.getElementById('inputPassword').value;
+  const errorDiv = document.getElementById('errorPassword');
+  
+  if (!password) {
+    errorDiv.textContent = 'Password tidak boleh kosong';
+    errorDiv.classList.add('show');
+    return;
+  }
+  
   try {
-    const jadwalData = currentJadwal.personil.map(p=>({no:p.no,nama:p.nama,jadwal:p.jadwal}));
-    await fetch(API+'?action=saveJadwal',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        mode:'PEL',
-        sheetName: document.getElementById('selectPeriode').value,
-        unit: document.getElementById('selectUnit').value,
-        jadwalData
-      })
-    });
-    showSaveIndicator('Semua tersimpan');
-  } catch(e) {
-    console.error(e);
-    showSaveIndicator('Gagal simpan semua',3000);
+    // Test API dengan password
+    const testUrl = `${API_URL}?action=getJadwalPelaksanaan&unit=${encodeURIComponent(selectedUnit)}&bulan=${selectedBulan}&password=${encodeURIComponent(password)}`;
+    const response = await fetch(testUrl);
+    const result = await response.json();
+    
+    if (result.success) {
+      // Password benar, redirect ke lihat-kerja.html
+      const params = new URLSearchParams({
+        unit: selectedUnit,
+        bulan: selectedBulan,
+        password: password
+      });
+      
+      window.location.href = `lihat-kerja.html?${params.toString()}`;
+    } else {
+      // Password salah
+      errorDiv.textContent = result.message || 'Password salah! Silakan coba lagi.';
+      errorDiv.classList.add('show');
+      document.getElementById('inputPassword').value = '';
+      document.getElementById('inputPassword').focus();
+    }
+  } catch (error) {
+    console.error('Error validating password:', error);
+    errorDiv.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+    errorDiv.classList.add('show');
   }
 }
 
-// downloads
-function downloadPNG(){
-  html2canvas(document.querySelector('#tableContainer')).then(canvas=>{
-    const a=document.createElement('a');
-    a.download='jadwal.png';
-    a.href=canvas.toDataURL();
-    a.click();
-  });
-}
-function downloadExcel(){
-  if(!currentJadwal) return;
-  const wb=XLSX.utils.book_new();
-  const header = ['No','Nama',...currentJadwal.headerTanggal];
-  const rows = currentJadwal.personil.map(p=>[p.no,p.nama,...p.jadwal]);
-  const ws=XLSX.utils.aoa_to_sheet([header,...rows]);
-  XLSX.utils.book_append_sheet(wb,ws,'Jadwal');
-  XLSX.writeFile(wb,'jadwal.xlsx');
-}
-function downloadPDF(){
-  html2canvas(document.querySelector('#tableContainer')).then(canvas=>{
-    const img=canvas.toDataURL('image/png');
-    const pdf=new jspdf.jsPDF('landscape');
-    const props=pdf.getImageProperties(img);
-    const w=pdf.internal.pageSize.getWidth();
-    const h=props.height*w/props.width;
-    pdf.addImage(img,'PNG',0,0,w,h);
-    pdf.save('jadwal.pdf');
-  });
-}
-
-document.getElementById('selectPeriode').addEventListener('change',loadJadwal);
-document.getElementById('selectUnit').addEventListener('change',loadJadwal);
-document.addEventListener('DOMContentLoaded',init);
+// Close modal when clicking outside
+document.getElementById('modalPassword').addEventListener('click', (e) => {
+  if (e.target.id === 'modalPassword') {
+    hidePasswordModal();
+  }
+});
 </script>
 
 </body>
