@@ -178,10 +178,6 @@ th {
 .col-no {
   width: 8vw;
   min-width: 8vw;
-  position: sticky;
-  left: 0;
-  z-index: 15;
-  background: #4a90d9;
 }
 
 .col-nama {
@@ -191,23 +187,41 @@ th {
   max-width: 35vw;
   word-wrap: break-word;
   font-size: 3vw;
+  padding: 0 !important;
+}
+
+/* Sticky untuk header (th) */
+th.col-no {
+  position: sticky;
+  left: 0;
+  z-index: 15;
+  background: #4a90d9;
+}
+
+th.col-nama {
   position: sticky;
   left: 8vw;
   z-index: 15;
   background: #4a90d9;
-  padding: 0 !important;
 }
 
-tr {
-  height: 12vw;
-}
-
+/* Sticky untuk data (td) */
 td.col-no {
+  position: sticky;
+  left: 0;
+  z-index: 5;
   background: #f0f0f0;
 }
 
 td.col-nama {
+  position: sticky;
+  left: 8vw;
+  z-index: 5;
   background: #f0f0f0;
+}
+
+tr {
+  height: 12vw;
 }
 
 .col-jadwal {
@@ -548,7 +562,8 @@ function renderTable(editMode) {
   
   // Header: Unit + Hari
   html += '<tr class="header-unit">';
-  html += `<th colspan="2" class="col-nama">${data.unit}</th>`;
+  html += `<th class="col-no">${data.unit}</th>`;
+  html += `<th class="col-nama">HARI</th>`;
   data.header.hari.forEach((h, i) => {
     const isWeekend = weekendDays.includes(h);
     html += `<th class="col-jadwal ${isWeekend ? 'weekend-header' : ''}">${h}</th>`;
