@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Jadwal Pelaksanaan Kerja</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
@@ -19,6 +21,10 @@ body {
   color: #2b2f4b;
   min-height: 100vh;
   padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
 }
 
 header {
@@ -45,6 +51,7 @@ header p {
 .container {
   max-width: 600px;
   margin: 0 auto;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .card {
@@ -126,6 +133,9 @@ header p {
   color: #5f7cff;
   border: 2px solid #5f7cff;
   margin-top: 15px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
 }
 
 .btn-back:hover {
@@ -311,11 +321,11 @@ header p {
       <button type="submit" class="btn btn-primary" id="btnLihat" disabled>
         Lihat Jadwal
       </button>
-
-      <a href="../index.html" class="btn btn-back">
-        Kembali ke Dashboard
-      </a>
     </form>
+
+    <a href="../index.html" class="btn btn-back">
+      Kembali ke Dashboard
+    </a>
 
     <div class="info-box">
       <strong>Informasi:</strong>
