@@ -1,354 +1,217 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Data Diri Pekerja</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Data Pekerja</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 40px;
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 28px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="tel"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            font-family: inherit;
-        }
-
-        input[type="text"]:focus,
-        input[type="tel"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 30px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 25px;
-            }
-
-            .row {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-        }
-
-        .success-message {
-            display: none;
-            background: #4caf50;
-            color: white;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .error-message {
-            display: none;
-            background: #f44336;
-            color: white;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 10px;
-            color: #667eea;
-            font-weight: 600;
-        }
-    </style>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+  padding: 20px;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.1);
+}
+h2 { text-align: center; margin-bottom: 20px; }
+label { font-weight: bold; margin-top: 10px; display: block; }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+}
+#pageUpload img {
+  max-width: 200px;
+  margin-top: 15px;
+  display: none;
+}
+.loading {
+  display: none;
+  margin-top: 10px;
+  text-align: center;
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>📋 Form Data Diri Pekerja</h1>
-        
-        <div id="successMessage" class="success-message">
-            ✓ Data berhasil disimpan ke Google Sheets!
-        </div>
 
-        <div id="errorMessage" class="error-message">
-            ✗ Terjadi kesalahan. Silakan coba lagi.
-        </div>
+<div class="container">
 
-        <form id="formPekerja">
-            <div class="form-group">
-                <label for="unitKerja">Unit Kerja Saat Ini *</label>
-                <select id="unitKerja" name="unitKerja" required>
-                    <option value="">-- Pilih Unit Kerja --</option>
-                    <option value="AKMIL">AKMIL</option>
-                    <option value="BANDONGAN">BANDONGAN</option>
-                    <option value="BOROBUDUR">BOROBUDUR</option>
-                    <option value="BOTTON">BOTTON</option>
-                    <option value="CANDIMULYO">CANDIMULYO</option>
-                    <option value="GLAGAH">GLAGAH</option>
-                    <option value="GRABAG">GRABAG</option>
-                    <option value="KAJORAN">KAJORAN</option>
-                    <option value="KALIANGKRIK">KALIANGKRIK</option>
-                    <option value="KARANGGADING">KARANGGADING</option>
-                    <option value="KC MAGELANG">KC MAGELANG</option>
-                    <option value="KCP SHOPPING">KCP SHOPPING</option>
-                    <option value="KRASAK">KRASAK</option>
-                    <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
-                    <option value="MAGELANG UTARA">MAGELANG UTARA</option>
-                    <option value="MERTOYUDAN">MERTOYUDAN</option>
-                    <option value="NGABLAK">NGABLAK</option>
-                    <option value="PAKIS">PAKIS</option>
-                    <option value="PAYAMAN">PAYAMAN</option>
-                    <option value="REJOWINANGUN">REJOWINANGUN</option>
-                    <option value="SALAMAN">SALAMAN</option>
-                    <option value="SECANG">SECANG</option>
-                    <option value="SUKARNO HATTA">SUKARNO HATTA</option>
-                    <option value="TEGALREJO">TEGALREJO</option>
-                    <option value="TEMPURAN">TEMPURAN</option>
-                    <option value="WINDUSARI">WINDUSARI</option>
-                </select>
-            </div>
+<!-- ================= HALAMAN FORM ================= -->
+<div id="pageForm">
+  <h2>Form Data Pekerja</h2>
 
-            <div class="row">
-                <div class="form-group">
-                    <label for="nama">Nama Lengkap *</label>
-                    <input type="text" id="nama" name="nama" required>
-                </div>
+  <label>Unit Kerja *</label>
+  <select id="unitKerja" required>
+    <option value="">Pilih</option>
+    <option>AKMIL</option>
+    <option>BANDONGAN</option>
+    <option>BOROBUDUR</option>
+    <option>NGABLAK</option>
+    <option>TEGALREJO</option>
+  </select>
 
-                <div class="form-group">
-                    <label for="jabatan">Jabatan *</label>
-                    <select id="jabatan" name="jabatan" required>
-                        <option value="">-- Pilih Jabatan --</option>
-                        <option value="DEFINITIF">DEFINITIF</option>
-                        <option value="PGS UNIT">PGS UNIT</option>
-                        <option value="PGS TERAS">PGS TERAS</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="noHp">No HP *</label>
-                <input type="tel" id="noHp" name="noHp" placeholder="Contoh: 081234567890" required>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <label for="kota">Kota/Kabupaten *</label>
-                    <input type="text" id="kota" name="kota" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="kecamatan">Kecamatan *</label>
-                    <input type="text" id="kecamatan" name="kecamatan" required>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group">
-                    <label for="kelurahan">Kelurahan *</label>
-                    <input type="text" id="kelurahan" name="kelurahan" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="desaRtRw">Desa, RT, RW *</label>
-                    <input type="text" id="desaRtRw" name="desaRtRw" placeholder="Contoh: Desa ABC, RT 01, RW 02" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="unitDiharapkan">Unit Yang Diharapkan *</label>
-                <select id="unitDiharapkan" name="unitDiharapkan" required>
-                    <option value="">-- Pilih Unit Yang Diharapkan --</option>
-                    <option value="AKMIL">AKMIL</option>
-                    <option value="BANDONGAN">BANDONGAN</option>
-                    <option value="BOROBUDUR">BOROBUDUR</option>
-                    <option value="BOTTON">BOTTON</option>
-                    <option value="CANDIMULYO">CANDIMULYO</option>
-                    <option value="GLAGAH">GLAGAH</option>
-                    <option value="GRABAG">GRABAG</option>
-                    <option value="KAJORAN">KAJORAN</option>
-                    <option value="KALIANGKRIK">KALIANGKRIK</option>
-                    <option value="KARANGGADING">KARANGGADING</option>
-                    <option value="KC MAGELANG">KC MAGELANG</option>
-                    <option value="KCP SHOPPING">KCP SHOPPING</option>
-                    <option value="KRASAK">KRASAK</option>
-                    <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
-                    <option value="MAGELANG UTARA">MAGELANG UTARA</option>
-                    <option value="MERTOYUDAN">MERTOYUDAN</option>
-                    <option value="NGABLAK">NGABLAK</option>
-                    <option value="PAKIS">PAKIS</option>
-                    <option value="PAYAMAN">PAYAMAN</option>
-                    <option value="REJOWINANGUN">REJOWINANGUN</option>
-                    <option value="SALAMAN">SALAMAN</option>
-                    <option value="SECANG">SECANG</option>
-                    <option value="SUKARNO HATTA">SUKARNO HATTA</option>
-                    <option value="TEGALREJO">TEGALREJO</option>
-                    <option value="TEMPURAN">TEMPURAN</option>
-                    <option value="WINDUSARI">WINDUSARI</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="alasan">Alasan *</label>
-                <textarea id="alasan" name="alasan" placeholder="Jelaskan alasan Anda..." required></textarea>
-            </div>
-
-            <button type="submit" class="btn-submit" id="submitBtn">Kirim Data</button>
-            <div class="loading" id="loading">⏳ Mengirim data...</div>
-        </form>
+  <div class="row">
+    <div>
+      <label>Nama Lengkap *</label>
+      <input type="text" id="nama" required>
     </div>
+    <div>
+      <label>Jabatan *</label>
+      <select id="jabatan" required>
+        <option value="">Pilih</option>
+        <option>DEFINITIF</option>
+        <option>PGS UNIT</option>
+        <option>PGS TERAS</option>
+      </select>
+    </div>
+  </div>
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZqcFBBwDQCl-vih098DzGi54XyToJzht5RmgO3PApEyFtTP5cSBGNQA/exec';
-        
-        const form = document.getElementById('formPekerja');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-        const submitBtn = document.getElementById('submitBtn');
-        const loading = document.getElementById('loading');
+  <label>No HP *</label>
+  <input type="tel" id="noHp" required>
 
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Mengirim...';
-            loading.style.display = 'block';
-            successMessage.style.display = 'none';
-            errorMessage.style.display = 'none';
-            
-            const formData = {
-                unitKerja: document.getElementById('unitKerja').value,
-                nama: document.getElementById('nama').value,
-                jabatan: document.getElementById('jabatan').value,
-                noHp: document.getElementById('noHp').value,
-                kota: document.getElementById('kota').value,
-                kecamatan: document.getElementById('kecamatan').value,
-                kelurahan: document.getElementById('kelurahan').value,
-                desaRtRw: document.getElementById('desaRtRw').value,
-                unitDiharapkan: document.getElementById('unitDiharapkan').value,
-                alasan: document.getElementById('alasan').value
-            };
+  <div class="row">
+    <div>
+      <label>Kota *</label>
+      <input type="text" id="kota" required>
+    </div>
+    <div>
+      <label>Kecamatan *</label>
+      <input type="text" id="kecamatan" required>
+    </div>
+  </div>
 
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
+  <div class="row">
+    <div>
+      <label>Kelurahan *</label>
+      <input type="text" id="kelurahan" required>
+    </div>
+    <div>
+      <label>Desa, RT, RW *</label>
+      <input type="text" id="desaRtRw" required>
+    </div>
+  </div>
 
-                console.log('Data berhasil dikirim:', formData);
-                loading.style.display = 'none';
-                successMessage.style.display = 'block';
-                
-                setTimeout(() => {
-                    successMessage.style.display = 'none';
-                    form.reset();
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Kirim Data';
-                }, 3000);
-            } catch (error) {
-                console.error('Error:', error);
-                loading.style.display = 'none';
-                errorMessage.style.display = 'block';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Kirim Data';
-                
-                setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, 3000);
-            }
-        });
-    </script>
+  <button type="button" onclick="goUpload()">UPLOAD FOTO</button>
+</div>
+
+<!-- ================= HALAMAN UPLOAD ================= -->
+<div id="pageUpload" style="display:none">
+  <h2>Upload Foto</h2>
+
+  <p><b>Nama:</b> <span id="namaPreview"></span></p>
+
+  <input type="file" id="foto" accept="image/*">
+
+  <img id="preview">
+
+  <div class="loading" id="loading">⏳ Mengirim data & foto...</div>
+
+  <button onclick="kirimSemua()">KIRIM DATA DAN FOTO</button>
+</div>
+
+</div>
+
+<script>
+const SCRIPT_URL = "PASTE_URL_WEB_APP_GS_KAMU_DI_SINI";
+
+// pindah ke halaman upload
+function goUpload() {
+  const data = {
+    unitKerja: unitKerja.value,
+    nama: nama.value,
+    jabatan: jabatan.value,
+    noHp: noHp.value,
+    kota: kota.value,
+    kecamatan: kecamatan.value,
+    kelurahan: kelurahan.value,
+    desaRtRw: desaRtRw.value
+  };
+
+  for (let k in data) {
+    if (!data[k]) {
+      alert("Lengkapi semua data");
+      return;
+    }
+  }
+
+  localStorage.setItem("formData", JSON.stringify(data));
+
+  pageForm.style.display = "none";
+  pageUpload.style.display = "block";
+  namaPreview.innerText = data.nama;
+}
+
+// preview foto
+foto.onchange = () => {
+  const file = foto.files[0];
+  if (!file) return;
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+};
+
+// kirim data + foto
+function kirimSemua() {
+  const data = JSON.parse(localStorage.getItem("formData"));
+  const file = foto.files[0];
+
+  if (!file) {
+    alert("Pilih foto terlebih dahulu");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    loading.style.display = "block";
+
+    const payload = {
+      ...data,
+      foto: reader.result.split(",")[1],
+      fileName: file.name,
+      mimeType: file.type
+    };
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const json = await res.json();
+      if (json.status === "success") {
+        localStorage.clear();
+        alert("Data & foto berhasil dikirim");
+        location.reload();
+      } else {
+        throw new Error();
+      }
+    } catch {
+      loading.style.display = "none";
+      alert("Gagal mengirim data");
+    }
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+
 </body>
 </html>
