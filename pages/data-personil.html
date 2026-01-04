@@ -176,6 +176,25 @@ header h1 {
   opacity: 0.6;
   cursor: not-allowed;
 }
+.btn-list {
+  padding: 10px 20px;
+  background: linear-gradient(120deg, #ff9acb, #ffc5e0);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-list:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 154, 203, 0.3);
+}
 .personil-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -242,6 +261,70 @@ header h1 {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  margin: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.modal-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2b2f4b;
+  margin-bottom: 10px;
+}
+.modal-message {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+.modal-btn {
+  padding: 12px 30px;
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+.modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(95, 124, 255, 0.3);
+}
 </style>
 </head>
 <body>
@@ -254,7 +337,10 @@ header h1 {
   <div id="alertContainer"></div>
   
   <div class="form-card">
-    <h2>📝 Form Data Personil</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+      <h2 style="margin: 0;">📝 Form Tambah Personil</h2>
+      <a href="database.html" class="btn-list">📋 List Daftar Personil</a>
+    </div>
     <form id="personilForm">
       <div class="form-group">
         <label for="unit">Unit Kerja Saat Ini *</label>
@@ -390,6 +476,17 @@ header h1 {
     </form>
   </div>
 
+</div>
+
+<div id="successModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-icon">✅</div>
+    <div class="modal-title">Data Berhasil Disimpan!</div>
+    <div class="modal-message">
+      Data personil telah berhasil disimpan ke database Google Spreadsheet.
+    </div>
+    <button class="modal-btn" onclick="closeModal()">OK, Mengerti</button>
+  </div>
 </div>
 
 <script>
@@ -702,6 +799,7 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     setTimeout(() => {
       if (result && result.success) {
         showAlert('✓ Data personil berhasil disimpan ke Google Spreadsheet!', 'success');
+        showSuccessModal();
         console.log('Success! Photo URL:', result.fotoUrl); // Debug
       } else {
         showAlert('⚠️ Data mungkin tersimpan, tapi ada peringatan: ' + (result?.message || 'Unknown'), 'error');
@@ -806,6 +904,16 @@ function showAlert(message, type) {
   setTimeout(() => {
     alert.remove();
   }, 5000);
+}
+
+function showSuccessModal() {
+  const modal = document.getElementById('successModal');
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  const modal = document.getElementById('successModal');
+  modal.style.display = 'none';
 }
 
 // Load provinsi saat halaman dibuka
