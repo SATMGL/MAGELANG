@@ -195,56 +195,6 @@ header h1 {
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(255, 154, 203, 0.3);
 }
-.personil-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-.personil-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-  transition: 0.3s;
-}
-.personil-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-}
-.personil-photo {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  background: linear-gradient(135deg, #e0e7ff, #f0f4ff);
-}
-.personil-info {
-  font-size: 13px;
-  line-height: 1.8;
-}
-.personil-info strong {
-  color: #5f7cff;
-}
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: #999;
-}
-.loading-spinner {
-  border: 3px solid #e0e7ff;
-  border-top: 3px solid #5f7cff;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 .alert {
   padding: 15px 20px;
   border-radius: 10px;
@@ -278,7 +228,7 @@ header h1 {
   padding: 40px 30px;
   border-radius: 20px;
   text-align: center;
-  max-width: 400px;
+  max-width: 450px;
   margin: 20px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   animation: modalSlideIn 0.3s ease-out;
@@ -320,10 +270,41 @@ header h1 {
   cursor: pointer;
   transition: 0.3s;
   font-family: 'Poppins', sans-serif;
+  margin: 5px;
 }
 .modal-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(95, 124, 255, 0.3);
+}
+.modal-btn-cancel {
+  background: linear-gradient(120deg, #ff6b6b, #ff8787);
+}
+.modal-btn-cancel:hover {
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+}
+.modal-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: 0.3s;
+}
+.modal-input:focus {
+  outline: none;
+  border-color: #5f7cff;
+}
+.modal-input-error {
+  border-color: #ff4757;
+}
+.modal-error-text {
+  color: #ff4757;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  display: none;
 }
 </style>
 </head>
@@ -485,7 +466,25 @@ header h1 {
     <div class="modal-message">
       Data personil telah berhasil disimpan ke database Google Spreadsheet.
     </div>
-    <button class="modal-btn" onclick="closeModal()">OK, Mengerti</button>
+    <button class="modal-btn" onclick="closeSuccessModal()">OK, Mengerti</button>
+  </div>
+</div>
+
+<div id="duplicateModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">Data Sudah Ada!</div>
+    <div class="modal-message">
+      Sudah ada nama <strong id="duplicateName"></strong> di unit <strong id="duplicateUnit"></strong>.<br><br>
+      Apakah Anda ingin mengupdate data yang sudah ada?<br><br>
+      <strong style="color: #ff6b6b;">Masukkan email untuk konfirmasi:</strong>
+    </div>
+    <input type="email" id="confirmEmail" class="modal-input" placeholder="Masukkan email untuk konfirmasi">
+    <div class="modal-error-text" id="emailMismatchError">Email tidak sesuai dengan data form!</div>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+      <button class="modal-btn modal-btn-cancel" onclick="closeDuplicateModal()">Batal</button>
+      <button class="modal-btn" onclick="confirmUpdate()">Update Data</button>
+    </div>
   </div>
 </div>
 
@@ -494,6 +493,21 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZ
 const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
 let selectedPhoto = null;
+let allPersonilData = [];
+let pendingFormData = null;
+
+// Load data personil dari spreadsheet
+async function loadAllPersonilData() {
+  try {
+    const response = await fetch(APPS_SCRIPT_URL);
+    const data = await response.json();
+    allPersonilData = data || [];
+    console.log('Loaded personil data:', allPersonilData.length, 'records');
+  } catch (error) {
+    console.error('Error loading personil data:', error);
+    allPersonilData = [];
+  }
+}
 
 // Load Provinsi saat halaman dibuka
 async function loadProvinsi() {
@@ -502,7 +516,6 @@ async function loadProvinsi() {
     const data = await response.json();
     const select = document.getElementById('provinsi');
     
-    // Sort A-Z berdasarkan nama
     data.sort((a, b) => a.name.localeCompare(b.name));
     
     data.forEach(prov => {
@@ -525,7 +538,6 @@ document.getElementById('provinsi').addEventListener('change', async function() 
   const kecamatanSelect = document.getElementById('kecamatan');
   const kelurahanSelect = document.getElementById('kelurahan');
   
-  // Reset dropdown berikutnya
   kabkotaSelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
   kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
   kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
@@ -539,7 +551,6 @@ document.getElementById('provinsi').addEventListener('change', async function() 
     const response = await fetch(`${API_BASE}/regencies/${provId}.json`);
     const data = await response.json();
     
-    // Sort A-Z berdasarkan nama
     data.sort((a, b) => a.name.localeCompare(b.name));
     
     data.forEach(kab => {
@@ -563,7 +574,6 @@ document.getElementById('kabkota').addEventListener('change', async function() {
   const kecamatanSelect = document.getElementById('kecamatan');
   const kelurahanSelect = document.getElementById('kelurahan');
   
-  // Reset dropdown berikutnya
   kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
   kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
   kecamatanSelect.disabled = true;
@@ -575,7 +585,6 @@ document.getElementById('kabkota').addEventListener('change', async function() {
     const response = await fetch(`${API_BASE}/districts/${kabId}.json`);
     const data = await response.json();
     
-    // Sort A-Z berdasarkan nama
     data.sort((a, b) => a.name.localeCompare(b.name));
     
     data.forEach(kec => {
@@ -598,7 +607,6 @@ document.getElementById('kecamatan').addEventListener('change', async function()
   const kecId = this.value;
   const kelurahanSelect = document.getElementById('kelurahan');
   
-  // Reset dropdown
   kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
   kelurahanSelect.disabled = true;
   
@@ -608,7 +616,6 @@ document.getElementById('kecamatan').addEventListener('change', async function()
     const response = await fetch(`${API_BASE}/villages/${kecId}.json`);
     const data = await response.json();
     
-    // Sort A-Z berdasarkan nama
     data.sort((a, b) => a.name.localeCompare(b.name));
     
     data.forEach(kel => {
@@ -684,8 +691,6 @@ function removePhoto() {
 document.getElementById('personilForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
-  console.log('Form submitted!'); // Debug
-  
   // Validasi email
   const email = document.getElementById('email').value;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -701,17 +706,47 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     return;
   }
   
-  console.log('Photo validated!'); // Debug
+  // Cek duplikasi nama di unit yang sama
+  const nama = document.getElementById('nama').value.toUpperCase();
+  const unit = document.getElementById('unit').value;
   
+  const duplicate = allPersonilData.find(p => {
+    const pNama = (p['NAMA'] || p['Nama'] || '').toUpperCase();
+    const pUnit = (p['UNIT KERJA'] || p['Unit Kerja'] || '');
+    return pNama === nama && pUnit === unit;
+  });
+  
+  if (duplicate) {
+    // Simpan data form untuk digunakan nanti
+    pendingFormData = {
+      email: email,
+      nama: nama,
+      unit: unit
+    };
+    
+    // Tampilkan modal konfirmasi
+    document.getElementById('duplicateName').textContent = nama;
+    document.getElementById('duplicateUnit').textContent = unit;
+    document.getElementById('confirmEmail').value = '';
+    document.getElementById('emailMismatchError').style.display = 'none';
+    document.getElementById('confirmEmail').classList.remove('modal-input-error');
+    
+    showDuplicateModal();
+    return;
+  }
+  
+  // Jika tidak ada duplikasi, langsung simpan
+  await submitData(false);
+});
+
+async function submitData(isUpdate = false) {
   const submitBtn = document.getElementById('submitBtn');
   const progressContainer = document.getElementById('progressContainer');
   const progressFill = document.getElementById('progressFill');
   
   submitBtn.disabled = true;
-  submitBtn.textContent = '⏳ Menyimpan data...';
+  submitBtn.textContent = isUpdate ? '⏳ Mengupdate data...' : '⏳ Menyimpan data...';
   progressContainer.style.display = 'block';
-  
-  console.log('Starting upload...'); // Debug
   
   // Simulasi progress
   let progress = 0;
@@ -742,8 +777,6 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     if (dusun) alamatLengkap += `Dusun ${dusun}, `;
     alamatLengkap += `RT ${rt}/RW ${rw}, ${kelurahan}, ${kecamatan}, ${kabkota}, ${provinsi}`;
     
-    console.log('Data prepared:', { provinsi, kabkota, kecamatan, kelurahan }); // Debug
-    
     const personilData = {
       id: Date.now(),
       tanggal: new Date().toLocaleDateString('id-ID'),
@@ -760,10 +793,9 @@ document.getElementById('personilForm').addEventListener('submit', async functio
       rt: rt,
       rw: rw,
       alamatLengkap: alamatLengkap,
-      foto: selectedPhoto
+      foto: selectedPhoto,
+      isUpdate: isUpdate
     };
-    
-    console.log('Sending to Apps Script...', personilData); // Debug
     
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
@@ -773,20 +805,14 @@ document.getElementById('personilForm').addEventListener('submit', async functio
       body: JSON.stringify(personilData)
     });
     
-    console.log('Response received:', response); // Debug
-    
-    // Cek apakah response OK
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    // Coba parse response
     let result;
     try {
       const text = await response.text();
-      console.log('Response text:', text); // Debug
       result = JSON.parse(text);
-      console.log('Parsed result:', result); // Debug
     } catch (parseError) {
       console.error('Parse error:', parseError);
       throw new Error('Gagal membaca response dari server');
@@ -798,9 +824,8 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     
     setTimeout(() => {
       if (result && result.success) {
-        showAlert('✓ Data personil berhasil disimpan ke Google Spreadsheet!', 'success');
+        showAlert(isUpdate ? '✓ Data personil berhasil diupdate!' : '✓ Data personil berhasil disimpan ke Google Spreadsheet!', 'success');
         showSuccessModal();
-        console.log('Success! Photo URL:', result.fotoUrl); // Debug
       } else {
         showAlert('⚠️ Data mungkin tersimpan, tapi ada peringatan: ' + (result?.message || 'Unknown'), 'error');
       }
@@ -818,6 +843,9 @@ document.getElementById('personilForm').addEventListener('submit', async functio
       submitBtn.textContent = '✓ Simpan Data Personil';
       progressContainer.style.display = 'none';
       progressFill.style.width = '0%';
+      
+      // Reload data personil
+      loadAllPersonilData();
     }, 500);
     
   } catch (error) {
@@ -830,95 +858,65 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     progressContainer.style.display = 'none';
     progressFill.style.width = '0%';
   }
-});
+}
 
-// Load data dari Spreadsheet
-async function loadPersonilData() {
-  const container = document.getElementById('personilList');
-  container.innerHTML = '<div class="loading-spinner"></div>';
+function showDuplicateModal() {
+  document.getElementById('duplicateModal').style.display = 'flex';
+}
+
+function closeDuplicateModal() {
+  document.getElementById('duplicateModal').style.display = 'none';
+  pendingFormData = null;
+}
+
+function confirmUpdate() {
+  const confirmEmail = document.getElementById('confirmEmail').value;
+  const emailError = document.getElementById('emailMismatchError');
+  const emailInput = document.getElementById('confirmEmail');
   
-  try {
-    const response = await fetch(APPS_SCRIPT_URL);
-    const data = await response.json();
-    
-    if (!data || data.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state" style="grid-column: 1/-1;">
-          <svg fill="#ccc" viewBox="0 0 24 24" width="80" height="80"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          <p>Belum ada data personil.<br>Silakan tambahkan data baru.</p>
-        </div>
-      `;
-      return;
-    }
-    
-    container.innerHTML = data.map(p => `
-      <div class="personil-card">
-        ${p['Link Foto'] ? 
-          `<a href="${p['Link Foto']}" target="_blank">
-            <img src="${p['Link Foto']}" class="personil-photo" alt="${p.Nama}" onerror="this.parentElement.innerHTML='<div class=\'personil-photo\' style=\'display:flex;align-items:center;justify-content:center;color:#999;font-size:48px;\'>👤</div>'">
-          </a>` : 
-          `<div class="personil-photo" style="display:flex;align-items:center;justify-content:center;color:#999;font-size:48px;">👤</div>`
-        }
-        <div class="personil-info">
-          <strong>Nama:</strong> ${p.Nama}<br>
-          <strong>Unit:</strong> ${p['Unit Kerja']}<br>
-          <strong>Jabatan:</strong> ${p.Jabatan}<br>
-          <strong>No HP:</strong> ${p['No HP']}<br>
-          <strong>Alamat:</strong> ${p['Alamat Lengkap']}<br>
-          <small style="color:#999;">Ditambahkan: ${p.Tanggal}</small>
-        </div>
-      </div>
-    `).join('');
-    
-  } catch (error) {
-    console.error('Error loading data:', error);
-    container.innerHTML = `
-      <div class="empty-state" style="grid-column: 1/-1;">
-        <p>Gagal memuat data.<br>Silakan refresh halaman.</p>
-      </div>
-    `;
+  if (!confirmEmail) {
+    emailInput.classList.add('modal-input-error');
+    emailError.textContent = 'Email harus diisi!';
+    emailError.style.display = 'block';
+    return;
   }
-}
-
-function showAlert(message, type) {
-  const alertContainer = document.getElementById('alertContainer');
-  const alert = document.createElement('div');
-  alert.className = `alert alert-${type}`;
-  alert.textContent = message;
   
-  alertContainer.appendChild(alert);
+  if (confirmEmail !== pendingFormData.email) {
+    emailInput.classList.add('modal-input-error');
+    emailError.textContent = 'Email tidak sesuai dengan data form!';
+    emailError.style.display = 'block';
+    return;
+  }
   
-  setTimeout(() => {
-    alert.remove();
-  }, 5000);
-}
-
-function showAlert(message, type) {
-  const alertContainer = document.getElementById('alertContainer');
-  const alert = document.createElement('div');
-  alert.className = `alert alert-${type}`;
-  alert.textContent = message;
-  
-  alertContainer.appendChild(alert);
-  
-  setTimeout(() => {
-    alert.remove();
-  }, 5000);
+  // Email sesuai, lanjutkan update
+  closeDuplicateModal();
+  submitData(true);
 }
 
 function showSuccessModal() {
-  const modal = document.getElementById('successModal');
-  modal.style.display = 'flex';
+  document.getElementById('successModal').style.display = 'flex';
 }
 
-function closeModal() {
-  const modal = document.getElementById('successModal');
-  modal.style.display = 'none';
+function closeSuccessModal() {
+  document.getElementById('successModal').style.display = 'none';
 }
 
-// Load provinsi saat halaman dibuka
+function showAlert(message, type) {
+  const alertContainer = document.getElementById('alertContainer');
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  alert.textContent = message;
+  
+  alertContainer.appendChild(alert);
+  
+  setTimeout(() => {
+    alert.remove();
+  }, 5000);
+}
+
+// Load provinsi dan data personil saat halaman dibuka
 loadProvinsi();
-loadPersonilData();
+loadAllPersonilData();
 </script>
 </body>
 </html>
