@@ -257,7 +257,7 @@ header h1 {
 </head>
 <body>
 <header>
-  <a href="data-personil.html" class="back-btn">← Kembali</a>
+  <a href="javascript:history.back()" class="back-btn">← Kembali</a>
   <h1>📊 Database Personil</h1>
 </header>
 
@@ -352,7 +352,8 @@ async function showAllUnits() {
   // Kelompokkan data berdasarkan unit
   const groupedData = {};
   data.forEach(person => {
-    const unit = person['Unit Kerja'] || 'LAINNYA';
+    // Gunakan nama kolom yang sesuai dengan spreadsheet (huruf besar)
+    const unit = person['UNIT KERJA'] || person['Unit Kerja'] || 'LAINNYA';
     if (!groupedData[unit]) {
       groupedData[unit] = [];
     }
@@ -377,9 +378,10 @@ async function showAllUnits() {
     `;
     
     personils.forEach(person => {
+      const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
       html += `
         <div class="personil-item">
-          <span class="personil-name">${person.Nama}</span>
+          <span class="personil-name">${nama}</span>
         </div>
       `;
     });
@@ -408,7 +410,10 @@ async function filterByUnit() {
   contentArea.innerHTML = '<div class="loading-spinner"></div>';
   
   const data = await loadData();
-  const filteredData = data.filter(person => person['Unit Kerja'] === selectedUnit);
+  const filteredData = data.filter(person => {
+    const unitKerja = person['UNIT KERJA'] || person['Unit Kerja'];
+    return unitKerja === selectedUnit;
+  });
   
   if (filteredData.length === 0) {
     contentArea.innerHTML = `
@@ -434,9 +439,10 @@ async function filterByUnit() {
   `;
   
   filteredData.forEach(person => {
+    const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
     html += `
       <div class="personil-item">
-        <span class="personil-name">${person.Nama}</span>
+        <span class="personil-name">${nama}</span>
       </div>
     `;
   });
