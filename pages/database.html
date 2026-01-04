@@ -24,20 +24,24 @@ body {
   color: #2b2f4b;
   display: flex;
   flex-direction: column;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: 0;
+  position: relative;
 }
 header {
-  padding: 20px;
+  padding: 2%;
   text-align: center;
   background: linear-gradient(120deg, #5f7cff, #8aa6ff, #ff9acb);
   color: white;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  position: relative;
-  flex-shrink: 0;
-  height: 10%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 100;
 }
 header h1 {
   margin: 0;
@@ -76,29 +80,33 @@ header h1 {
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 2%;
   width: 100%;
 }
 @media (max-width: 600px) {
   .container {
-    padding: 0 10px;
+    padding: 0 2%;
   }
 }
 .control-panel {
   background: white;
   border-radius: 0;
-  padding: 15px 20px;
+  padding: 1.5% 2%;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  flex-shrink: 0;
-  height: 10%;
+  position: fixed;
+  top: 8%;
+  left: 0;
+  right: 0;
+  height: 9%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 90;
 }
 @media (max-width: 600px) {
   .control-panel {
-    padding: 10px;
-    height: 12%;
+    padding: 1.5% 2%;
+    height: 10%;
   }
 }
 .button-group {
@@ -170,15 +178,18 @@ header h1 {
   }
 }
 .content-area {
-  flex-shrink: 0;
+  position: fixed;
+  top: 17%;
+  left: 0;
+  right: 0;
+  bottom: 7%;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 80%;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 20px;
-  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  padding: 2%;
+  z-index: 1;
 }
 .content-area::-webkit-scrollbar {
   width: 8px;
@@ -196,9 +207,37 @@ header h1 {
 }
 @media (max-width: 600px) {
   .content-area {
-    height: 78%;
-    padding: 10px;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    top: 18%;
+    bottom: 8%;
+    padding: 2%;
+  }
+}
+footer {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  text-align: center;
+  padding: 1.5%;
+  font-size: 12px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 7%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  padding-bottom: calc(1.5% + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+@media (max-width: 600px) {
+  footer {
+    font-size: 10px;
+    padding: 1.5%;
+    height: 8%;
+    min-height: 35px;
+    padding-bottom: calc(1.5% + env(safe-area-inset-bottom));
   }
 }
 .empty-state {
@@ -234,7 +273,6 @@ header h1 {
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: minmax(0, 1fr);
   gap: 1.5vmin;
   width: 100%;
   max-width: 1400px;
@@ -244,7 +282,8 @@ header h1 {
   border-radius: 15px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   overflow: hidden;
-  height: 22vh;
+  min-height: 200px;
+  max-height: 400px;
   display: flex;
   flex-direction: column;
   transition: 0.3s;
@@ -338,16 +377,18 @@ header h1 {
   grid-template-columns: 1fr;
   gap: 20px;
   max-width: 600px;
-  margin: 20px auto;
+  width: 100%;
+  margin-bottom: 30px;
 }
 .unit-card-large {
   background: white;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   overflow: hidden;
-  max-height: 600px;
+  max-height: none;
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 .unit-card-large .unit-card-header {
   font-size: 18px;
@@ -528,6 +569,10 @@ header h1 {
   </div>
 </div>
 
+<footer>
+  <p>© 2025 Database Personil - BRI Magelang</p>
+</footer>
+
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZqcFBBwDQCl-vih098DzGi54XyToJzht5RmgO3PApEyFtTP5cSBGNQA/exec';
 
@@ -584,6 +629,19 @@ async function showAllUnits() {
   
   sortedUnits.forEach(unit => {
     const personils = groupedData[unit];
+    
+    // Urutkan personil berdasarkan jabatan
+    const sortedPersonils = personils.sort((a, b) => {
+      const jabatanA = (a['JABATAN'] || a['Jabatan'] || '').toUpperCase();
+      const jabatanB = (b['JABATAN'] || b['Jabatan'] || '').toUpperCase();
+      
+      const order = { 'DEFINITIF': 1, 'PGS UNIT': 2, 'PGS TERAS': 3 };
+      const rankA = order[jabatanA] || 999;
+      const rankB = order[jabatanB] || 999;
+      
+      return rankA - rankB;
+    });
+    
     html += `
       <div class="unit-card">
         <div class="unit-card-header">
@@ -593,7 +651,7 @@ async function showAllUnits() {
         <div class="unit-card-body compact">
     `;
     
-    personils.forEach(person => {
+    sortedPersonils.forEach(person => {
       const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
       html += `
         <div class="personil-item">
@@ -643,18 +701,30 @@ async function filterByUnit() {
     return;
   }
   
+  // Urutkan berdasarkan jabatan
+  const sortedFilteredData = filteredData.sort((a, b) => {
+    const jabatanA = (a['JABATAN'] || a['Jabatan'] || '').toUpperCase();
+    const jabatanB = (b['JABATAN'] || b['Jabatan'] || '').toUpperCase();
+    
+    const order = { 'DEFINITIF': 1, 'PGS UNIT': 2, 'PGS TERAS': 3 };
+    const rankA = order[jabatanA] || 999;
+    const rankB = order[jabatanB] || 999;
+    
+    return rankA - rankB;
+  });
+  
   // Tampilkan dalam card besar (single column)
   let html = '<div class="single-unit-container">';
   html += `
     <div class="unit-card-large">
       <div class="unit-card-header">
         ${selectedUnit}
-        <span class="info-badge">${filteredData.length} Personil</span>
+        <span class="info-badge">${sortedFilteredData.length} Personil</span>
       </div>
       <div class="unit-card-body">
   `;
   
-  filteredData.forEach(person => {
+  sortedFilteredData.forEach(person => {
     const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
     html += `
       <div class="personil-item">
