@@ -365,7 +365,13 @@ header h1 {
           <input type="file" id="foto" accept="image/*" required>
           <div id="uploadText">
             📷 Klik untuk ambil gambar dari galeri<br>
-            <small style="color: #999;">Format: JPG, PNG (Max 5MB)</small>
+            <small style="color: #999;">Format: JPG, PNG (Max 10MB)</small><br>
+            <small style="color: #5f7cff; font-weight: 500; margin-top: 8px; display: block;">
+              📇 Foto untuk ID Card
+            </small>
+            <small style="color: #ff6b6b; font-weight: 500; margin-top: 5px; display: block;">
+              ⚠️ Seragam PDH, Foto Terbaru, Posisi Miring ke Kiri
+            </small>
           </div>
         </div>
         <div id="photoPreviewContainer" class="photo-preview-container">
@@ -553,8 +559,8 @@ textInputs.forEach(id => {
 document.getElementById('foto').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (file) {
-    if (file.size > 5 * 1024 * 1024) {
-      showAlert('Ukuran file maksimal 5MB', 'error');
+    if (file.size > 10 * 1024 * 1024) {
+      showAlert('Ukuran file maksimal 10MB', 'error');
       this.value = '';
       return;
     }
