@@ -1,1 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Database Personil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #f7f9ff, #eef3ff);
+  color: #2b2f4b;
+  padding-bottom: 40px;
+}
+header {
+  padding: 30px 20px;
+  text-align: center;
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff, #ff9acb);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: relative;
+}
+header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+.back-btn {
+  position: absolute;
+  left: 20px;
+  top: 35px;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+.back-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+.control-panel {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+.button-group {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+.btn-primary {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(95, 124, 255, 0.3);
+}
+.btn-secondary {
+  background: linear-gradient(120deg, #ff9acb, #ffc5e0);
+  color: white;
+}
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 154, 203, 0.3);
+}
+.filter-select {
+  padding: 12px 20px;
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  flex: 1;
+  max-width: 300px;
+  transition: 0.3s;
+}
+.filter-select:focus {
+  outline: none;
+  border-color: #5f7cff;
+}
+.content-area {
+  min-height: 300px;
+}
+.empty-state {
+  background: white;
+  border-radius: 18px;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+.empty-state svg {
+  margin-bottom: 20px;
+}
+.empty-state p {
+  color: #999;
+  font-size: 16px;
+  margin: 0;
+}
+.loading-spinner {
+  border: 4px solid #e0e7ff;
+  border-top: 4px solid #5f7cff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
+/* Grid 3x3 untuk Lihat Semua */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+@media (max-width: 900px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+.unit-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+}
+.unit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+.unit-card-header {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  padding: 15px;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.unit-card-body {
+  padding: 15px;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.unit-card-body.compact {
+  font-size: 11px;
+  line-height: 1.6;
+}
+.personil-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.personil-item:last-child {
+  border-bottom: none;
+}
+.personil-item::before {
+  content: "•";
+  color: #5f7cff;
+  font-weight: bold;
+  font-size: 16px;
+}
+.personil-name {
+  font-weight: 500;
+  color: #2b2f4b;
+}
+
+/* Card untuk Filter Per Unit (Normal Size) */
+.single-unit-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+.unit-card-large {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  overflow: hidden;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+.unit-card-large .unit-card-header {
+  font-size: 18px;
+  padding: 20px;
+}
+.unit-card-large .unit-card-body {
+  padding: 25px;
+  font-size: 15px;
+  line-height: 2;
+}
+.unit-card-large .personil-item {
+  padding: 12px 0;
+}
+.unit-card-large .personil-item::before {
+  font-size: 20px;
+}
+
+.info-badge {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #5f7cff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="back-btn">← Kembali</a>
+  <h1>📊 Database Personil</h1>
+</header>
+
+<div class="container">
+  <div class="control-panel">
+    <div class="button-group">
+      <button class="btn btn-primary" onclick="showAllUnits()">
+        📋 Lihat Semua Unit
+      </button>
+      <select class="filter-select" id="unitFilter" onchange="filterByUnit()">
+        <option value="">🔍 Filter Per Unit...</option>
+        <option value="AKMIL">AKMIL</option>
+        <option value="BANDONGAN">BANDONGAN</option>
+        <option value="BOROBUDUR">BOROBUDUR</option>
+        <option value="BOTTON">BOTTON</option>
+        <option value="CANDIMULYO">CANDIMULYO</option>
+        <option value="GLAGAH">GLAGAH</option>
+        <option value="GRABAG">GRABAG</option>
+        <option value="KAJORAN">KAJORAN</option>
+        <option value="KALIANGKRIK">KALIANGKRIK</option>
+        <option value="KARANGGADING">KARANGGADING</option>
+        <option value="KC MAGELANG">KC MAGELANG</option>
+        <option value="KCP SHOPPING">KCP SHOPPING</option>
+        <option value="KRASAK">KRASAK</option>
+        <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
+        <option value="MAGELANG UTARA">MAGELANG UTARA</option>
+        <option value="MERTOYUDAN">MERTOYUDAN</option>
+        <option value="NGABLAK">NGABLAK</option>
+        <option value="PAKIS">PAKIS</option>
+        <option value="PAYAMAN">PAYAMAN</option>
+        <option value="REJOWINANGUN">REJOWINANGUN</option>
+        <option value="SALAMAN">SALAMAN</option>
+        <option value="SECANG">SECANG</option>
+        <option value="SUKARNO HATTA">SUKARNO HATTA</option>
+        <option value="TEGALREJO">TEGALREJO</option>
+        <option value="TEMPURAN">TEMPURAN</option>
+        <option value="WINDUSARI">WINDUSARI</option>
+      </select>
+      <button class="btn btn-secondary" onclick="resetView()">
+        🔄 Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="content-area" id="contentArea">
+    <div class="empty-state">
+      <svg fill="#ccc" viewBox="0 0 24 24" width="80" height="80">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+      </svg>
+      <p>Silakan pilih opsi di atas untuk melihat data personil</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZqcFBBwDQCl-vih098DzGi54XyToJzht5RmgO3PApEyFtTP5cSBGNQA/exec';
+
+let allData = [];
+
+// Load data dari spreadsheet
+async function loadData() {
+  try {
+    const response = await fetch(APPS_SCRIPT_URL);
+    const data = await response.json();
+    allData = data;
+    return data;
+  } catch (error) {
+    console.error('Error loading data:', error);
+    return [];
+  }
+}
+
+// Tampilkan semua unit dalam grid 3x3
+async function showAllUnits() {
+  const contentArea = document.getElementById('contentArea');
+  contentArea.innerHTML = '<div class="loading-spinner"></div>';
+  
+  const data = await loadData();
+  
+  if (!data || data.length === 0) {
+    contentArea.innerHTML = `
+      <div class="empty-state">
+        <svg fill="#ccc" viewBox="0 0 24 24" width="80" height="80">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        <p>Belum ada data personil</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Kelompokkan data berdasarkan unit
+  const groupedData = {};
+  data.forEach(person => {
+    const unit = person['Unit Kerja'] || 'LAINNYA';
+    if (!groupedData[unit]) {
+      groupedData[unit] = [];
+    }
+    groupedData[unit].push(person);
+  });
+  
+  // Urutkan unit secara alfabetis
+  const sortedUnits = Object.keys(groupedData).sort();
+  
+  // Buat grid
+  let html = '<div class="grid-container">';
+  
+  sortedUnits.forEach(unit => {
+    const personils = groupedData[unit];
+    html += `
+      <div class="unit-card">
+        <div class="unit-card-header">
+          ${unit}
+          <span class="info-badge">${personils.length}</span>
+        </div>
+        <div class="unit-card-body compact">
+    `;
+    
+    personils.forEach(person => {
+      html += `
+        <div class="personil-item">
+          <span class="personil-name">${person.Nama}</span>
+        </div>
+      `;
+    });
+    
+    html += `
+        </div>
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  contentArea.innerHTML = html;
+}
+
+// Filter berdasarkan unit yang dipilih
+async function filterByUnit() {
+  const unitFilter = document.getElementById('unitFilter');
+  const selectedUnit = unitFilter.value;
+  
+  if (!selectedUnit) {
+    resetView();
+    return;
+  }
+  
+  const contentArea = document.getElementById('contentArea');
+  contentArea.innerHTML = '<div class="loading-spinner"></div>';
+  
+  const data = await loadData();
+  const filteredData = data.filter(person => person['Unit Kerja'] === selectedUnit);
+  
+  if (filteredData.length === 0) {
+    contentArea.innerHTML = `
+      <div class="empty-state">
+        <svg fill="#ccc" viewBox="0 0 24 24" width="80" height="80">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+        <p>Tidak ada personil di unit <strong>${selectedUnit}</strong></p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Tampilkan dalam card besar (single column)
+  let html = '<div class="single-unit-container">';
+  html += `
+    <div class="unit-card-large">
+      <div class="unit-card-header">
+        ${selectedUnit}
+        <span class="info-badge">${filteredData.length} Personil</span>
+      </div>
+      <div class="unit-card-body">
+  `;
+  
+  filteredData.forEach(person => {
+    html += `
+      <div class="personil-item">
+        <span class="personil-name">${person.Nama}</span>
+      </div>
+    `;
+  });
+  
+  html += `
+      </div>
+    </div>
+  </div>
+  `;
+  
+  contentArea.innerHTML = html;
+}
+
+// Reset ke tampilan awal
+function resetView() {
+  const contentArea = document.getElementById('contentArea');
+  const unitFilter = document.getElementById('unitFilter');
+  unitFilter.value = '';
+  
+  contentArea.innerHTML = `
+    <div class="empty-state">
+      <svg fill="#ccc" viewBox="0 0 24 24" width="80" height="80">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+      </svg>
+      <p>Silakan pilih opsi di atas untuk melihat data personil</p>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
