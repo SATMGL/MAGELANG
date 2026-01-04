@@ -3,213 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Form Data Pekerja</title>
-
+<title>Data Personil</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f4f8;
-  padding: 20px;
-}
-.container {
-  max-width: 700px;
-  margin: auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.1);
-}
-h2 { text-align: center; margin-bottom: 20px; }
-label { font-weight: bold; margin-top: 10px; display: block; }
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-}
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-button {
-  margin-top: 20px;
-  padding: 12px;
-  width: 100%;
-  font-size: 16px;
-  cursor: pointer;
-}
-#pageUpload img {
-  max-width: 200px;
-  margin-top: 15px;
-  display: none;
-}
-.loading {
-  display: none;
-  margin-top: 10px;
-  text-align: center;
-}
+body { font-family: Arial; background:#f2f2f2; padding:20px }
+.box { max-width:500px; margin:auto; background:#fff; padding:20px; border-radius:8px }
+label { display:block; margin-top:10px; font-weight:bold }
+input, select { width:100%; padding:10px; margin-top:5px }
+button { margin-top:20px; width:100%; padding:12px; background:#2563eb; color:#fff; border:none; border-radius:6px }
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="box">
+<h2>Form Data Personil</h2>
 
-<!-- ================= HALAMAN FORM ================= -->
-<div id="pageForm">
-  <h2>Form Data Pekerja</h2>
+<label>Unit Kerja *</label>
+<select id="unitKerja" required>
+<option value="">-- Pilih Unit --</option>
+<option>AKMIL</option>
+<option>BANDONGAN</option>
+<option>BOROBUDUR</option>
+<option>BOTTON</option>
+<option>CANDIMULYO</option>
+<option>GLAGAH</option>
+<option>GRABAG</option>
+<option>KAJORAN</option>
+<option>KALIANGKRIK</option>
+<option>KARANGGADING</option>
+<option>KC MAGELANG</option>
+<option>KCP SHOPPING</option>
+<option>KRASAK</option>
+<option>MAGELANG SELATAN</option>
+<option>MAGELANG UTARA</option>
+<option>MERTOYUDAN</option>
+<option>NGABLAK</option>
+<option>PAKIS</option>
+<option>PAYAMAN</option>
+<option>REJOWINANGUN</option>
+<option>SALAMAN</option>
+<option>SECANG</option>
+<option>SUKARNO HATTA</option>
+<option>TEGALREJO</option>
+<option>TEMPURAN</option>
+<option>WINDUSARI</option>
+</select>
 
-  <label>Unit Kerja *</label>
-  <select id="unitKerja" required>
-    <option value="">Pilih</option>
-    <option>AKMIL</option>
-    <option>BANDONGAN</option>
-    <option>BOROBUDUR</option>
-    <option>NGABLAK</option>
-    <option>TEGALREJO</option>
-  </select>
+<label>Nama *</label>
+<input id="nama">
 
-  <div class="row">
-    <div>
-      <label>Nama Lengkap *</label>
-      <input type="text" id="nama" required>
-    </div>
-    <div>
-      <label>Jabatan *</label>
-      <select id="jabatan" required>
-        <option value="">Pilih</option>
-        <option>DEFINITIF</option>
-        <option>PGS UNIT</option>
-        <option>PGS TERAS</option>
-      </select>
-    </div>
-  </div>
+<label>Jabatan *</label>
+<select id="jabatan">
+<option value="">-- Pilih Jabatan --</option>
+<option>DEFINITIF</option>
+<option>PGS UNIT</option>
+<option>PGS TERAS</option>
+</select>
 
-  <label>No HP *</label>
-  <input type="tel" id="noHp" required>
+<label>No HP *</label>
+<input id="noHp">
 
-  <div class="row">
-    <div>
-      <label>Kota *</label>
-      <input type="text" id="kota" required>
-    </div>
-    <div>
-      <label>Kecamatan *</label>
-      <input type="text" id="kecamatan" required>
-    </div>
-  </div>
-
-  <div class="row">
-    <div>
-      <label>Kelurahan *</label>
-      <input type="text" id="kelurahan" required>
-    </div>
-    <div>
-      <label>Desa, RT, RW *</label>
-      <input type="text" id="desaRtRw" required>
-    </div>
-  </div>
-
-  <button type="button" onclick="goUpload()">UPLOAD FOTO</button>
-</div>
-
-<!-- ================= HALAMAN UPLOAD ================= -->
-<div id="pageUpload" style="display:none">
-  <h2>Upload Foto</h2>
-
-  <p><b>Nama:</b> <span id="namaPreview"></span></p>
-
-  <input type="file" id="foto" accept="image/*">
-
-  <img id="preview">
-
-  <div class="loading" id="loading">⏳ Mengirim data & foto...</div>
-
-  <button onclick="kirimSemua()">KIRIM DATA DAN FOTO</button>
-</div>
-
+<button onclick="lanjut()">UPLOAD FOTO</button>
 </div>
 
 <script>
-const SCRIPT_URL = "PASTE_URL_WEB_APP_GS_KAMU_DI_SINI";
-
-// pindah ke halaman upload
-function goUpload() {
-  const data = {
-    unitKerja: unitKerja.value,
-    nama: nama.value,
-    jabatan: jabatan.value,
-    noHp: noHp.value,
-    kota: kota.value,
-    kecamatan: kecamatan.value,
-    kelurahan: kelurahan.value,
-    desaRtRw: desaRtRw.value
-  };
-
-  for (let k in data) {
-    if (!data[k]) {
-      alert("Lengkapi semua data");
-      return;
-    }
-  }
-
-  localStorage.setItem("formData", JSON.stringify(data));
-
-  pageForm.style.display = "none";
-  pageUpload.style.display = "block";
-  namaPreview.innerText = data.nama;
-}
-
-// preview foto
-foto.onchange = () => {
-  const file = foto.files[0];
-  if (!file) return;
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = "block";
-};
-
-// kirim data + foto
-function kirimSemua() {
-  const data = JSON.parse(localStorage.getItem("formData"));
-  const file = foto.files[0];
-
-  if (!file) {
-    alert("Pilih foto terlebih dahulu");
+function lanjut() {
+  if (!unitKerja.value || !nama.value || !jabatan.value || !noHp.value) {
+    alert("Lengkapi data");
     return;
   }
 
-  const reader = new FileReader();
-  reader.onload = async () => {
-    loading.style.display = "block";
+  localStorage.setItem("personil", JSON.stringify({
+    unitKerja: unitKerja.value,
+    nama: nama.value,
+    jabatan: jabatan.value,
+    noHp: noHp.value
+  }));
 
-    const payload = {
-      ...data,
-      foto: reader.result.split(",")[1],
-      fileName: file.name,
-      mimeType: file.type
-    };
-
-    try {
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const json = await res.json();
-      if (json.status === "success") {
-        localStorage.clear();
-        alert("Data & foto berhasil dikirim");
-        location.reload();
-      } else {
-        throw new Error();
-      }
-    } catch {
-      loading.style.display = "none";
-      alert("Gagal mengirim data");
-    }
-  };
-  reader.readAsDataURL(file);
+  window.location.href = "upload-personil.html";
 }
 </script>
 
