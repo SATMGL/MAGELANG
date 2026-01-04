@@ -388,6 +388,9 @@ async function loadProvinsi() {
     const data = await response.json();
     const select = document.getElementById('provinsi');
     
+    // Sort A-Z berdasarkan nama
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    
     data.forEach(prov => {
       const option = document.createElement('option');
       option.value = prov.id;
@@ -422,6 +425,9 @@ document.getElementById('provinsi').addEventListener('change', async function() 
     const response = await fetch(`${API_BASE}/regencies/${provId}.json`);
     const data = await response.json();
     
+    // Sort A-Z berdasarkan nama
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    
     data.forEach(kab => {
       const option = document.createElement('option');
       option.value = kab.id;
@@ -455,6 +461,9 @@ document.getElementById('kabkota').addEventListener('change', async function() {
     const response = await fetch(`${API_BASE}/districts/${kabId}.json`);
     const data = await response.json();
     
+    // Sort A-Z berdasarkan nama
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    
     data.forEach(kec => {
       const option = document.createElement('option');
       option.value = kec.id;
@@ -484,6 +493,9 @@ document.getElementById('kecamatan').addEventListener('change', async function()
   try {
     const response = await fetch(`${API_BASE}/villages/${kecId}.json`);
     const data = await response.json();
+    
+    // Sort A-Z berdasarkan nama
+    data.sort((a, b) => a.name.localeCompare(b.name));
     
     data.forEach(kel => {
       const option = document.createElement('option');
@@ -532,10 +544,14 @@ function removePhoto() {
 document.getElementById('personilForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
+  console.log('Form submitted!'); // Debug
+  
   if (!selectedPhoto) {
     showAlert('Silakan upload foto terlebih dahulu', 'error');
     return;
   }
+  
+  console.log('Photo validated!'); // Debug
   
   const submitBtn = document.getElementById('submitBtn');
   const progressContainer = document.getElementById('progressContainer');
@@ -544,6 +560,8 @@ document.getElementById('personilForm').addEventListener('submit', async functio
   submitBtn.disabled = true;
   submitBtn.textContent = '⏳ Menyimpan data...';
   progressContainer.style.display = 'block';
+  
+  console.log('Starting upload...'); // Debug
   
   // Simulasi progress
   let progress = 0;
@@ -574,6 +592,8 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     if (dusun) alamatLengkap += `Dusun ${dusun}, `;
     alamatLengkap += `RT ${rt}/RW ${rw}, ${kelurahan}, ${kecamatan}, ${kabkota}, ${provinsi}`;
     
+    console.log('Data prepared:', { provinsi, kabkota, kecamatan, kelurahan }); // Debug
+    
     const personilData = {
       id: Date.now(),
       tanggal: new Date().toLocaleDateString('id-ID'),
@@ -592,21 +612,46 @@ document.getElementById('personilForm').addEventListener('submit', async functio
       foto: selectedPhoto
     };
     
+    console.log('Sending to Apps Script...', personilData); // Debug
+    
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain',
       },
       body: JSON.stringify(personilData)
     });
+    
+    console.log('Response received:', response); // Debug
+    
+    // Cek apakah response OK
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    // Coba parse response
+    let result;
+    try {
+      const text = await response.text();
+      console.log('Response text:', text); // Debug
+      result = JSON.parse(text);
+      console.log('Parsed result:', result); // Debug
+    } catch (parseError) {
+      console.error('Parse error:', parseError);
+      throw new Error('Gagal membaca response dari server');
+    }
     
     clearInterval(progressInterval);
     progressFill.style.width = '100%';
     progressFill.textContent = '100%';
     
     setTimeout(() => {
-      showAlert('✓ Data personil berhasil disimpan ke Google Spreadsheet!', 'success');
+      if (result && result.success) {
+        showAlert('✓ Data personil berhasil disimpan ke Google Spreadsheet!', 'success');
+        console.log('Success! Photo URL:', result.fotoUrl); // Debug
+      } else {
+        showAlert('⚠️ Data mungkin tersimpan, tapi ada peringatan: ' + (result?.message || 'Unknown'), 'error');
+      }
       
       // Reset form
       document.getElementById('personilForm').reset();
