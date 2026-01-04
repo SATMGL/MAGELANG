@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Foto</title>
+<style>
+body { font-family: Arial; background:#f2f2f2; padding:20px }
+.box { max-width:500px; margin:auto; background:#fff; padding:20px; border-radius:8px }
+button { margin-top:15px; width:100%; padding:12px; background:#16a34a; color:#fff; border:none; border-radius:6px }
+img { max-width:100%; margin-top:10px; border-radius:6px }
+.hidden { display:none }
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>Upload Foto Personil</h2>
+
+<p><b id="nama"></b></p>
+
+<input type="file" id="foto" accept="image/*">
+<img id="preview" class="hidden">
+
+<button onclick="kirim()">KIRIM DATA & FOTO</button>
+
+<p id="loading" class="hidden">⏳ Mengirim...</p>
+
+<div id="hasil" class="hidden">
+<h3>Berhasil</h3>
+<img id="fotoAkhir">
+<p><a id="linkFoto" target="_blank">Lihat Foto</a></p>
+</div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZqcFBBwDQCl-vih098DzGi54XyToJzht5RmgO3PApEyFtTP5cSBGNQA/exec";
+
+const data = JSON.parse(localStorage.getItem("personil"));
+if (!data) location.href = "data-personil.html";
+
+nama.innerText = data.nama;
+
+foto.onchange = () => {
+  preview.src = URL.createObjectURL(foto.files[0]);
+  preview.classList.remove("hidden");
+};
+
+function kirim() {
+  const file = foto.files[0];
+  if (!file) return alert("Pilih foto");
+
+  loading.classList.remove("hidden");
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...data,
+        foto: reader.result,
+        namaFile: file.name
+      })
+    })
+    .then(r => r.json())
+    .then(res => {
+      loading.classList.add("hidden");
+      if (res.status === "success") {
+        hasil.classList.remove("hidden");
+        fotoAkhir.src = res.fotoUrl;
+        linkFoto.href = res.fotoUrl;
+        localStorage.clear();
+      } else {
+        alert("Gagal");
+      }
+    })
+    .catch(() => alert("Error"));
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
