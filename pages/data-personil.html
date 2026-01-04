@@ -81,6 +81,11 @@ header h1 {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   transition: 0.3s;
+  text-transform: uppercase;
+}
+.form-group input[type="email"],
+.form-group input[type="tel"] {
+  text-transform: none;
 }
 .form-group input:focus,
 .form-group select:focus {
@@ -530,6 +535,17 @@ document.getElementById('email').addEventListener('input', function() {
   } else {
     emailError.style.display = 'none';
     this.style.borderColor = '#e0e7ff';
+  }
+});
+
+// Auto uppercase untuk field text (kecuali email dan no HP)
+const textInputs = ['nama', 'dusun'];
+textInputs.forEach(id => {
+  const input = document.getElementById(id);
+  if (input) {
+    input.addEventListener('input', function() {
+      this.value = this.value.toUpperCase();
+    });
   }
 });
 
