@@ -445,6 +445,17 @@ header h1 {
           <img id="photoPreview" class="photo-preview" alt="Preview">
           <button type="button" class="remove-photo" onclick="removePhoto()">✕ Hapus Foto</button>
         </div>
+        <div id="photoExampleContainer" style="margin-top: 20px; padding: 20px; background: #f8f9ff; border-radius: 10px; border: 2px solid #e0e7ff;">
+          <div style="font-weight: 600; color: #5f7cff; margin-bottom: 15px; text-align: center;">📋 Contoh Foto yang Benar</div>
+          <img id="photoExample" src="https://drive.google.com/uc?export=view&id=1r7idUGQIY0Y1dSPGb1fteorFR_dzbfv3" alt="Contoh Foto" style="max-width: 100%; max-height: 400px; border-radius: 10px; display: block; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <small style="display: block; text-align: center; color: #666; margin-top: 15px; line-height: 1.8; background: white; padding: 12px; border-radius: 8px;">
+            ✓ <strong>Posisi 3/4 profile menghadap ke kiri</strong> (seperti contoh)<br>
+            ✓ Mengenakan <strong>seragam PDH lengkap dengan atribut</strong><br>
+            ✓ Foto terbaru, jelas, dan profesional<br>
+            ✓ Background netral/polos (putih/abu-abu/lainnya)<br>
+            ✓ Pencahayaan merata, tidak silau atau gelap
+          </small>
+        </div>
       </div>
 
       <div class="progress-container" id="progressContainer">
@@ -675,6 +686,7 @@ document.getElementById('foto').addEventListener('change', function(e) {
       document.getElementById('photoPreview').src = selectedPhoto;
       document.getElementById('uploadText').style.display = 'none';
       document.getElementById('photoPreviewContainer').style.display = 'block';
+      document.getElementById('photoExampleContainer').style.display = 'none';
     };
     reader.readAsDataURL(file);
   }
@@ -685,6 +697,7 @@ function removePhoto() {
   document.getElementById('foto').value = '';
   document.getElementById('uploadText').style.display = 'block';
   document.getElementById('photoPreviewContainer').style.display = 'none';
+  document.getElementById('photoExampleContainer').style.display = 'block';
 }
 
 // Submit form
