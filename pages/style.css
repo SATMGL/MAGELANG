@@ -1,0 +1,72 @@
+/* === RESET === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #f4f6f8;
+  color: #222;
+  padding-bottom: 40px;
+}
+
+/* === TOPBAR === */
+.topbar {
+  background: #0a58ca;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+}
+
+.topbar h1 {
+  font-size: 18px;
+}
+
+/* === FILTER === */
+.filter {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+}
+
+/* === JADWAL === */
+#jadwalContainer {
+  padding: 12px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+thead th, tbody td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  font-size: 12px;
+  text-align: center;
+}
+
+tbody td.nama {
+  text-align: left;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .filter {
+    flex-direction: column;
+  }
+}
