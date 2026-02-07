@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>📅 Jadwal Kerja Satpam</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overscroll-behavior: none; overflow-x: hidden; -webkit-overflow-scrolling: touch; width: 100%; }
+    body { font-family: Arial, sans-serif; padding: 3vw; padding-bottom: 18vw; background: #f5f5f5; min-height: 100vh; }
+    .container { width: 100%; margin: 0 auto; overflow-x: auto; }
+    h2 { margin-bottom: 4vw; color: #333; text-align: center; font-size: 5vw; font-weight: bold; text-shadow: 0 0.3vw 0.5vw rgba(255,255,255,0.9), 0 0.2vw 0.4vw rgba(0,0,0,0.3), 0 0.1vw 0.2vw rgba(0,0,0,0.2); }
+    
+    .controls { display: flex; gap: 2vw; margin-bottom: 4vw; flex-wrap: wrap; justify-content: center; }
+    .control-group { display: flex; flex-direction: column; gap: 1vw; flex: 1; min-width: 44%; }
+    .control-group label { font-weight: bold; font-size: 3.5vw; text-align: center; color: #333; text-shadow: 0 0.2vw 0.3vw rgba(255,255,255,0.8), 0 0.1vw 0.2vw rgba(0,0,0,0.2); }
+    select { padding: 3vw; font-size: 4vw; border: 1px solid #999; border-radius: 1vw; width: 100%; background: linear-gradient(to bottom, #ffffff 0%, #e6e6e6 100%); box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8); }
+    
+    .btn { padding: 3.5vw 5vw; font-size: 4vw; border: none; border-radius: 1.5vw; cursor: pointer; touch-action: manipulation; box-shadow: 0 0.8vw 0 rgba(0,0,0,0.3), 0 1vw 2vw rgba(0,0,0,0.2); position: relative; top: 0; transition: all 0.1s ease; }
+    .btn:active { box-shadow: 0 0.2vw 0 rgba(0,0,0,0.3), 0 0.3vw 0.5vw rgba(0,0,0,0.2); top: 0.6vw; }
+    .btn-primary { background: linear-gradient(to bottom, #3399ff 0%, #007bff 50%, #0056b3 100%); color: white; border: 1px solid #0056b3; }
+    .btn-success { background: linear-gradient(to bottom, #5cb85c 0%, #28a745 50%, #1e7e34 100%); color: white; border: 1px solid #1e7e34; }
+    .btn-secondary { background: linear-gradient(to bottom, #868e96 0%, #6c757d 50%, #545b62 100%); color: white; border: 1px solid #545b62; }
+    .btn-download { background: linear-gradient(to bottom, #9966cc 0%, #6f42c1 50%, #59359a 100%); color: white; border: 1px solid #59359a; }
+    .btn-menu-pel { background: linear-gradient(to bottom, #5dade2 0%, #3498db 50%, #2980b9 100%); color: white; border: 1px solid #2980b9; width: 80%; margin: 2vw auto; display: block; padding: 5vw; font-size: 4.5vw; }
+    .btn-menu-pen { background: linear-gradient(to bottom, #f5b041 0%, #f39c12 50%, #d68910 100%); color: white; border: 1px solid #d68910; width: 80%; margin: 2vw auto; display: block; padding: 5vw; font-size: 4.5vw; }
+    .btn-reset-password { background: linear-gradient(to bottom, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%); color: white; border: 1px solid #c44569; width: 80%; margin: 2vw auto; display: block; padding: 5vw; font-size: 4.5vw; font-weight: bold; box-shadow: 0 0.8vw 0 rgba(0,0,0,0.3), 0 1vw 2vw rgba(0,0,0,0.2), 0 0 2vw rgba(255,107,107,0.4); }
+    .btn-reset-password:active { box-shadow: 0 0.2vw 0 rgba(0,0,0,0.3), 0 0.3vw 0.5vw rgba(0,0,0,0.2); top: 0.6vw; }
+    .btn-admin { background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 50%, #a93226 100%); color: white; border: 1px solid #a93226; width: 50%; margin: 4vw auto; display: block; padding: 3vw; font-size: 3.5vw; }
+    
+    .btn-back { position: fixed !important; bottom: 4vw !important; left: 3vw !important; top: auto !important; right: auto !important; height: auto !important; width: auto !important; z-index: 1000; background: linear-gradient(to bottom, #868e96 0%, #6c757d 50%, #545b62 100%); color: white; border: 1px solid #545b62; padding: 2.5vw 4vw !important; font-size: 3.5vw; border-radius: 2vw; box-shadow: 0 1vw 2vw rgba(0,0,0,0.3); display: inline-block !important; }
+    
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .table-container { overflow-x: auto; background: white; border-radius: 2vw; box-shadow: 0 1vw 3vw rgba(0,0,0,0.1); -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; width: 100%; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 2px solid #999; padding: 2vw 1.5vw; text-align: center; font-size: 3.5vw; }
+    th { background: #4a90d9; color: white; position: sticky; top: 0; z-index: 10; }
+    .header-judul { background: #2c5282; font-size: 4vw; font-weight: bold; }
+    .header-unit { background: #3d6ba8; }
+    .col-no { width: 8vw; min-width: 8vw; }
+    .col-nama { width: 35vw; text-align: left; min-width: 35vw; max-width: 35vw; word-wrap: break-word; font-size: 3vw; padding: 0 !important; }
+    tr { height: 12vw; }
+    .col-jadwal { width: 12vw; min-width: 12vw; }
+    .weekend { background: #ffcccc !important; }
+    .weekend-header { background: #d94444 !important; }
+    
+    .edit-mode td select { padding: 1vw 0; font-size: 3vw; width: 95%; min-width: auto; text-align: center; text-align-last: center; -webkit-appearance: none; -moz-appearance: none; appearance: none; background: white; }
+    .readonly { background: #f0f0f0; }
+    
+    .actions { margin-top: 4vw; display: flex; gap: 3vw; justify-content: center; flex-wrap: wrap; }
+    .actions .btn { flex: 1; max-width: 45%; }
+    .download-actions { margin-top: 2vw; }
+    .download-actions .btn { max-width: 32%; font-size: 3vw; padding: 2vw 1.5vw; white-space: normal; text-align: center; line-height: 1.3; }
+    .loading { text-align: center; padding: 10vw; color: #666; font-size: 4vw; }
+    .hidden { display: none !important; }
+    
+    #saveIndicator { position: fixed; bottom: 15vw; right: 3vw; background: rgba(0, 0, 0, 0.8); color: white; padding: 2vw 4vw; border-radius: 2vw; font-size: 3vw; z-index: 9999; display: none; box-shadow: 0 0.5vw 1.5vw rgba(0,0,0,0.4); animation: fadeInOut 0.3s ease; }
+    
+    @keyframes fadeInOut { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    #editInfo { background: #fff3cd; padding: 3vw; border-radius: 1.5vw; margin-bottom: 3vw; color: #856404; text-align: center; font-size: 3.5vw; font-weight: bold; text-shadow: 0 0.1vw 0.2vw rgba(255,255,255,0.8), 0 0.05vw 0.1vw rgba(0,0,0,0.2); box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.15), inset 0 0.1vw 0.3vw rgba(255,255,255,0.5); }
+    #adminBadge { background: #e74c3c; color: white; padding: 2vw 4vw; border-radius: 1.5vw; margin-bottom: 3vw; text-align: center; font-size: 3.5vw; font-weight: bold; text-shadow: 0 0.2vw 0.4vw rgba(0,0,0,0.5), 0 0.1vw 0.2vw rgba(0,0,0,0.3); box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.3), inset 0 0.1vw 0.3vw rgba(255,255,255,0.3); }
+    
+    #adminFloatingIcon { position: fixed !important; top: 3vw !important; right: 3vw !important; z-index: 9999; background: rgba(231, 76, 60, 0.7); color: white; width: 12vw; height: 12vw; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 6vw; box-shadow: 0 1vw 2vw rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s ease; }
+    #adminFloatingIcon:active { transform: scale(0.9); background: rgba(192, 57, 43, 0.9); }
+    
+    #adminPanelModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 5vw; }
+    .admin-panel-content { background: white; border-radius: 3vw; padding: 4vw; width: 90%; max-width: 450px; box-shadow: 0 2vw 4vw rgba(0,0,0,0.5); max-height: 80vh; overflow-y: auto; }
+    .admin-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3vw; padding-bottom: 2vw; border-bottom: 2px solid #e74c3c; }
+    .admin-panel-title { font-size: 4.5vw; color: #e74c3c; font-weight: bold; text-shadow: 0 0.3vw 0.5vw rgba(0,0,0,0.3), 0 0.2vw 0.3vw rgba(0,0,0,0.2); }
+    .admin-close-btn { background: #e74c3c; color: white; border: none; width: 7vw; height: 7vw; border-radius: 50%; font-size: 4.5vw; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .admin-menu-item { background: linear-gradient(to bottom, #ecf0f1 0%, #bdc3c7 100%); border: 1px solid #95a5a6; padding: 3.5vw; margin-bottom: 2.5vw; border-radius: 1.5vw; cursor: pointer; display: flex; align-items: center; gap: 2.5vw; font-size: 3.5vw; font-weight: bold; transition: all 0.2s ease; box-shadow: 0 0.5vw 0 rgba(0,0,0,0.2), 0 0.8vw 1.5vw rgba(0,0,0,0.15); text-shadow: 0 0.1vw 0.2vw rgba(255,255,255,0.8), 0 0.05vw 0.1vw rgba(0,0,0,0.2); }
+    .admin-menu-item:active { background: linear-gradient(to bottom, #95a5a6 0%, #7f8c8d 100%); transform: scale(0.98); box-shadow: 0 0.2vw 0 rgba(0,0,0,0.2), 0 0.3vw 0.5vw rgba(0,0,0,0.15); }
+    .admin-menu-icon { font-size: 5.5vw; width: 9vw; text-align: center; filter: drop-shadow(0 0.2vw 0.3vw rgba(0,0,0,0.3)); }
+    .admin-menu-logout { background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 100%); color: white; border: 1px solid #c0392b; text-shadow: 0 0.2vw 0.4vw rgba(0,0,0,0.5), 0 0.1vw 0.2vw rgba(0,0,0,0.3); }
+    
+    .floating-buttons { position: fixed; left: 2vw; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2vw; z-index: 100; }
+    .btn-float { width: 12vw; height: 12vw; border-radius: 50%; border: none; font-size: 5vw; cursor: pointer; box-shadow: 0 0.8vw 0 rgba(0,0,0,0.4), 0 1vw 2vw rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; position: relative; top: 0; transition: all 0.1s ease; }
+    .btn-float:active { box-shadow: 0 0.2vw 0 rgba(0,0,0,0.4), 0 0.3vw 0.5vw rgba(0,0,0,0.2); top: 0.6vw; }
+    .btn-undo { background: linear-gradient(to bottom, #ffda6a 0%, #ffc107 50%, #d9a406 100%); color: #333; border: 1px solid #d9a406; }
+    .btn-redo { background: linear-gradient(to bottom, #3dc5d8 0%, #17a2b8 50%, #138496 100%); color: white; border: 1px solid #138496; }
+    .btn-float:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .btn-edit-container { display: flex; justify-content: center; margin-top: 4vw; }
+    .menu-container { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 60vh; }
+    .menu-title { font-size: 6vw; margin-bottom: 6vw; text-align: center; color: #333; font-weight: bold; text-shadow: 0 0.4vw 0.6vw rgba(255,255,255,0.9), 0 0.3vw 0.5vw rgba(0,0,0,0.3), 0 0.2vw 0.3vw rgba(0,0,0,0.2); }
+
+    .edit-mode-panel { display: flex; gap: 1.5vw; justify-content: center; margin-bottom: 4vw; flex-wrap: wrap; position: relative; z-index: 20; }
+    .btn-edit-mode { flex: 1; min-width: 28%; padding: 2.5vw 1vw; font-size: 3vw; color: white; position: relative; top: 0; transition: all 0.1s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5vw; overflow: hidden; border: none; border-radius: 1.5vw; cursor: pointer; box-shadow: 0 0.8vw 0 rgba(0,0,0,0.3), 0 1vw 2vw rgba(0,0,0,0.2); }
+    .btn-edit-mode .icon { font-size: 4vw; line-height: 1; text-shadow: 0 0.3vw 0.5vw rgba(0,0,0,0.6), 0 0.1vw 0.2vw rgba(0,0,0,0.4); filter: drop-shadow(0 0.2vw 0.3vw rgba(0,0,0,0.3)); }
+    .btn-edit-mode .label { font-size: 2.5vw; line-height: 1.1; font-weight: bold; text-shadow: 0 0.2vw 0.4vw rgba(0,0,0,0.6), 0 0.1vw 0.2vw rgba(0,0,0,0.4), 0 0.05vw 0.1vw rgba(0,0,0,0.3); }
+    .checkmark { display: none; position: absolute; top: 0.5vw; right: 0.5vw; font-size: 3.5vw; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
+    
+    .nama-cell-content { display: flex; align-items: center; justify-content: space-between; gap: 2vw; width: 100%; height: 100%; }
+    .nama-text { font-weight: bold; font-size: 3.2vw; flex: 1; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; }
+    .harikerja-boxes { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; gap: 0.8vw; flex-shrink: 0; }
+    
+    .legend-container { display: flex; justify-content: center; margin-top: 4vw; margin-bottom: 2vw; }
+    .legend-panel { background: white; border-radius: 2vw; padding: 2vw; box-shadow: 0 1vw 2vw rgba(0,0,0,0.1); border: 2px solid #ddd; width: 100%; max-width: 800px; max-height: 33vw; overflow-y: auto; }
+    .legend-title { font-size: 3vw; font-weight: bold; text-align: center; margin-bottom: 3vw; color: #333; text-shadow: 0 0.2vw 0.4vw rgba(255,255,255,0.9), 0 0.1vw 0.2vw rgba(0,0,0,0.2); }
+    .legend-items { display: flex; justify-content: center; gap: 1vw; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 1.5vw; padding: 2vw 3vw; background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%); border-radius: 1.5vw; box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.08); border: 1px solid #dee2e6; }
+    .legend-box { width: 5vw; height: 5vw; border-radius: 0.8vw; box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.2); flex-shrink: 0; }
+    .legend-label { font-size: 3vw; color: #333; font-weight: bold; white-space: nowrap; }
+    
+    .harikerja-box { width: 5vw; height: 5vw; display: flex; align-items: center; justify-content: center; border-radius: 0.8vw; font-weight: bold; font-size: 2.5vw; color: white; box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.2); }
+    .box-hk { background: #007bff; }
+    .box-hl { background: #8B4513; }
+    .box-hw { background: #dc3545; }
+    .box-off { background: #343a40; }
+
+    .btn-edit-psm { background: linear-gradient(to bottom, #6c5ce7 0%, #5f3dc4 50%, #4c2a85 100%); border: 1px solid #4c2a85; }
+    .btn-edit-lengkap { background: linear-gradient(to bottom, #00b894 0%, #00a085 50%, #00695c 100%); border: 1px solid #00695c; }
+    .btn-edit-p_sm { background: linear-gradient(to bottom, #fdcb6e 0%, #f39c12 50%, #e67e22 100%); border: 1px solid #e67e22; }
+    .btn-edit-mode:active { box-shadow: 0 0.2vw 0 rgba(0,0,0,0.3), 0 0.3vw 0.5vw rgba(0,0,0,0.2); top: 0.6vw; }
+    .btn-edit-mode.active .checkmark { display: block; }
+    
+    @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0.8vw 0 rgba(0,0,0,0.3), 0 1vw 2vw rgba(0,0,0,0.2), 0 0 2vw rgba(255, 255, 255, 0.8), 0 0 4vw rgba(255, 255, 255, 0.6), inset 0 0 1vw rgba(255, 255, 255, 0.3); filter: brightness(1.3); } 50% { box-shadow: 0 0.8vw 0 rgba(0,0,0,0.3), 0 1vw 2vw rgba(0,0,0,0.2), 0 0 3vw rgba(255, 255, 255, 1), 0 0 6vw rgba(255, 255, 255, 0.8), inset 0 0 2vw rgba(255, 255, 255, 0.5); filter: brightness(1.5); } }
+    @keyframes checkmark-blink { 0%, 100% { color: #ffeb3b; text-shadow: 0 0 1vw #ffeb3b, 0 0 2vw #ffc107, 1px 1px 2px rgba(0,0,0,0.7); transform: scale(1); } 50% { color: #fff; text-shadow: 0 0 2vw #ffeb3b, 0 0 3vw #ffc107, 1px 1px 3px rgba(0,0,0,0.9); transform: scale(1.1); } }
+    
+    .btn-edit-mode.active { animation: glow-pulse 1.5s ease-in-out infinite; }
+    .btn-edit-mode.active .checkmark { animation: checkmark-blink 1s ease-in-out infinite; }
+    .btn-edit-mode:not(.active) { transform: scale(0.85); opacity: 0.5; filter: brightness(0.7) grayscale(0.3); transition: all 0.3s ease; }
+    .btn-edit-mode:not(.active):hover { transform: scale(0.9); opacity: 0.7; filter: brightness(0.85) grayscale(0.2); }
+    
+    .edit-nama-list { max-height: 50vh; overflow-y: auto; margin: 3vw 0; }
+    .edit-nama-item { display: flex; align-items: center; gap: 2vw; padding: 2.5vw; background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%); border-radius: 1.5vw; margin-bottom: 2vw; border: 1px solid #dee2e6; }
+    .edit-nama-no { font-weight: bold; font-size: 3.5vw; color: #495057; min-width: 8vw; text-align: center; }
+    .edit-nama-text { flex: 1; font-size: 3.2vw; color: #212529; word-break: break-word; }
+    .edit-nama-buttons { display: flex; gap: 1.5vw; flex-shrink: 0; }
+    .btn-edit-nama-action { padding: 1.5vw 2.5vw; font-size: 3.5vw; border: none; border-radius: 1vw; cursor: pointer; box-shadow: 0 0.3vw 0.6vw rgba(0,0,0,0.2); transition: all 0.2s; }
+    .btn-edit-nama-action:active { transform: scale(0.95); }
+    .btn-edit-nama-edit { background: linear-gradient(to bottom, #ffc107 0%, #ff9800 100%); color: white; }
+    .btn-edit-nama-up { background: linear-gradient(to bottom, #28a745 0%, #218838 100%); color: white; }
+    .btn-edit-nama-down { background: linear-gradient(to bottom, #17a2b8 0%, #138496 100%); color: white; }
+    .btn-edit-nama-action:disabled { opacity: 0.3; cursor: not-allowed; }
+    
+    .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 5vw; animation: modalFadeIn 0.2s ease; }
+    @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .custom-modal.show { display: flex; }
+    .modal-content { background: white; border-radius: 3vw; padding: 4vw; width: 90%; max-width: 450px; max-height: 85vh; overflow-y: auto; box-shadow: 0 3vw 6vw rgba(0,0,0,0.4); animation: modalSlideIn 0.3s ease; position: relative; }
+    @keyframes modalSlideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-icon { font-size: 10vw; text-align: center; margin-bottom: 2vw; filter: drop-shadow(0 0.5vw 1vw rgba(0,0,0,0.2)); }
+    .modal-title { font-size: 4.5vw; font-weight: bold; text-align: center; margin-bottom: 2vw; color: #333; line-height: 1.3; }
+    .modal-message { font-size: 3.5vw; text-align: center; margin-bottom: 3vw; color: #666; line-height: 1.4; white-space: pre-line; }
+    .modal-input-group { margin-bottom: 3vw; }
+    .modal-input-label { display: block; font-size: 3.2vw; font-weight: bold; margin-bottom: 1.5vw; color: #333; }
+    .modal-input { width: 100%; padding: 2.5vw; font-size: 3.8vw; border: 2px solid #ddd; border-radius: 1.5vw; outline: none; transition: border-color 0.2s; background: #f9f9f9; }
+    .modal-input:focus { border-color: #007bff; background: white; }
+    .modal-buttons { display: flex; gap: 2vw; margin-top: 3vw; }
+    .modal-btn { flex: 1; padding: 3vw; font-size: 3.5vw; border: none; border-radius: 1.5vw; cursor: pointer; font-weight: bold; transition: all 0.2s; box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.15); }
+    .modal-btn:active { transform: scale(0.98); box-shadow: 0 0.2vw 0.5vw rgba(0,0,0,0.15); }
+    .modal-btn-primary { background: linear-gradient(to bottom, #007bff 0%, #0056b3 100%); color: white; }
+    .modal-btn-success { background: linear-gradient(to bottom, #28a745 0%, #1e7e34 100%); color: white; }
+    .modal-btn-danger { background: linear-gradient(to bottom, #dc3545 0%, #bd2130 100%); color: white; }
+    .modal-btn-secondary { background: linear-gradient(to bottom, #e9ecef 0%, #dee2e6 100%); color: #333; border: 1px solid #ced4da; }
+    .modal-btn:hover { opacity: 0.9; }
+
+    /* Config Indicator */
+    #configIndicator {
+      position: fixed;
+      top: 3vw;
+      left: 3vw;
+      background: rgba(220, 53, 69, 0.9);
+      color: white;
+      padding: 2vw 4vw;
+      border-radius: 2vw;
+      font-size: 3vw;
+      font-weight: bold;
+      z-index: 9998;
+      display: none;
+      box-shadow: 0 0.5vw 1.5vw rgba(0,0,0,0.4);
+      cursor: pointer;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Config Indicator -->
+    <div id="configIndicator" onclick="openConfigModal()">⚙️ KONFIGURASI BELUM DIATUR</div>
+
+    <!-- Edit Nama Modal -->
+    <div id="editNamaModal" class="custom-modal">
+      <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-icon">✏️</div>
+        <div class="modal-title">Edit Nama Personil</div>
+        <div class="modal-message">Klik Edit untuk ubah nama, gunakan ↑↓ untuk pindah urutan</div>
+        <div id="editNamaList" class="edit-nama-list"></div>
+        <div class="modal-buttons">
+          <button class="modal-btn modal-btn-secondary" onclick="closeEditNamaModal()">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Modal Container -->
+    <div id="customModal" class="custom-modal">
+      <div class="modal-content">
+        <div id="modalIcon" class="modal-icon"></div>
+        <div id="modalTitle" class="modal-title"></div>
+        <div id="modalMessage" class="modal-message"></div>
+        <div id="modalInputContainer" class="modal-input-group" style="display:none;">
+          <label id="modalInputLabel" class="modal-input-label"></label>
+          <input id="modalInput" type="text" class="modal-input">
+        </div>
+        <div id="modalButtons" class="modal-buttons"></div>
+      </div>
+    </div>
+    
+    <!-- Save Indicator -->
+    <div id="saveIndicator"></div>
+    
+    <!-- HALAMAN MENU -->
+    <div id="menuPage">
+      <div class="menu-container">
+        <div class="menu-title">📅 JADWAL KERJA SATPAM</div>
+        <button class="btn btn-menu-pel" onclick="selectMode('PEL')">📋 JADWAL PELAKSANAAN KERJA</button>
+        <button class="btn btn-menu-pen" onclick="selectMode('PEN')">📤 JADWAL PENGIRIMAN ABSENSI</button>
+        <button class="btn btn-reset-password" onclick="openUserChangePasswordModal()">🔑 UBAH PASSWORD UNIT</button>
+        <button class="btn btn-admin" id="btnAdminToggle" onclick="toggleAdminMode()">🔐 ADMIN MODE</button>
+      </div>
+    </div>
+    
+    <!-- Floating Admin Icon -->
+    <div id="adminFloatingIcon" class="hidden" onclick="openAdminPanel()">🔐</div>
+
+    <!-- User Password Change Modal -->
+    <div id="userPasswordModal" class="custom-modal">
+      <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-icon">🔑</div>
+        <div class="modal-title">Ubah Password Unit Anda</div>
+        <div class="modal-message">Masukkan password lama dan password baru untuk unit Anda</div>
+        
+        <div class="modal-input-group">
+          <label class="modal-input-label">Pilih Unit Anda:</label>
+          <select id="selectUserUnit" class="modal-input" style="padding: 3vw; font-size: 4vw;">
+            <option value="">-- Pilih Unit --</option>
+          </select>
+        </div>
+        
+        <div class="modal-input-group">
+          <label class="modal-input-label">Password Lama:</label>
+          <input id="oldUserPassword" type="password" class="modal-input" placeholder="Password lama unit...">
+          <div style="text-align: right; margin-top: 2vw;">
+            <a href="#" onclick="showResetPasswordInfo(); return false;" style="color: #e74c3c; font-size: 3.2vw; font-weight: bold; text-decoration: none; text-shadow: 0 0.1vw 0.2vw rgba(0,0,0,0.2);">
+              ❓ Lupa Password?
+            </a>
+          </div>
+        </div>
+        
+        <div class="modal-input-group">
+          <label class="modal-input-label">Password Baru:</label>
+          <input id="newUserPassword" type="password" class="modal-input" placeholder="Password baru (min 4 karakter)...">
+        </div>
+        
+        <div class="modal-input-group">
+          <label class="modal-input-label">Konfirmasi Password Baru:</label>
+          <input id="confirmUserPassword" type="password" class="modal-input" placeholder="Ketik ulang password baru...">
+        </div>
+        
+        <div class="modal-buttons">
+          <button class="modal-btn modal-btn-secondary" onclick="closeUserChangePasswordModal()">Batal</button>
+          <button class="modal-btn modal-btn-success" onclick="submitUserPasswordChange()">💾 Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminPanelModal" class="hidden">
+      <div class="admin-panel-content">
+        <div class="admin-panel-header">
+          <div class="admin-panel-title">🔐 ADMIN PANEL</div>
+          <button class="admin-close-btn" onclick="closeAdminPanel()">×</button>
+        </div>
+        
+        <div class="admin-menu-item" onclick="viewAllUnits()">
+          <div class="admin-menu-icon">📊</div>
+          <div>Lihat Semua Unit</div>
+        </div>
+        
+        <div class="admin-menu-item" onclick="viewUnitPasswords()">
+          <div class="admin-menu-icon">🔑</div>
+          <div>Lihat Password Unit</div>
+        </div>
+        
+        <div class="admin-menu-item" onclick="changeAdminPassword()">
+          <div class="admin-menu-icon">🔐</div>
+          <div>Ganti Password Admin</div>
+        </div>
+        
+        <div class="admin-menu-item admin-menu-logout" onclick="logoutAdminFromPanel()">
+          <div class="admin-menu-icon">🚪</div>
+          <div>Logout Admin Mode</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- HALAMAN JADWAL -->
+    <div id="jadwalPage" class="hidden">
+      <h2 id="pageTitle">📅 Jadwal</h2>
+      
+      <div id="adminBadge" class="hidden">🔐 ADMIN MODE AKTIF</div>
+      
+      <div class="controls">
+        <div class="control-group">
+          <label>PILIH BULAN</label>
+          <select id="selectBulan" onchange="loadJadwal()">
+            <option value="">-- Pilih Bulan --</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>PILIH UNIT</label>
+          <select id="selectUnit" onchange="onUnitChange()">
+            <option value="">-- Pilih Unit --</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Panel mode edit -->
+      <div id="editModePanel" class="edit-mode-panel hidden">
+        <button class="btn btn-edit-mode btn-edit-psm" data-mode="PSM" onclick="setEditMode('PSM')">
+          <span class="checkmark">✓</span>
+          <span class="icon">👥</span>
+          <span class="label">Mode P, S, M</span>
+        </button>
+        <button class="btn btn-edit-mode btn-edit-lengkap" data-mode="LENGKAP" onclick="setEditMode('LENGKAP')">
+          <span class="checkmark">✓</span>
+          <span class="icon">📋</span>
+          <span class="label">Mode Lengkap</span>
+        </button>
+        <button class="btn btn-edit-mode btn-edit-p_sm" data-mode="P_SM" onclick="setEditMode('P_SM')">
+          <span class="checkmark">✓</span>
+          <span class="icon">🔀</span>
+          <span class="label">Mode P, SM</span>
+        </button>
+      </div>
+      
+      <div id="editInfo" class="hidden"><strong>MODE EDIT</strong> - Perubahan otomatis tersimpan</div>
+      
+      <div id="floatingButtons" class="floating-buttons hidden">
+        <button id="btnUndo" class="btn-float btn-undo" onclick="undoChange()" disabled>↩</button>
+        <button id="btnRedo" class="btn-float btn-redo" onclick="redoChange()" disabled>↪</button>
+      </div>
+      
+      <button class="btn-back" onclick="backToMenu()">← KEMBALI</button>
+      
+      <div id="tableContainer" class="table-container">
+        <div class="loading">Pilih bulan dan unit untuk menampilkan jadwal</div>
+      </div>
+      
+      <div id="btnEditContainer" class="btn-edit-container hidden">
+        <button id="btnEdit" class="btn btn-primary" onclick="toggleEditMode()">✏️ EDIT JADWAL</button>
+      </div>
+
+      <div id="legendContainer" class="legend-container hidden">
+        <div class="legend-panel">
+          <div class="legend-title">📊 KETERANGAN</div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <div class="legend-box box-hk"></div>
+              <span class="legend-label">HK = Hari Kerja</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box box-hl"></div>
+              <span class="legend-label">HL = Hari lembur</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box box-hw"></div>
+              <span class="legend-label">HW = Hari Kerja Wajib</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box box-off"></div>
+              <span class="legend-label">OFF = Hari Off</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="downloadContainer" class="actions download-actions hidden">
+        <button class="btn btn-download" onclick="downloadPNG()">📷<br>DOWNLOAD<br>PNG</button>
+        <button class="btn btn-download" onclick="downloadExcel()">📊<br>DOWNLOAD<br>EXCEL</button>
+        <button class="btn btn-download" onclick="downloadPDF()">📄<br>DOWNLOAD<br>PDF</button>
+      </div>
+      
+      <div id="editActions" class="actions hidden">
+        <button class="btn btn-success" onclick="saveChanges()">💾 SIMPAN</button>
+        <button class="btn btn-secondary" onclick="cancelEdit()">❌ BATAL</button>
+      </div>
+
+      <div id="editNamaContainer" class="actions hidden">
+        <button class="btn btn-primary" onclick="openEditNamaModal()" style="width: 80%; margin: 0 auto;">✏️ EDIT NAMA</button>
+      </div>
+    </div>
+    
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
