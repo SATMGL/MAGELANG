@@ -9,7 +9,7 @@
 // 4. Format URL: https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
 
 const CONFIG = {
-  // ⚠️ GANTI URL INI DENGAN URL DEPLOYMENT APPS SCRIPT ANDA
+  // ✅ URL DEPLOYMENT APPS SCRIPT - SUDAH DIKONFIGURASI
   API_URL: 'https://script.google.com/macros/s/AKfycbz3n1SqRhZ8oeW6SEekoyjYf8mmjhn-lvvMfS03WzvoyPSuKyF7nwYcxlkk-FCTok8OYw/exec',
   
   // Jangan ubah setting di bawah ini kecuali Anda tahu apa yang Anda lakukan

@@ -1,7 +1,6 @@
 // ===================================
 // MAIN APPLICATION JAVASCRIPT
 // Standalone version with API communication
-// Modified for separated pages (jadwal-kerja.html & jadwal-absensi.html)
 // ===================================
 
 // API Helper Functions
@@ -382,32 +381,18 @@ function updateAdminUI() {
   const floatingIcon = document.getElementById('adminFloatingIcon');
   const badge = document.getElementById('adminBadge');
   
-  if (btn) {
-    if (isAdminMode) {
-      btn.textContent = '🚫 MATIKAN ADMIN MODE';
-      btn.style.background = 'linear-gradient(to bottom, #95a5a6 0%, #7f8c8d 50%, #6c7a7a 100%)';
-      btn.style.borderColor = '#6c7a7a';
-    } else {
-      btn.textContent = '🔐 ADMIN MODE';
-      btn.style.background = 'linear-gradient(to bottom, #e74c3c 0%, #c0392b 50%, #a93226 100%)';
-      btn.style.borderColor = '#a93226';
-    }
-  }
-  
-  if (floatingIcon) {
-    if (isAdminMode) {
-      floatingIcon.classList.remove('hidden');
-    } else {
-      floatingIcon.classList.add('hidden');
-    }
-  }
-  
-  if (badge) {
-    if (isAdminMode) {
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
-    }
+  if (isAdminMode) {
+    btn.textContent = '🚫 MATIKAN ADMIN MODE';
+    btn.style.background = 'linear-gradient(to bottom, #95a5a6 0%, #7f8c8d 50%, #6c7a7a 100%)';
+    btn.style.borderColor = '#6c7a7a';
+    floatingIcon.classList.remove('hidden');
+    if (badge) badge.classList.remove('hidden');
+  } else {
+    btn.textContent = '🔐 ADMIN MODE';
+    btn.style.background = 'linear-gradient(to bottom, #e74c3c 0%, #c0392b 50%, #a93226 100%)';
+    btn.style.borderColor = '#a93226';
+    floatingIcon.classList.add('hidden');
+    if (badge) badge.classList.add('hidden');
   }
 }
 
@@ -618,38 +603,25 @@ function showResetPasswordInfo() {
   }, 300);
 }
 
-// Mode Selection - MODIFIED FOR SEPARATED PAGES
+// Mode Selection
 async function selectMode(mode, isRestore) {
-  // Set currentMode jika belum di-set (untuk halaman terpisah, ini sudah di-set di HTML)
-  if (!window.currentMode) {
-    currentMode = mode;
-  } else {
-    currentMode = window.currentMode;
-  }
-  saveToLocal('currentMode', currentMode);
-  
-  // Untuk halaman terpisah, menu page mungkin tidak ada
-  const menuPage = document.getElementById('menuPage');
-  const jadwalPage = document.getElementById('jadwalPage');
-  if (menuPage) menuPage.classList.add('hidden');
-  if (jadwalPage) jadwalPage.classList.remove('hidden');
-  
-  const title = currentMode === 'PEL' ? '📋 JADWAL PELAKSANAAN' : '📤 JADWAL PENGIRIMAN';
-  const titleElement = document.getElementById('pageTitle');
-  if (titleElement) titleElement.textContent = title;
+  currentMode = mode;
+  saveToLocal('currentMode', mode);
+  document.getElementById('menuPage').classList.add('hidden');
+  document.getElementById('jadwalPage').classList.remove('hidden');
+  const title = mode === 'PEL' ? '📋 JADWAL PELAKSANAAN' : '📤 JADWAL PENGIRIMAN';
+  document.getElementById('pageTitle').textContent = title;
   
   if (isAdminMode) {
-    const badge = document.getElementById('adminBadge');
-    if (badge) badge.classList.remove('hidden');
+    document.getElementById('adminBadge').classList.remove('hidden');
   } else {
-    const badge = document.getElementById('adminBadge');
-    if (badge) badge.classList.add('hidden');
+    document.getElementById('adminBadge').classList.add('hidden');
   }
   
   showSaveIndicator('📅 Memuat data...', 2000);
   
   try {
-    const months = await callAPI('getAvailableMonths', { mode: currentMode });
+    const months = await callAPI('getAvailableMonths', { mode });
     populateMonths(months);
     
     const units = await callAPI('getUnits');
@@ -673,9 +645,20 @@ function backToMenu() {
   }
 }
 
-// MODIFIED FOR SEPARATED PAGES - kembali ke index.html
 function doBackToMenu() {
-  window.location.href = '../index.html';
+  currentMode = null;
+  saveToLocal('currentMode', null);
+  saveToLocal('selectedBulan', null);
+  saveToLocal('selectedUnit', null);
+  document.getElementById('menuPage').classList.remove('hidden');
+  document.getElementById('jadwalPage').classList.add('hidden');
+  document.getElementById('selectBulan').innerHTML = '<option value="">-- Pilih Bulan --</option>';
+  document.getElementById('selectUnit').innerHTML = '<option value="">-- Pilih Unit --</option>';
+  document.getElementById('tableContainer').innerHTML = '<div class="loading">Pilih bulan dan unit untuk menampilkan jadwal</div>';
+  document.getElementById('btnEditContainer').classList.add('hidden');
+  document.getElementById('legendContainer').classList.add('hidden');
+  document.getElementById('downloadContainer').classList.add('hidden');
+  document.getElementById('adminBadge').classList.add('hidden');
 }
 
 function populateMonths(months) {
