@@ -302,7 +302,7 @@
     </div>
   </div>
 
-  <script src="config.js"></script>
+  <script src="config-jadwal.js"></script>
   <script>
     // Set mode to PEL (Pelaksanaan) for this page
     let currentMode = 'PEL';
@@ -313,15 +313,15 @@
         modernConfirm('Anda sedang dalam mode edit. Yakin ingin kembali?', 'Konfirmasi', '⚠️')
           .then(result => {
             if (result) {
-              window.location.href = 'index.html';
+              window.location.href = '../index.html';
             }
           });
       } else {
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
       }
     }
   </script>
-  <script src="app.js"></script>
+  <script src="../app.js"></script>
   <script>
     // Auto-initialize when page loads
     window.addEventListener('DOMContentLoaded', async () => {
