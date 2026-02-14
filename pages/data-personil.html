@@ -92,6 +92,9 @@ header h1 {
   outline: none;
   border-color: #5f7cff;
 }
+.form-group.hidden {
+  display: none;
+}
 .photo-upload {
   border: 2px dashed #e0e7ff;
   border-radius: 10px;
@@ -211,6 +214,11 @@ header h1 {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+.alert-warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
 .modal-overlay {
   display: none;
   position: fixed;
@@ -228,10 +236,12 @@ header h1 {
   padding: 40px 30px;
   border-radius: 20px;
   text-align: center;
-  max-width: 450px;
+  max-width: 550px;
   margin: 20px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   animation: modalSlideIn 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 @keyframes modalSlideIn {
   from {
@@ -282,6 +292,12 @@ header h1 {
 .modal-btn-cancel:hover {
   box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
 }
+.modal-btn-secondary {
+  background: linear-gradient(120deg, #ff9acb, #ffc5e0);
+}
+.modal-btn-secondary:hover {
+  box-shadow: 0 8px 20px rgba(255, 154, 203, 0.3);
+}
 .modal-input {
   width: 100%;
   padding: 12px 15px;
@@ -306,6 +322,143 @@ header h1 {
   margin-bottom: 10px;
   display: none;
 }
+.photo-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+.photo-compare-item {
+  text-align: center;
+}
+.photo-compare-item img {
+  max-width: 100%;
+  max-height: 180px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-bottom: 10px;
+}
+.photo-compare-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5f7cff;
+  margin-bottom: 5px;
+}
+.photo-compare-unit {
+  font-size: 11px;
+  color: #999;
+}
+.mode-indicator {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+.mode-indicator.mode-new {
+  background: #d4edda;
+  color: #155724;
+}
+.mode-indicator.mode-edit {
+  background: #fff3cd;
+  color: #856404;
+}
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #5f7cff;
+  font-weight: 500;
+  margin-top: 5px;
+}
+.loading-spinner-small {
+  border: 2px solid #e0e7ff;
+  border-top: 2px solid #5f7cff;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.btn-pindah-unit {
+  display: none;
+  padding: 8px 20px;
+  background: linear-gradient(120deg, #ff9800, #ffa726);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+.btn-pindah-unit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+}
+.btn-pindah-unit.show {
+  display: inline-block;
+}
+.unit-info-container {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: #e3f2fd;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: 2px solid #90caf9;
+}
+.unit-info-container.show {
+  display: flex;
+}
+.unit-info-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1976d2;
+}
+.unit-info-text span {
+  font-weight: 700;
+  color: #0d47a1;
+}
+.section-selector {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid #ffb74d;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1);
+}
+.section-selector h3 {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  color: #e65100;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-data {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid #e0e7ff;
+}
+.section-data h3 {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  color: #5f7cff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 </style>
 </head>
 <body>
@@ -318,48 +471,80 @@ header h1 {
   <div id="alertContainer"></div>
   
   <div class="form-card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-      <h2 style="margin: 0;">📝 Form Data Personil</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px;">
+      <h2 style="margin: 0;">
+        📝 Form Data Personil
+      </h2>
       <a href="database.html" class="btn-list">📋 List Daftar Personil</a>
     </div>
     <form id="personilForm">
-      <div class="form-group">
-        <label for="unit">Unit Kerja Saat Ini *</label>
-        <select id="unit" required>
-          <option value="">-- Pilih Unit Kerja --</option>
-          <option value="AKMIL">AKMIL</option>
-          <option value="BANDONGAN">BANDONGAN</option>
-          <option value="BOROBUDUR">BOROBUDUR</option>
-          <option value="BOTTON">BOTTON</option>
-          <option value="CANDIMULYO">CANDIMULYO</option>
-          <option value="GLAGAH">GLAGAH</option>
-          <option value="GRABAG">GRABAG</option>
-          <option value="KAJORAN">KAJORAN</option>
-          <option value="KALIANGKRIK">KALIANGKRIK</option>
-          <option value="KARANGGADING">KARANGGADING</option>
-          <option value="KC MAGELANG">KC MAGELANG</option>
-          <option value="KCP SHOPPING">KCP SHOPPING</option>
-          <option value="KRASAK">KRASAK</option>
-          <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
-          <option value="MAGELANG UTARA">MAGELANG UTARA</option>
-          <option value="MERTOYUDAN">MERTOYUDAN</option>
-          <option value="NGABLAK">NGABLAK</option>
-          <option value="PAKIS">PAKIS</option>
-          <option value="PAYAMAN">PAYAMAN</option>
-          <option value="REJOWINANGUN">REJOWINANGUN</option>
-          <option value="SALAMAN">SALAMAN</option>
-          <option value="SECANG">SECANG</option>
-          <option value="SUKARNO HATTA">SUKARNO HATTA</option>
-          <option value="TEGALREJO">TEGALREJO</option>
-          <option value="TEMPURAN">TEMPURAN</option>
-          <option value="WINDUSARI">WINDUSARI</option>
-        </select>
+      <!-- SECTION: PILIH UNIT & NAMA -->
+      <div class="section-selector">
+        <h3>🎯 Pilih Unit & Nama</h3>
+        
+        <div class="form-group">
+          <label for="unit">Unit Kerja Saat Ini *</label>
+          <select id="unit" required>
+            <option value="">-- Pilih Unit Kerja --</option>
+            <option value="AKMIL">AKMIL</option>
+            <option value="BANDONGAN">BANDONGAN</option>
+            <option value="BOROBUDUR">BOROBUDUR</option>
+            <option value="BOTTON">BOTTON</option>
+            <option value="CANDIMULYO">CANDIMULYO</option>
+            <option value="GLAGAH">GLAGAH</option>
+            <option value="GRABAG">GRABAG</option>
+            <option value="KAJORAN">KAJORAN</option>
+            <option value="KALIANGKRIK">KALIANGKRIK</option>
+            <option value="KARANGGADING">KARANGGADING</option>
+            <option value="KC MAGELANG">KC MAGELANG</option>
+            <option value="KCP SHOPPING">KCP SHOPPING</option>
+            <option value="KRASAK">KRASAK</option>
+            <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
+            <option value="MAGELANG UTARA">MAGELANG UTARA</option>
+            <option value="MERTOYUDAN">MERTOYUDAN</option>
+            <option value="NGABLAK">NGABLAK</option>
+            <option value="PAKIS">PAKIS</option>
+            <option value="PAYAMAN">PAYAMAN</option>
+            <option value="REJOWINANGUN">REJOWINANGUN</option>
+            <option value="SALAMAN">SALAMAN</option>
+            <option value="SECANG">SECANG</option>
+            <option value="SUKARNO HATTA">SUKARNO HATTA</option>
+            <option value="TEGALREJO">TEGALREJO</option>
+            <option value="TEMPURAN">TEMPURAN</option>
+            <option value="WINDUSARI">WINDUSARI</option>
+          </select>
+        </div>
+
+        <div class="form-group hidden" id="namaSelectGroup">
+          <label for="namaSelect">Pilih Nama (opsional)</label>
+          <select id="namaSelect">
+            <option value="">-- Pilih Nama --</option>
+          </select>
+          <div id="namaLoadingIndicator" class="loading-text" style="display: none;">
+            <div class="loading-spinner-small"></div>
+            <span>Memuat daftar nama...</span>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="nama">Nama Lengkap *</label>
-        <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
-      </div>
+      <!-- SECTION: DATA PERSONIL -->
+      <div class="section-data">
+        <h3>📝 Data Personil</h3>
+        
+        <div class="form-group">
+          <label for="nama">Nama Lengkap *</label>
+          <input type="text" id="nama" required placeholder="Pilih unit terlebih dahulu..." disabled>
+          
+          <!-- Unit Info & Pindah Unit Button -->
+          <div class="unit-info-container" id="unitInfoContainer">
+            <div class="unit-info-text">
+              UNIT: <span id="currentUnitText">-</span>
+            </div>
+            <button type="button" class="btn-pindah-unit" id="btnPindahUnit" onclick="openPindahUnitModal()">
+              🔄 Pindah Unit
+            </button>
+          </div>
+        </div>
 
       <div class="form-group">
         <label for="jabatan">Jabatan *</label>
@@ -457,6 +642,8 @@ header h1 {
           </small>
         </div>
       </div>
+      <!-- END SECTION: DATA PERSONIL -->
+      </div>
 
       <div class="progress-container" id="progressContainer">
         <div class="progress-bar">
@@ -470,6 +657,7 @@ header h1 {
 
 </div>
 
+<!-- Modal Success -->
 <div id="successModal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-icon">✅</div>
@@ -481,6 +669,7 @@ header h1 {
   </div>
 </div>
 
+<!-- Modal Duplicate Email Confirmation -->
 <div id="duplicateModal" class="modal-overlay">
   <div class="modal-content">
     <div class="modal-icon">⚠️</div>
@@ -499,6 +688,73 @@ header h1 {
   </div>
 </div>
 
+<!-- Modal Duplicate Name in Other Unit -->
+<div id="duplicateNameModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-icon">👥</div>
+    <div class="modal-title">Nama Sama Ditemukan!</div>
+    <div class="modal-message">
+      Nama <strong id="dupNameText"></strong> sudah ada di unit lain.<br>
+      Apakah ini orang yang sama?
+    </div>
+    <div class="photo-comparison" id="photoComparison">
+      <!-- Photos will be inserted here -->
+    </div>
+    <div class="modal-message">
+      <strong>Pilih salah satu:</strong>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <button class="modal-btn" onclick="confirmSamePerson()">👤 Orang yang Sama (Pindah Unit)</button>
+      <button class="modal-btn modal-btn-secondary" onclick="confirmDifferentPerson()">👥 Orang Berbeda (Buat Data Baru)</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeDuplicateNameModal()">❌ Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pindah Unit -->
+<div id="pindahUnitModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-icon">🔄</div>
+    <div class="modal-title">Pindah Unit</div>
+    <div class="modal-message">
+      Pindahkan <strong id="pindahNamaText"></strong> dari unit <strong id="pindahUnitLamaText"></strong> ke unit mana?
+    </div>
+    <select id="pindahUnitSelect" class="modal-input" style="text-transform: uppercase;">
+      <option value="">-- Pilih Unit Tujuan --</option>
+      <option value="AKMIL">AKMIL</option>
+      <option value="BANDONGAN">BANDONGAN</option>
+      <option value="BOROBUDUR">BOROBUDUR</option>
+      <option value="BOTTON">BOTTON</option>
+      <option value="CANDIMULYO">CANDIMULYO</option>
+      <option value="GLAGAH">GLAGAH</option>
+      <option value="GRABAG">GRABAG</option>
+      <option value="KAJORAN">KAJORAN</option>
+      <option value="KALIANGKRIK">KALIANGKRIK</option>
+      <option value="KARANGGADING">KARANGGADING</option>
+      <option value="KC MAGELANG">KC MAGELANG</option>
+      <option value="KCP SHOPPING">KCP SHOPPING</option>
+      <option value="KRASAK">KRASAK</option>
+      <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
+      <option value="MAGELANG UTARA">MAGELANG UTARA</option>
+      <option value="MERTOYUDAN">MERTOYUDAN</option>
+      <option value="NGABLAK">NGABLAK</option>
+      <option value="PAKIS">PAKIS</option>
+      <option value="PAYAMAN">PAYAMAN</option>
+      <option value="REJOWINANGUN">REJOWINANGUN</option>
+      <option value="SALAMAN">SALAMAN</option>
+      <option value="SECANG">SECANG</option>
+      <option value="SUKARNO HATTA">SUKARNO HATTA</option>
+      <option value="TEGALREJO">TEGALREJO</option>
+      <option value="TEMPURAN">TEMPURAN</option>
+      <option value="WINDUSARI">WINDUSARI</option>
+    </select>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+      <button class="modal-btn modal-btn-cancel" onclick="closePindahUnitModal()">❌ Batal</button>
+      <button class="modal-btn" onclick="confirmPindahUnit()">✓ Pindah Unit</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZqcFBBwDQCl-vih098DzGi54XyToJzht5RmgO3PApEyFtTP5cSBGNQA/exec';
 const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
@@ -506,6 +762,32 @@ const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 let selectedPhoto = null;
 let allPersonilData = [];
 let pendingFormData = null;
+let currentMode = 'new'; // 'new' or 'edit'
+let selectedPersonData = null;
+let duplicateInOtherUnit = null;
+
+// Convert Google Drive link to thumbnail
+function convertGoogleDriveLink(url) {
+  if (!url || url === '-' || url.trim() === '') return '';
+  
+  if (url.includes('drive.google.com')) {
+    let fileId = '';
+    const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match1) {
+      fileId = match1[1];
+    }
+    const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (match2) {
+      fileId = match2[1];
+    }
+    
+    if (fileId) {
+      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
+    }
+  }
+  
+  return url;
+}
 
 // Load data personil dari spreadsheet
 async function loadAllPersonilData() {
@@ -520,7 +802,362 @@ async function loadAllPersonilData() {
   }
 }
 
-// Load Provinsi saat halaman dibuka
+// Update mode indicator
+function updateModeIndicator(mode, personName = '') {
+  const submitBtn = document.getElementById('submitBtn');
+  const unitInfoContainer = document.getElementById('unitInfoContainer');
+  const currentUnitText = document.getElementById('currentUnitText');
+  const btnPindahUnit = document.getElementById('btnPindahUnit');
+  
+  if (mode === 'edit') {
+    currentMode = 'edit';
+    submitBtn.textContent = '✓ Update Data Personil';
+    
+    // Show unit info
+    if (selectedPersonData) {
+      const unit = selectedPersonData['UNIT KERJA'] || '-';
+      currentUnitText.textContent = unit;
+      unitInfoContainer.classList.add('show');
+      btnPindahUnit.classList.add('show');
+    }
+  } else {
+    currentMode = 'new';
+    submitBtn.textContent = '✓ Simpan Data Personil';
+    unitInfoContainer.classList.remove('show');
+    btnPindahUnit.classList.remove('show');
+  }
+}
+
+// Open pindah unit modal
+function openPindahUnitModal() {
+  if (!selectedPersonData) return;
+  
+  const modal = document.getElementById('pindahUnitModal');
+  const namaText = document.getElementById('pindahNamaText');
+  const unitLamaText = document.getElementById('pindahUnitLamaText');
+  const unitSelect = document.getElementById('pindahUnitSelect');
+  
+  const nama = selectedPersonData['NAMA'] || '';
+  const unitLama = selectedPersonData['UNIT KERJA'] || '';
+  
+  namaText.textContent = nama;
+  unitLamaText.textContent = unitLama;
+  unitSelect.value = '';
+  
+  // Remove current unit from options
+  for (let option of unitSelect.options) {
+    if (option.value === unitLama) {
+      option.disabled = true;
+      option.textContent = option.value + ' (Unit Saat Ini)';
+    } else {
+      option.disabled = false;
+      option.textContent = option.value;
+    }
+  }
+  
+  modal.style.display = 'flex';
+}
+
+function closePindahUnitModal() {
+  document.getElementById('pindahUnitModal').style.display = 'none';
+}
+
+function confirmPindahUnit() {
+  const unitBaru = document.getElementById('pindahUnitSelect').value;
+  
+  if (!unitBaru) {
+    showAlert('Silakan pilih unit tujuan', 'error');
+    return;
+  }
+  
+  // Update unit di form
+  document.getElementById('unit').value = unitBaru;
+  
+  // Update unit info display
+  document.getElementById('currentUnitText').textContent = unitBaru;
+  
+  closePindahUnitModal();
+  
+  // Show confirmation
+  showAlert(`Unit akan dipindah ke ${unitBaru}. Silakan klik "Update Data Personil" untuk menyimpan.`, 'warning');
+  
+  // Mark as pindah unit
+  selectedPersonData.isPindahUnit = true;
+}
+
+// Populate nama dropdown based on selected unit
+function populateNamaDropdown(selectedUnit) {
+  const namaSelect = document.getElementById('namaSelect');
+  const namaSelectGroup = document.getElementById('namaSelectGroup');
+  const namaInput = document.getElementById('nama');
+  const loadingIndicator = document.getElementById('namaLoadingIndicator');
+  
+  // Show loading indicator
+  namaSelectGroup.classList.remove('hidden');
+  loadingIndicator.style.display = 'flex';
+  namaSelect.disabled = true;
+  
+  // Simulate async loading (untuk smooth UX)
+  setTimeout(() => {
+    // Clear existing options
+    namaSelect.innerHTML = '<option value="">-- Pilih Nama (opsional) --</option>';
+    
+    // Filter personil by unit
+    const personilInUnit = allPersonilData.filter(p => {
+      const unit = p['UNIT KERJA'] || p['Unit Kerja'];
+      return unit === selectedUnit;
+    });
+    
+    // Sort by name
+    personilInUnit.sort((a, b) => {
+      const namaA = (a['NAMA'] || '').toUpperCase();
+      const namaB = (b['NAMA'] || '').toUpperCase();
+      return namaA.localeCompare(namaB);
+    });
+    
+    // Add names from this unit
+    personilInUnit.forEach(person => {
+      const nama = person['NAMA'] || person['Nama'];
+      const option = document.createElement('option');
+      option.value = nama;
+      option.textContent = nama;
+      option.setAttribute('data-person', JSON.stringify(person));
+      namaSelect.appendChild(option);
+    });
+    
+    // Hide loading, enable dropdown and nama input
+    loadingIndicator.style.display = 'none';
+    namaSelect.disabled = false;
+    namaInput.disabled = false;
+    namaInput.placeholder = 'Masukkan nama lengkap';
+  }, 300); // Small delay for better UX
+}
+
+// Handle unit selection
+document.getElementById('unit').addEventListener('change', function() {
+  const selectedUnit = this.value;
+  const namaInput = document.getElementById('nama');
+  
+  if (selectedUnit) {
+    populateNamaDropdown(selectedUnit);
+    // Reset form to new mode
+    resetFormToNew();
+  } else {
+    document.getElementById('namaSelectGroup').classList.add('hidden');
+    namaInput.disabled = true;
+    namaInput.placeholder = 'Pilih unit terlebih dahulu...';
+    resetFormToNew();
+  }
+});
+
+// Handle nama selection
+document.getElementById('namaSelect').addEventListener('change', function() {
+  const selectedValue = this.value;
+  
+  if (selectedValue) {
+    // Mode: Edit existing person
+    const selectedOption = this.options[this.selectedIndex];
+    const personData = JSON.parse(selectedOption.getAttribute('data-person'));
+    
+    // Fill form with existing data
+    fillFormWithPersonData(personData);
+    updateModeIndicator('edit', personData['NAMA']);
+  } else {
+    resetFormToNew();
+  }
+});
+
+// Fill form with person data (untuk edit mode)
+async function fillFormWithPersonData(personData) {
+  selectedPersonData = personData;
+  
+  document.getElementById('nama').value = personData['NAMA'] || '';
+  document.getElementById('jabatan').value = personData['JABATAN'] || '';
+  document.getElementById('nohp').value = personData['NO. HP'] || '';
+  document.getElementById('email').value = personData['ALAMAT EMAIL'] || '';
+  
+  document.getElementById('dusun').value = personData['DUSUN'] || '';
+  document.getElementById('rt').value = personData['RT'] || '';
+  document.getElementById('rw').value = personData['RW'] || '';
+  
+  // Handle provinsi dengan async/await untuk memastikan cascade loading
+  const provinsi = personData['PROVINSI'] || '';
+  const kabkota = personData['KOTA/KAB'] || '';
+  const kecamatan = personData['KECAMATAN'] || '';
+  const kelurahan = personData['KELURAHAN'] || '';
+  
+  if (provinsi) {
+    const provinsiSelect = document.getElementById('provinsi');
+    for (let option of provinsiSelect.options) {
+      if (option.getAttribute('data-name') === provinsi) {
+        provinsiSelect.value = option.value;
+        
+        // Wait for kabkota to load
+        await new Promise(resolve => {
+          const checkKabkota = setInterval(() => {
+            const kabkotaSelect = document.getElementById('kabkota');
+            if (!kabkotaSelect.disabled && kabkotaSelect.options.length > 1) {
+              clearInterval(checkKabkota);
+              
+              // Select kabkota
+              for (let opt of kabkotaSelect.options) {
+                if (opt.getAttribute('data-name') === kabkota) {
+                  kabkotaSelect.value = opt.value;
+                  kabkotaSelect.dispatchEvent(new Event('change'));
+                  break;
+                }
+              }
+              resolve();
+            }
+          }, 100);
+          
+          // Trigger provinsi change
+          provinsiSelect.dispatchEvent(new Event('change'));
+        });
+        
+        // Wait for kecamatan to load
+        await new Promise(resolve => {
+          const checkKecamatan = setInterval(() => {
+            const kecamatanSelect = document.getElementById('kecamatan');
+            if (!kecamatanSelect.disabled && kecamatanSelect.options.length > 1) {
+              clearInterval(checkKecamatan);
+              
+              // Select kecamatan
+              for (let opt of kecamatanSelect.options) {
+                if (opt.getAttribute('data-name') === kecamatan) {
+                  kecamatanSelect.value = opt.value;
+                  kecamatanSelect.dispatchEvent(new Event('change'));
+                  break;
+                }
+              }
+              resolve();
+            }
+          }, 100);
+        });
+        
+        // Wait for kelurahan to load
+        await new Promise(resolve => {
+          const checkKelurahan = setInterval(() => {
+            const kelurahanSelect = document.getElementById('kelurahan');
+            if (!kelurahanSelect.disabled && kelurahanSelect.options.length > 1) {
+              clearInterval(checkKelurahan);
+              
+              // Select kelurahan
+              for (let opt of kelurahanSelect.options) {
+                if (opt.getAttribute('data-name') === kelurahan) {
+                  kelurahanSelect.value = opt.value;
+                  break;
+                }
+              }
+              resolve();
+            }
+          }, 100);
+        });
+        
+        break;
+      }
+    }
+  }
+  
+  // Handle foto
+  const fotoUrl = personData['LINK FOTO'] || '';
+  if (fotoUrl) {
+    const convertedUrl = convertGoogleDriveLink(fotoUrl);
+    selectedPhoto = convertedUrl;
+    document.getElementById('photoPreview').src = convertedUrl;
+    document.getElementById('uploadText').style.display = 'none';
+    document.getElementById('photoPreviewContainer').style.display = 'block';
+    document.getElementById('photoExampleContainer').style.display = 'none';
+    
+    // Make foto optional in edit mode
+    document.getElementById('foto').required = false;
+  }
+}
+
+// Reset form to new mode
+function resetFormToNew() {
+  selectedPersonData = null;
+  updateModeIndicator('new');
+  
+  // Clear form fields (except unit and namaSelect)
+  const unit = document.getElementById('unit').value;
+  const namaSelectValue = document.getElementById('namaSelect').value;
+  
+  document.getElementById('personilForm').reset();
+  
+  document.getElementById('unit').value = unit;
+  document.getElementById('namaSelect').value = namaSelectValue;
+  
+  // Reset photo
+  removePhoto();
+  
+  // Disable alamat dropdowns
+  document.getElementById('kabkota').disabled = true;
+  document.getElementById('kecamatan').disabled = true;
+  document.getElementById('kelurahan').disabled = true;
+  
+  // Make foto required again
+  document.getElementById('foto').required = true;
+}
+
+// Check for duplicate name in other units
+function checkDuplicateNameInOtherUnits(nama, currentUnit) {
+  return allPersonilData.find(p => {
+    const pNama = (p['NAMA'] || p['Nama'] || '').toUpperCase();
+    const pUnit = p['UNIT KERJA'] || p['Unit Kerja'];
+    return pNama === nama.toUpperCase() && pUnit !== currentUnit;
+  });
+}
+
+// Show duplicate name modal with photo comparison
+function showDuplicateNameModal(duplicate, currentFoto) {
+  duplicateInOtherUnit = duplicate;
+  
+  const modal = document.getElementById('duplicateNameModal');
+  const dupNameText = document.getElementById('dupNameText');
+  const photoComparison = document.getElementById('photoComparison');
+  
+  const nama = duplicate['NAMA'] || '';
+  const unit = duplicate['UNIT KERJA'] || '';
+  const fotoUrl = convertGoogleDriveLink(duplicate['LINK FOTO'] || '');
+  
+  dupNameText.textContent = nama;
+  
+  // Create photo comparison
+  photoComparison.innerHTML = `
+    <div class="photo-compare-item">
+      <div class="photo-compare-label">Unit Lain</div>
+      <div class="photo-compare-unit">${unit}</div>
+      <img src="${fotoUrl}" alt="${nama}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Photo%3C/text%3E%3C/svg%3E'">
+    </div>
+    <div class="photo-compare-item">
+      <div class="photo-compare-label">Unit Saat Ini</div>
+      <div class="photo-compare-unit">${document.getElementById('unit').value}</div>
+      <img src="${currentFoto}" alt="Foto Baru" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Photo%3C/text%3E%3C/svg%3E'">
+    </div>
+  `;
+  
+  modal.style.display = 'flex';
+}
+
+function closeDuplicateNameModal() {
+  document.getElementById('duplicateNameModal').style.display = 'none';
+  duplicateInOtherUnit = null;
+}
+
+function confirmSamePerson() {
+  // User confirms it's the same person (moved to different unit)
+  closeDuplicateNameModal();
+  submitData(true, true); // isUpdate = true, isPindahUnit = true
+}
+
+function confirmDifferentPerson() {
+  // User confirms it's a different person
+  closeDuplicateNameModal();
+  submitData(false); // isUpdate = false, create new
+}
+
+// Load Provinsi
 async function loadProvinsi() {
   try {
     const response = await fetch(`${API_BASE}/provinces.json`);
@@ -644,7 +1281,7 @@ document.getElementById('kecamatan').addEventListener('change', async function()
   }
 });
 
-// Validasi Email Real-time
+// Validasi Email
 document.getElementById('email').addEventListener('input', function() {
   const email = this.value;
   const emailError = document.getElementById('emailError');
@@ -659,7 +1296,7 @@ document.getElementById('email').addEventListener('input', function() {
   }
 });
 
-// Auto uppercase untuk field text (kecuali email dan no HP)
+// Auto uppercase
 const textInputs = ['nama', 'dusun'];
 textInputs.forEach(id => {
   const input = document.getElementById(id);
@@ -714,54 +1351,65 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     return;
   }
   
-  if (!selectedPhoto) {
+  if (!selectedPhoto && currentMode === 'new') {
     showAlert('Silakan upload foto terlebih dahulu', 'error');
     return;
   }
   
-  // Cek duplikasi nama di unit yang sama
   const nama = document.getElementById('nama').value.toUpperCase();
   const unit = document.getElementById('unit').value;
   
-  const duplicate = allPersonilData.find(p => {
-    const pNama = (p['NAMA'] || p['Nama'] || '').toUpperCase();
-    const pUnit = (p['UNIT KERJA'] || p['Unit Kerja'] || '');
-    return pNama === nama && pUnit === unit;
-  });
-  
-  if (duplicate) {
-    // Simpan data form untuk digunakan nanti
-    pendingFormData = {
-      email: email,
-      nama: nama,
-      unit: unit
-    };
+  // Check duplicate in same unit (only for new mode)
+  if (currentMode === 'new') {
+    const duplicateInSameUnit = allPersonilData.find(p => {
+      const pNama = (p['NAMA'] || p['Nama'] || '').toUpperCase();
+      const pUnit = (p['UNIT KERJA'] || p['Unit Kerja'] || '');
+      return pNama === nama && pUnit === unit;
+    });
     
-    // Tampilkan modal konfirmasi
-    document.getElementById('duplicateName').textContent = nama;
-    document.getElementById('duplicateUnit').textContent = unit;
-    document.getElementById('confirmEmail').value = '';
-    document.getElementById('emailMismatchError').style.display = 'none';
-    document.getElementById('confirmEmail').classList.remove('modal-input-error');
+    if (duplicateInSameUnit) {
+      pendingFormData = {
+        email: email,
+        nama: nama,
+        unit: unit
+      };
+      
+      document.getElementById('duplicateName').textContent = nama;
+      document.getElementById('duplicateUnit').textContent = unit;
+      document.getElementById('confirmEmail').value = '';
+      document.getElementById('emailMismatchError').style.display = 'none';
+      document.getElementById('confirmEmail').classList.remove('modal-input-error');
+      
+      showDuplicateModal();
+      return;
+    }
     
-    showDuplicateModal();
-    return;
+    // Check duplicate in other units
+    const duplicateInOther = checkDuplicateNameInOtherUnits(nama, unit);
+    if (duplicateInOther) {
+      showDuplicateNameModal(duplicateInOther, selectedPhoto);
+      return;
+    }
   }
   
-  // Jika tidak ada duplikasi, langsung simpan
-  await submitData(false);
+  // Submit
+  await submitData(currentMode === 'edit', false);
 });
 
-async function submitData(isUpdate = false) {
+async function submitData(isUpdate = false, isPindahUnit = false) {
   const submitBtn = document.getElementById('submitBtn');
   const progressContainer = document.getElementById('progressContainer');
   const progressFill = document.getElementById('progressFill');
+  
+  // Check if this is a manual pindah unit (via button)
+  if (isUpdate && selectedPersonData && selectedPersonData.isPindahUnit) {
+    isPindahUnit = true;
+  }
   
   submitBtn.disabled = true;
   submitBtn.textContent = isUpdate ? '⏳ Mengupdate data...' : '⏳ Menyimpan data...';
   progressContainer.style.display = 'block';
   
-  // Simulasi progress
   let progress = 0;
   const progressInterval = setInterval(() => {
     progress += 10;
@@ -772,7 +1420,6 @@ async function submitData(isUpdate = false) {
   }, 200);
   
   try {
-    // Ambil nama wilayah dari option yang dipilih
     const provSelect = document.getElementById('provinsi');
     const kabSelect = document.getElementById('kabkota');
     const kecSelect = document.getElementById('kecamatan');
@@ -790,8 +1437,15 @@ async function submitData(isUpdate = false) {
     if (dusun) alamatLengkap += `Dusun ${dusun}, `;
     alamatLengkap += `RT ${rt}/RW ${rw}, ${kelurahan}, ${kecamatan}, ${kabkota}, ${provinsi}`;
     
+    let dataId = Date.now();
+    if (isUpdate && selectedPersonData) {
+      dataId = selectedPersonData['ID'];
+    } else if (isPindahUnit && duplicateInOtherUnit) {
+      dataId = duplicateInOtherUnit['ID'];
+    }
+    
     const personilData = {
-      id: Date.now(),
+      id: dataId,
       tanggal: new Date().toLocaleDateString('id-ID'),
       unit: document.getElementById('unit').value,
       nama: document.getElementById('nama').value,
@@ -807,7 +1461,8 @@ async function submitData(isUpdate = false) {
       rw: rw,
       alamatLengkap: alamatLengkap,
       foto: selectedPhoto,
-      isUpdate: isUpdate
+      isUpdate: isUpdate || isPindahUnit,
+      isPindahUnit: isPindahUnit
     };
     
     const response = await fetch(APPS_SCRIPT_URL, {
@@ -837,7 +1492,15 @@ async function submitData(isUpdate = false) {
     
     setTimeout(() => {
       if (result && result.success) {
-        showAlert(isUpdate ? '✓ Data personil berhasil diupdate!' : '✓ Data personil berhasil disimpan ke Google Spreadsheet!', 'success');
+        let message = '✓ Data personil berhasil ';
+        if (isPindahUnit) {
+          message += 'dipindahkan ke unit baru!';
+        } else if (isUpdate) {
+          message += 'diupdate!';
+        } else {
+          message += 'disimpan!';
+        }
+        showAlert(message, 'success');
         showSuccessModal();
       } else {
         showAlert('⚠️ Data mungkin tersimpan, tapi ada peringatan: ' + (result?.message || 'Unknown'), 'error');
@@ -845,9 +1508,10 @@ async function submitData(isUpdate = false) {
       
       // Reset form
       document.getElementById('personilForm').reset();
+      document.getElementById('namaSelectGroup').classList.add('hidden');
       removePhoto();
+      updateModeIndicator('new');
       
-      // Disable dropdown alamat setelah reset
       document.getElementById('kabkota').disabled = true;
       document.getElementById('kecamatan').disabled = true;
       document.getElementById('kelurahan').disabled = true;
@@ -857,7 +1521,6 @@ async function submitData(isUpdate = false) {
       progressContainer.style.display = 'none';
       progressFill.style.width = '0%';
       
-      // Reload data personil
       loadAllPersonilData();
     }, 500);
     
@@ -901,9 +1564,8 @@ function confirmUpdate() {
     return;
   }
   
-  // Email sesuai, lanjutkan update
   closeDuplicateModal();
-  submitData(true);
+  submitData(true, false);
 }
 
 function showSuccessModal() {
@@ -927,7 +1589,7 @@ function showAlert(message, type) {
   }, 5000);
 }
 
-// Load provinsi dan data personil saat halaman dibuka
+// Init
 loadProvinsi();
 loadAllPersonilData();
 </script>
