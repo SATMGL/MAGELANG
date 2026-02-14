@@ -777,8 +777,14 @@ function convertGoogleDriveLink(url) {
     }
     
     if (fileId) {
-      // Konversi ke direct link
-      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+      // OPSI 1: Gunakan Google Drive Proxy (bypass CORS)
+      // return `https://lh3.googleusercontent.com/d/${fileId}`;
+      
+      // OPSI 2: Gunakan Drive thumbnail API
+      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
+      
+      // OPSI 3: Original method (kadang diblock CORS)
+      // return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
   }
   
@@ -816,8 +822,10 @@ function showPersonilDetail(personData) {
   const foto = convertGoogleDriveLink(fotoOriginal);
   
   // Debug: tampilkan URL foto
+  console.log('Person Data:', personData);
   console.log('Foto URL Original:', fotoOriginal);
   console.log('Foto URL Converted:', foto);
+  console.log('All keys in personData:', Object.keys(personData));
   
   let html = '';
   
@@ -825,11 +833,16 @@ function showPersonilDetail(personData) {
   if (foto && foto !== '-' && foto.trim() !== '') {
     html += `
       <div class="photo-container">
-        <img src="${foto}" alt="Foto ${nama}" onerror="console.error('Failed to load image:', '${foto}'); this.parentElement.innerHTML='<p style=color:#ff6b6b;>❌ Foto gagal dimuat</p>'">
+        <img src="${foto}" alt="Foto ${nama}" onerror="console.error('Failed to load image:', '${foto}'); this.parentElement.innerHTML='<p style=color:#ff6b6b;>❌ Foto gagal dimuat<br><small>${foto}</small></p>'">
       </div>
     `;
   } else {
-    console.warn('No photo URL found');
+    html += `
+      <div class="photo-container">
+        <p style="color: #999; font-size: 14px;">⚠️ Tidak ada foto<br><small>Original: ${fotoOriginal || 'kosong'}</small></p>
+      </div>
+    `;
+    console.warn('No photo URL found. Original:', fotoOriginal);
   }
   
   // Data personil
