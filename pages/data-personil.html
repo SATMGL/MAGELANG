@@ -14,25 +14,39 @@ body {
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #f7f9ff, #eef3ff);
   color: #2b2f4b;
-  padding-bottom: 40px;
 }
 header {
-  padding: 30px 20px;
+  padding: 2%;
   text-align: center;
   background: linear-gradient(120deg, #5f7cff, #8aa6ff, #ff9acb);
   color: white;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
 }
 header h1 {
   margin: 0;
   font-size: 24px;
   font-weight: 600;
 }
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 18px;
+    padding: 0 60px;
+  }
+}
 .back-btn {
   position: absolute;
   left: 20px;
-  top: 35px;
+  top: 50%;
+  transform: translateY(-50%);
   background: rgba(255,255,255,0.2);
   color: white;
   padding: 8px 16px;
@@ -44,10 +58,19 @@ header h1 {
 .back-btn:hover {
   background: rgba(255,255,255,0.3);
 }
+@media (max-width: 600px) {
+  .back-btn {
+    left: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
 .container {
   max-width: 900px;
-  margin: 30px auto;
+  margin: 0 auto;
   padding: 0 20px;
+  padding-top: calc(8% + 30px);
+  padding-bottom: calc(7% + 30px);
 }
 .form-card {
   background: white;
@@ -348,22 +371,6 @@ header h1 {
   font-size: 11px;
   color: #999;
 }
-.mode-indicator {
-  display: inline-block;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: 10px;
-}
-.mode-indicator.mode-new {
-  background: #d4edda;
-  color: #155724;
-}
-.mode-indicator.mode-edit {
-  background: #fff3cd;
-  color: #856404;
-}
 .loading-text {
   display: inline-flex;
   align-items: center;
@@ -459,11 +466,42 @@ header h1 {
   align-items: center;
   gap: 8px;
 }
+footer {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  text-align: center;
+  padding: 1.5%;
+  font-size: 12px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 7%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  padding-bottom: calc(1.5% + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+footer p {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  footer {
+    font-size: 10px;
+    padding: 1.5%;
+    height: 8%;
+    min-height: 35px;
+    padding-bottom: calc(1.5% + env(safe-area-inset-bottom));
+  }
+}
 </style>
 </head>
 <body>
 <header>
-  <a href="../index.html" class="back-btn">← Kembali</a>
+  <a href="database.html" class="back-btn">← Kembali</a>
   <h1>Data Personil</h1>
 </header>
 
@@ -762,7 +800,7 @@ const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 let selectedPhoto = null;
 let allPersonilData = [];
 let pendingFormData = null;
-let currentMode = 'new'; // 'new' or 'edit'
+let currentMode = 'new';
 let selectedPersonData = null;
 let duplicateInOtherUnit = null;
 
@@ -773,19 +811,12 @@ function convertGoogleDriveLink(url) {
   if (url.includes('drive.google.com')) {
     let fileId = '';
     const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match1) {
-      fileId = match1[1];
-    }
+    if (match1) fileId = match1[1];
     const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match2) {
-      fileId = match2[1];
-    }
+    if (match2) fileId = match2[1];
     
-    if (fileId) {
-      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
-    }
+    if (fileId) return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
   }
-  
   return url;
 }
 
@@ -802,7 +833,7 @@ async function loadAllPersonilData() {
   }
 }
 
-// Update mode indicator
+// Update mode indicator - FIXED: Show Pindah Unit button
 function updateModeIndicator(mode, personName = '') {
   const submitBtn = document.getElementById('submitBtn');
   const unitInfoContainer = document.getElementById('unitInfoContainer');
@@ -813,18 +844,17 @@ function updateModeIndicator(mode, personName = '') {
     currentMode = 'edit';
     submitBtn.textContent = '✓ Update Data Personil';
     
-    // Show unit info
     if (selectedPersonData) {
       const unit = selectedPersonData['UNIT KERJA'] || '-';
       currentUnitText.textContent = unit;
       unitInfoContainer.classList.add('show');
-      btnPindahUnit.classList.add('show');
+      btnPindahUnit.classList.add('show'); // FIXED: Show button
     }
   } else {
     currentMode = 'new';
     submitBtn.textContent = '✓ Simpan Data Personil';
     unitInfoContainer.classList.remove('show');
-    btnPindahUnit.classList.remove('show');
+    btnPindahUnit.classList.remove('show'); // FIXED: Hide button
   }
 }
 
@@ -844,7 +874,6 @@ function openPindahUnitModal() {
   unitLamaText.textContent = unitLama;
   unitSelect.value = '';
   
-  // Remove current unit from options
   for (let option of unitSelect.options) {
     if (option.value === unitLama) {
       option.disabled = true;
@@ -870,52 +899,40 @@ function confirmPindahUnit() {
     return;
   }
   
-  // Update unit di form
   document.getElementById('unit').value = unitBaru;
-  
-  // Update unit info display
   document.getElementById('currentUnitText').textContent = unitBaru;
   
   closePindahUnitModal();
-  
-  // Show confirmation
   showAlert(`Unit akan dipindah ke ${unitBaru}. Silakan klik "Update Data Personil" untuk menyimpan.`, 'warning');
   
-  // Mark as pindah unit
   selectedPersonData.isPindahUnit = true;
 }
 
-// Populate nama dropdown based on selected unit
+// Populate nama dropdown
 function populateNamaDropdown(selectedUnit) {
   const namaSelect = document.getElementById('namaSelect');
   const namaSelectGroup = document.getElementById('namaSelectGroup');
   const namaInput = document.getElementById('nama');
   const loadingIndicator = document.getElementById('namaLoadingIndicator');
   
-  // Show loading indicator
   namaSelectGroup.classList.remove('hidden');
   loadingIndicator.style.display = 'flex';
   namaSelect.disabled = true;
   
-  // Simulate async loading (untuk smooth UX)
   setTimeout(() => {
-    // Clear existing options
     namaSelect.innerHTML = '<option value="">-- Pilih Nama (opsional) --</option>';
     
-    // Filter personil by unit
     const personilInUnit = allPersonilData.filter(p => {
       const unit = p['UNIT KERJA'] || p['Unit Kerja'];
       return unit === selectedUnit;
     });
     
-    // Sort by name
     personilInUnit.sort((a, b) => {
       const namaA = (a['NAMA'] || '').toUpperCase();
       const namaB = (b['NAMA'] || '').toUpperCase();
       return namaA.localeCompare(namaB);
     });
     
-    // Add names from this unit
     personilInUnit.forEach(person => {
       const nama = person['NAMA'] || person['Nama'];
       const option = document.createElement('option');
@@ -925,12 +942,11 @@ function populateNamaDropdown(selectedUnit) {
       namaSelect.appendChild(option);
     });
     
-    // Hide loading, enable dropdown and nama input
     loadingIndicator.style.display = 'none';
     namaSelect.disabled = false;
     namaInput.disabled = false;
     namaInput.placeholder = 'Masukkan nama lengkap';
-  }, 300); // Small delay for better UX
+  }, 300);
 }
 
 // Handle unit selection
@@ -940,7 +956,6 @@ document.getElementById('unit').addEventListener('change', function() {
   
   if (selectedUnit) {
     populateNamaDropdown(selectedUnit);
-    // Reset form to new mode
     resetFormToNew();
   } else {
     document.getElementById('namaSelectGroup').classList.add('hidden');
@@ -955,11 +970,8 @@ document.getElementById('namaSelect').addEventListener('change', function() {
   const selectedValue = this.value;
   
   if (selectedValue) {
-    // Mode: Edit existing person
     const selectedOption = this.options[this.selectedIndex];
     const personData = JSON.parse(selectedOption.getAttribute('data-person'));
-    
-    // Fill form with existing data
     fillFormWithPersonData(personData);
     updateModeIndicator('edit', personData['NAMA']);
   } else {
@@ -967,7 +979,7 @@ document.getElementById('namaSelect').addEventListener('change', function() {
   }
 });
 
-// Fill form with person data (untuk edit mode)
+// Fill form with person data
 async function fillFormWithPersonData(personData) {
   selectedPersonData = personData;
   
@@ -975,12 +987,10 @@ async function fillFormWithPersonData(personData) {
   document.getElementById('jabatan').value = personData['JABATAN'] || '';
   document.getElementById('nohp').value = personData['NO. HP'] || '';
   document.getElementById('email').value = personData['ALAMAT EMAIL'] || '';
-  
   document.getElementById('dusun').value = personData['DUSUN'] || '';
   document.getElementById('rt').value = personData['RT'] || '';
   document.getElementById('rw').value = personData['RW'] || '';
   
-  // Handle provinsi dengan async/await untuk memastikan cascade loading
   const provinsi = personData['PROVINSI'] || '';
   const kabkota = personData['KOTA/KAB'] || '';
   const kecamatan = personData['KECAMATAN'] || '';
@@ -992,14 +1002,11 @@ async function fillFormWithPersonData(personData) {
       if (option.getAttribute('data-name') === provinsi) {
         provinsiSelect.value = option.value;
         
-        // Wait for kabkota to load
         await new Promise(resolve => {
           const checkKabkota = setInterval(() => {
             const kabkotaSelect = document.getElementById('kabkota');
             if (!kabkotaSelect.disabled && kabkotaSelect.options.length > 1) {
               clearInterval(checkKabkota);
-              
-              // Select kabkota
               for (let opt of kabkotaSelect.options) {
                 if (opt.getAttribute('data-name') === kabkota) {
                   kabkotaSelect.value = opt.value;
@@ -1010,19 +1017,14 @@ async function fillFormWithPersonData(personData) {
               resolve();
             }
           }, 100);
-          
-          // Trigger provinsi change
           provinsiSelect.dispatchEvent(new Event('change'));
         });
         
-        // Wait for kecamatan to load
         await new Promise(resolve => {
           const checkKecamatan = setInterval(() => {
             const kecamatanSelect = document.getElementById('kecamatan');
             if (!kecamatanSelect.disabled && kecamatanSelect.options.length > 1) {
               clearInterval(checkKecamatan);
-              
-              // Select kecamatan
               for (let opt of kecamatanSelect.options) {
                 if (opt.getAttribute('data-name') === kecamatan) {
                   kecamatanSelect.value = opt.value;
@@ -1035,14 +1037,11 @@ async function fillFormWithPersonData(personData) {
           }, 100);
         });
         
-        // Wait for kelurahan to load
         await new Promise(resolve => {
           const checkKelurahan = setInterval(() => {
             const kelurahanSelect = document.getElementById('kelurahan');
             if (!kelurahanSelect.disabled && kelurahanSelect.options.length > 1) {
               clearInterval(checkKelurahan);
-              
-              // Select kelurahan
               for (let opt of kelurahanSelect.options) {
                 if (opt.getAttribute('data-name') === kelurahan) {
                   kelurahanSelect.value = opt.value;
@@ -1053,13 +1052,11 @@ async function fillFormWithPersonData(personData) {
             }
           }, 100);
         });
-        
         break;
       }
     }
   }
   
-  // Handle foto
   const fotoUrl = personData['LINK FOTO'] || '';
   if (fotoUrl) {
     const convertedUrl = convertGoogleDriveLink(fotoUrl);
@@ -1068,8 +1065,6 @@ async function fillFormWithPersonData(personData) {
     document.getElementById('uploadText').style.display = 'none';
     document.getElementById('photoPreviewContainer').style.display = 'block';
     document.getElementById('photoExampleContainer').style.display = 'none';
-    
-    // Make foto optional in edit mode
     document.getElementById('foto').required = false;
   }
 }
@@ -1079,24 +1074,18 @@ function resetFormToNew() {
   selectedPersonData = null;
   updateModeIndicator('new');
   
-  // Clear form fields (except unit and namaSelect)
   const unit = document.getElementById('unit').value;
   const namaSelectValue = document.getElementById('namaSelect').value;
   
   document.getElementById('personilForm').reset();
-  
   document.getElementById('unit').value = unit;
   document.getElementById('namaSelect').value = namaSelectValue;
   
-  // Reset photo
   removePhoto();
   
-  // Disable alamat dropdowns
   document.getElementById('kabkota').disabled = true;
   document.getElementById('kecamatan').disabled = true;
   document.getElementById('kelurahan').disabled = true;
-  
-  // Make foto required again
   document.getElementById('foto').required = true;
 }
 
@@ -1109,7 +1098,7 @@ function checkDuplicateNameInOtherUnits(nama, currentUnit) {
   });
 }
 
-// Show duplicate name modal with photo comparison
+// Show duplicate name modal
 function showDuplicateNameModal(duplicate, currentFoto) {
   duplicateInOtherUnit = duplicate;
   
@@ -1123,17 +1112,16 @@ function showDuplicateNameModal(duplicate, currentFoto) {
   
   dupNameText.textContent = nama;
   
-  // Create photo comparison
   photoComparison.innerHTML = `
     <div class="photo-compare-item">
       <div class="photo-compare-label">Unit Lain</div>
       <div class="photo-compare-unit">${unit}</div>
-      <img src="${fotoUrl}" alt="${nama}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Photo%3C/text%3E%3C/svg%3E'">
+      <img src="${fotoUrl}" alt="${nama}">
     </div>
     <div class="photo-compare-item">
       <div class="photo-compare-label">Unit Saat Ini</div>
       <div class="photo-compare-unit">${document.getElementById('unit').value}</div>
-      <img src="${currentFoto}" alt="Foto Baru" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3ENo Photo%3C/text%3E%3C/svg%3E'">
+      <img src="${currentFoto}" alt="Foto Baru">
     </div>
   `;
   
@@ -1146,15 +1134,13 @@ function closeDuplicateNameModal() {
 }
 
 function confirmSamePerson() {
-  // User confirms it's the same person (moved to different unit)
   closeDuplicateNameModal();
-  submitData(true, true); // isUpdate = true, isPindahUnit = true
+  submitData(true, true);
 }
 
 function confirmDifferentPerson() {
-  // User confirms it's a different person
   closeDuplicateNameModal();
-  submitData(false); // isUpdate = false, create new
+  submitData(false);
 }
 
 // Load Provinsi
@@ -1341,7 +1327,6 @@ function removePhoto() {
 document.getElementById('personilForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
-  // Validasi email
   const email = document.getElementById('email').value;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
@@ -1359,7 +1344,6 @@ document.getElementById('personilForm').addEventListener('submit', async functio
   const nama = document.getElementById('nama').value.toUpperCase();
   const unit = document.getElementById('unit').value;
   
-  // Check duplicate in same unit (only for new mode)
   if (currentMode === 'new') {
     const duplicateInSameUnit = allPersonilData.find(p => {
       const pNama = (p['NAMA'] || p['Nama'] || '').toUpperCase();
@@ -1368,23 +1352,16 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     });
     
     if (duplicateInSameUnit) {
-      pendingFormData = {
-        email: email,
-        nama: nama,
-        unit: unit
-      };
-      
+      pendingFormData = { email, nama, unit };
       document.getElementById('duplicateName').textContent = nama;
       document.getElementById('duplicateUnit').textContent = unit;
       document.getElementById('confirmEmail').value = '';
       document.getElementById('emailMismatchError').style.display = 'none';
       document.getElementById('confirmEmail').classList.remove('modal-input-error');
-      
       showDuplicateModal();
       return;
     }
     
-    // Check duplicate in other units
     const duplicateInOther = checkDuplicateNameInOtherUnits(nama, unit);
     if (duplicateInOther) {
       showDuplicateNameModal(duplicateInOther, selectedPhoto);
@@ -1392,7 +1369,6 @@ document.getElementById('personilForm').addEventListener('submit', async functio
     }
   }
   
-  // Submit
   await submitData(currentMode === 'edit', false);
 });
 
@@ -1401,7 +1377,6 @@ async function submitData(isUpdate = false, isPindahUnit = false) {
   const progressContainer = document.getElementById('progressContainer');
   const progressFill = document.getElementById('progressFill');
   
-  // Check if this is a manual pindah unit (via button)
   if (isUpdate && selectedPersonData && selectedPersonData.isPindahUnit) {
     isPindahUnit = true;
   }
@@ -1452,30 +1427,20 @@ async function submitData(isUpdate = false, isPindahUnit = false) {
       jabatan: document.getElementById('jabatan').value,
       nohp: document.getElementById('nohp').value,
       email: document.getElementById('email').value,
-      provinsi: provinsi,
-      kabkota: kabkota,
-      kecamatan: kecamatan,
-      kelurahan: kelurahan,
-      dusun: dusun,
-      rt: rt,
-      rw: rw,
-      alamatLengkap: alamatLengkap,
+      provinsi, kabkota, kecamatan, kelurahan, dusun, rt, rw,
+      alamatLengkap,
       foto: selectedPhoto,
       isUpdate: isUpdate || isPindahUnit,
-      isPindahUnit: isPindahUnit
+      isPindahUnit
     };
     
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(personilData)
     });
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     
     let result;
     try {
@@ -1493,20 +1458,15 @@ async function submitData(isUpdate = false, isPindahUnit = false) {
     setTimeout(() => {
       if (result && result.success) {
         let message = '✓ Data personil berhasil ';
-        if (isPindahUnit) {
-          message += 'dipindahkan ke unit baru!';
-        } else if (isUpdate) {
-          message += 'diupdate!';
-        } else {
-          message += 'disimpan!';
-        }
+        if (isPindahUnit) message += 'dipindahkan ke unit baru!';
+        else if (isUpdate) message += 'diupdate!';
+        else message += 'disimpan!';
         showAlert(message, 'success');
         showSuccessModal();
       } else {
         showAlert('⚠️ Data mungkin tersimpan, tapi ada peringatan: ' + (result?.message || 'Unknown'), 'error');
       }
       
-      // Reset form
       document.getElementById('personilForm').reset();
       document.getElementById('namaSelectGroup').classList.add('hidden');
       removePhoto();
@@ -1581,17 +1541,18 @@ function showAlert(message, type) {
   const alert = document.createElement('div');
   alert.className = `alert alert-${type}`;
   alert.textContent = message;
-  
   alertContainer.appendChild(alert);
-  
-  setTimeout(() => {
-    alert.remove();
-  }, 5000);
+  setTimeout(() => alert.remove(), 5000);
 }
 
 // Init
 loadProvinsi();
 loadAllPersonilData();
 </script>
+
+<footer>
+  <div>© 2026 <strong>Database Personil - BRI Magelang</strong></div>
+</footer>
+
 </body>
 </html>

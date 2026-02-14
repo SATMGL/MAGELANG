@@ -300,218 +300,185 @@ footer {
   transition: 0.3s;
 }
 .unit-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   box-shadow: 0 12px 30px rgba(0,0,0,0.12);
 }
 .unit-card-header {
   background: linear-gradient(120deg, #5f7cff, #8aa6ff);
   color: white;
   padding: 15px;
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 15px;
   text-align: center;
-  flex-shrink: 0;
+  position: relative;
 }
-@media (max-width: 600px) {
-  .unit-card-header {
-    font-size: 10px;
-    padding: 10px 5px;
-  }
+.info-badge {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
 }
 .unit-card-body {
   padding: 15px;
-  overflow-y: auto;
   flex: 1;
-  font-size: 12px;
-  line-height: 1.8;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .unit-card-body::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 .unit-card-body::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
 }
 .unit-card-body::-webkit-scrollbar-thumb {
   background: rgba(95, 124, 255, 0.3);
-  border-radius: 2px;
+  border-radius: 10px;
 }
-@media (max-width: 600px) {
-  .unit-card-body {
-    padding: 10px;
-    font-size: 9px;
-    line-height: 1.5;
-  }
+.unit-card-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(95, 124, 255, 0.5);
 }
 .unit-card-body.compact {
-  font-size: 11px;
-  line-height: 1.6;
-}
-@media (max-width: 600px) {
-  .unit-card-body.compact {
-    font-size: 8px;
-    line-height: 1.4;
-  }
+  padding: 10px;
 }
 .personil-item {
-  padding: 8px 0;
+  padding: 10px;
   border-bottom: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transition: 0.2s;
 }
 .personil-item:last-child {
   border-bottom: none;
 }
-.personil-item::before {
-  content: "•";
-  color: #5f7cff;
-  font-weight: bold;
-  font-size: 16px;
-}
-@media (max-width: 600px) {
-  .personil-item {
-    padding: 4px 0;
-    gap: 4px;
-  }
-  .personil-item::before {
-    font-size: 10px;
-  }
+.personil-item:hover {
+  background: #f7f9ff;
+  border-radius: 8px;
 }
 .personil-name {
-  font-weight: 500;
-  color: #2b2f4b;
   cursor: pointer;
+  color: #5f7cff;
+  font-weight: 500;
+  font-size: 14px;
+  display: block;
   transition: 0.2s;
 }
 .personil-name:hover {
-  color: #5f7cff;
+  color: #ff9acb;
   text-decoration: underline;
 }
 
-/* Card untuk Filter Per Unit (Normal Size) */
+/* Single unit display untuk filter */
 .single-unit-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  max-width: 600px;
   width: 100%;
-  margin-bottom: 30px;
+  max-width: 700px;
 }
 .unit-card-large {
   background: white;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   overflow: hidden;
-  max-height: none;
+  min-height: 300px;
+  max-height: 600px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
-}
-.unit-card-large .unit-card-header {
-  font-size: 18px;
-  padding: 20px;
 }
 .unit-card-large .unit-card-body {
-  padding: 25px;
-  font-size: 15px;
-  line-height: 2;
+  padding: 20px;
 }
 .unit-card-large .personil-item {
-  padding: 12px 0;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid #e0e7ff;
+  border-radius: 10px;
 }
-.unit-card-large .personil-item::before {
-  font-size: 20px;
+.unit-card-large .personil-item:hover {
+  background: #f7f9ff;
+  border-color: #5f7cff;
 }
 
-.info-badge {
-  display: inline-block;
-  background: #e0e7ff;
-  color: #5f7cff;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: 10px;
+/* Responsive grid */
+@media (max-width: 1200px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
-@media (max-width: 600px) {
-  .info-badge {
-    font-size: 9px;
-    padding: 4px 8px;
-    margin-left: 5px;
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .unit-card {
+    max-height: 350px;
   }
 }
 
-/* Modal Detail Personil */
+/* Modal untuk detail personil */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 200;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.5);
-  animation: fadeIn 0.3s;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
 }
 .modal-content {
   background-color: white;
-  margin: 5% auto;
+  margin: 3% auto;
   padding: 0;
-  border-radius: 20px;
+  border-radius: 18px;
   width: 90%;
-  max-width: 500px;
-  max-height: 85vh;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  animation: slideIn 0.3s;
+  max-width: 600px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+  animation: modalSlideIn 0.3s ease;
+  max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
-@keyframes slideIn {
+@keyframes modalSlideIn {
   from {
-    transform: translateY(-50px);
     opacity: 0;
+    transform: translateY(-50px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 .modal-header {
   background: linear-gradient(120deg, #5f7cff, #8aa6ff);
   color: white;
-  padding: 25px;
-  text-align: center;
-  position: relative;
-  flex-shrink: 0;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .modal-header h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
 }
 .close {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
   color: white;
   font-size: 32px;
-  font-weight: bold;
+  font-weight: 300;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.3s;
   line-height: 1;
 }
 .close:hover {
-  transform: translateY(-50%) scale(1.2);
+  transform: rotate(90deg);
 }
 .modal-body {
-  padding: 30px;
+  padding: 25px;
   overflow-y: auto;
   flex: 1;
 }
@@ -520,201 +487,376 @@ footer {
 }
 .modal-body::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
 }
 .modal-body::-webkit-scrollbar-thumb {
   background: rgba(95, 124, 255, 0.3);
-  border-radius: 3px;
+  border-radius: 10px;
 }
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(95, 124, 255, 0.5);
+}
+
+/* Photo Container in Modal */
 .photo-container {
   text-align: center;
   margin-bottom: 25px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
+  background: linear-gradient(135deg, #f7f9ff, #eef3ff);
+  padding: 20px;
+  border-radius: 15px;
 }
 .photo-container img {
-  max-width: 180px;
-  max-height: 180px;
+  max-width: 100%;
+  height: auto;
+  max-height: 350px;
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  object-fit: cover;
 }
-.detail-row {
+
+/* Button Request ID Card */
+.btn-request-idcard {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(120deg, #ff9800, #ffa726);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 20px;
-  padding-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+.btn-request-idcard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+}
+.btn-request-idcard span:first-child {
+  font-size: 20px;
+}
+
+/* Detail Rows */
+.detail-row {
+  display: flex;
+  margin-bottom: 15px;
   border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 12px;
 }
 .detail-row:last-child {
   border-bottom: none;
   margin-bottom: 0;
 }
 .detail-label {
-  font-size: 12px;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 5px;
+  flex: 0 0 35%;
+  font-weight: 600;
+  color: #5f7cff;
+  font-size: 13px;
 }
 .detail-value {
-  font-size: 15px;
+  flex: 1;
   color: #2b2f4b;
-  font-weight: 600;
-  word-wrap: break-word;
+  font-size: 13px;
+  word-break: break-word;
 }
 .detail-value.empty {
-  color: #ccc;
+  color: #999;
   font-style: italic;
-  font-weight: 400;
 }
 .detail-value a {
   color: #5f7cff;
   text-decoration: none;
+  transition: 0.2s;
 }
 .detail-value a:hover {
+  color: #ff9acb;
   text-decoration: underline;
+}
+
+/* Confirmation Modal */
+.confirm-modal {
+  display: none;
+  position: fixed;
+  z-index: 250;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+.confirm-modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 0;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalBounceIn 0.4s ease;
+  overflow: hidden;
+}
+@keyframes modalBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.confirm-modal-header {
+  background: linear-gradient(120deg, #ff9800, #ffa726);
+  color: white;
+  padding: 25px;
+  text-align: center;
+}
+.confirm-modal-icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+.confirm-modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.confirm-modal-body {
+  padding: 30px 25px;
+}
+.confirm-modal-message {
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  white-space: pre-line;
+}
+.confirm-modal-personil {
+  background: linear-gradient(135deg, #f7f9ff, #eef3ff);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  text-align: center;
+}
+.confirm-modal-personil-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2b2f4b;
+  margin-bottom: 8px;
+}
+.confirm-modal-personil-unit {
+  font-size: 14px;
+  color: #5f7cff;
+  font-weight: 500;
+}
+.confirm-modal-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+.btn-confirm {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+.btn-confirm-yes {
+  background: linear-gradient(120deg, #2e7d32, #43a047);
+  color: white;
+}
+.btn-confirm-yes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+.btn-confirm-yes:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-confirm-no {
+  background: #e0e7ff;
+  color: #5f7cff;
+}
+.btn-confirm-no:hover {
+  background: #d0d9ff;
+  transform: translateY(-2px);
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 18px 30px;
+  border-radius: 50px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 300;
+  transition: bottom 0.4s ease;
+  min-width: 300px;
+  justify-content: center;
+}
+.toast.show {
+  bottom: 30px;
+}
+.toast-icon {
+  font-size: 24px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+.toast.success .toast-icon {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.toast.error .toast-icon {
+  background: #ffebee;
+  color: #c62828;
+}
+.toast.warning .toast-icon {
+  background: #fff3e0;
+  color: #f57c00;
+}
+.toast-message {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2b2f4b;
 }
 
 /* Skeleton Loading */
 .skeleton-card {
   pointer-events: none;
 }
-.skeleton-text {
-  height: 16px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 4px;
-}
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #7a8fff 25%, #a0b3ff 50%, #7a8fff 75%);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 @keyframes shimmer {
-  0% {
-    background-position: 200% 0;
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-text {
+  height: 14px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    margin: 5% auto;
+    max-height: 85vh;
   }
-  100% {
-    background-position: -200% 0;
+  .modal-body {
+    padding: 20px;
+  }
+  .detail-row {
+    flex-direction: column;
+  }
+  .detail-label {
+    margin-bottom: 5px;
+  }
+  .confirm-modal-content {
+    width: 95%;
+  }
+  .confirm-modal-buttons {
+    flex-direction: column;
+  }
+  .toast {
+    min-width: 85%;
+    padding: 15px 20px;
   }
 }
 </style>
 </head>
 <body>
+
 <header>
-  <a href="javascript:history.back()" class="back-btn">← Kembali</a>
+  <a href="index.html" class="back-btn">← Kembali</a>
   <h1>📊 Database Personil</h1>
 </header>
 
-<div class="container">
-  <div class="control-panel">
+<div class="control-panel">
+  <div class="container">
     <div class="button-group">
-      <select class="filter-select" id="unitFilter" onchange="filterByUnit()">
-        <option value="">🔍 Filter Per Unit...</option>
-        <option value="AKMIL">AKMIL</option>
-        <option value="BANDONGAN">BANDONGAN</option>
-        <option value="BOROBUDUR">BOROBUDUR</option>
-        <option value="BOTTON">BOTTON</option>
-        <option value="CANDIMULYO">CANDIMULYO</option>
-        <option value="GLAGAH">GLAGAH</option>
-        <option value="GRABAG">GRABAG</option>
-        <option value="KAJORAN">KAJORAN</option>
-        <option value="KALIANGKRIK">KALIANGKRIK</option>
-        <option value="KARANGGADING">KARANGGADING</option>
-        <option value="KC MAGELANG">KC MAGELANG</option>
-        <option value="KCP SHOPPING">KCP SHOPPING</option>
-        <option value="KRASAK">KRASAK</option>
-        <option value="MAGELANG SELATAN">MAGELANG SELATAN</option>
-        <option value="MAGELANG UTARA">MAGELANG UTARA</option>
-        <option value="MERTOYUDAN">MERTOYUDAN</option>
-        <option value="NGABLAK">NGABLAK</option>
-        <option value="PAKIS">PAKIS</option>
-        <option value="PAYAMAN">PAYAMAN</option>
-        <option value="REJOWINANGUN">REJOWINANGUN</option>
-        <option value="SALAMAN">SALAMAN</option>
-        <option value="SECANG">SECANG</option>
-        <option value="SUKARNO HATTA">SUKARNO HATTA</option>
-        <option value="TEGALREJO">TEGALREJO</option>
-        <option value="TEMPURAN">TEMPURAN</option>
-        <option value="WINDUSARI">WINDUSARI</option>
+      <button class="btn btn-primary" onclick="showAllUnits()">📋 Lihat Semua</button>
+      <select id="unitFilter" class="filter-select" onchange="filterByUnit()">
+        <option value="">-- Filter berdasarkan Unit --</option>
       </select>
-      <button class="btn btn-primary" onclick="showAllUnits()">
-        📋 Lihat Semua
-      </button>
-      <button class="btn btn-secondary" onclick="resetView()">
-        🔄 Reset
-      </button>
-      <a href="data-personil.html" class="btn btn-success">
-        ✏️ Input/Ubah Data
-      </a>
+      <a href="data-personil.html" class="btn btn-secondary">➕ Tambah Data</a>
     </div>
   </div>
+</div>
 
-  <div class="content-area" id="contentArea">
-    <div class="grid-container">
-      <div class="unit-card skeleton-card">
-        <div class="unit-card-header skeleton-shimmer">
-          <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
-        </div>
-        <div class="unit-card-body">
-          <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 70%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
-        </div>
+<div class="content-area" id="contentArea">
+  <div class="grid-container">
+    <!-- Skeleton Loading -->
+    <div class="unit-card skeleton-card">
+      <div class="unit-card-header skeleton-shimmer">
+        <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
       </div>
-      <div class="unit-card skeleton-card">
-        <div class="unit-card-header skeleton-shimmer">
-          <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
-        </div>
-        <div class="unit-card-body">
-          <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
-        </div>
+      <div class="unit-card-body">
+        <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
       </div>
-      <div class="unit-card skeleton-card">
-        <div class="unit-card-header skeleton-shimmer">
-          <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
-        </div>
-        <div class="unit-card-body">
-          <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 70%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
-        </div>
+    </div>
+    <div class="unit-card skeleton-card">
+      <div class="unit-card-header skeleton-shimmer">
+        <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
       </div>
-      <div class="unit-card skeleton-card">
-        <div class="unit-card-header skeleton-shimmer">
-          <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
-        </div>
-        <div class="unit-card-body">
-          <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
-        </div>
+      <div class="unit-card-body">
+        <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 70%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
       </div>
-      <div class="unit-card skeleton-card">
-        <div class="unit-card-header skeleton-shimmer">
-          <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
-        </div>
-        <div class="unit-card-body">
-          <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 70%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
-        </div>
+    </div>
+    <div class="unit-card skeleton-card">
+      <div class="unit-card-header skeleton-shimmer">
+        <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
       </div>
-      <div class="unit-card skeleton-card">
-        <div class="unit-card-header skeleton-shimmer">
-          <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
-        </div>
-        <div class="unit-card-body">
-          <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
-          <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
-        </div>
+      <div class="unit-card-body">
+        <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 70%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
+      </div>
+    </div>
+    <div class="unit-card skeleton-card">
+      <div class="unit-card-header skeleton-shimmer">
+        <div class="skeleton-text" style="width: 60%; margin: 0 auto;"></div>
+      </div>
+      <div class="unit-card-body">
+        <div class="skeleton-text" style="width: 75%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 90%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 80%; margin-bottom: 10px;"></div>
+        <div class="skeleton-text" style="width: 85%; margin-bottom: 10px;"></div>
       </div>
     </div>
   </div>
@@ -733,14 +875,59 @@ footer {
   </div>
 </div>
 
+<!-- Confirmation Modal -->
+<div id="confirmModal" class="confirm-modal">
+  <div class="confirm-modal-content">
+    <div class="confirm-modal-header">
+      <div class="confirm-modal-icon">📸</div>
+      <h3 class="confirm-modal-title">Request Cetak ID Card</h3>
+    </div>
+    <div class="confirm-modal-body">
+      <p class="confirm-modal-message">Apakah Anda yakin ingin menambahkan personil ini ke daftar request cetak ID Card?</p>
+      <div class="confirm-modal-personil">
+        <div class="confirm-modal-personil-name" id="confirmPersonilName">-</div>
+        <div class="confirm-modal-personil-unit" id="confirmPersonilUnit">-</div>
+      </div>
+      <p class="confirm-modal-message" style="font-size: 13px; color: #999;">Foto akan di-copy ke folder REQ_CETAK</p>
+      <div class="confirm-modal-buttons">
+        <button class="btn-confirm btn-confirm-no" onclick="closeConfirmModal()">Batal</button>
+        <button class="btn-confirm btn-confirm-yes" onclick="confirmRequestIdCard()">Ya, Request</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">
+  <div class="toast-icon" id="toastIcon">✓</div>
+  <div class="toast-message" id="toastMessage">Success</div>
+</div>
+
+<!-- Info Modal (for duplicate/warning messages) -->
+<div id="infoModal" class="confirm-modal">
+  <div class="confirm-modal-content">
+    <div class="confirm-modal-header" id="infoModalHeader" style="background: linear-gradient(120deg, #ff9800, #ffa726);">
+      <div class="confirm-modal-icon" id="infoModalIcon">⚠️</div>
+      <h3 class="confirm-modal-title" id="infoModalTitle">Informasi</h3>
+    </div>
+    <div class="confirm-modal-body">
+      <p class="confirm-modal-message" id="infoModalMessage">-</p>
+      <div style="margin-top: 20px;">
+        <button class="btn-confirm btn-confirm-yes" onclick="closeInfoModal()" style="width: 100%;">OK, Mengerti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
-  <p>© 2025 Database Personil - BRI Magelang</p>
+  <p>© 2026 Database Personil - BRI Magelang</p>
 </footer>
 
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOnFO2TxMuqSsZqcFBBwDQCl-vih098DzGi54XyToJzht5RmgO3PApEyFtTP5cSBGNQA/exec';
 
 let allData = [];
+let currentPersonilData = null; // For request ID card
 
 // Load data dari spreadsheet
 async function loadData() {
@@ -755,36 +942,31 @@ async function loadData() {
   }
 }
 
-// Fungsi untuk convert Google Drive link ke direct link
+// Convert Google Drive link to thumbnail
 function convertGoogleDriveLink(url) {
-  if (!url || url === '-' || url.trim() === '') return '';
+  if (!url || url === '-' || url.trim() === '') {
+    return '';
+  }
   
   // Cek apakah ini link Google Drive
   if (url.includes('drive.google.com')) {
-    // Extract file ID dari berbagai format link Google Drive
     let fileId = '';
     
-    // Format: https://drive.google.com/file/d/FILE_ID/view...
+    // Pattern 1: /d/FILE_ID/
     const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
     if (match1) {
       fileId = match1[1];
     }
     
-    // Format: https://drive.google.com/open?id=FILE_ID
+    // Pattern 2: ?id=FILE_ID
     const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
     if (match2) {
       fileId = match2[1];
     }
     
     if (fileId) {
-      // OPSI 1: Gunakan Google Drive Proxy (bypass CORS)
-      // return `https://lh3.googleusercontent.com/d/${fileId}`;
-      
-      // OPSI 2: Gunakan Drive thumbnail API
+      // Return thumbnail URL
       return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
-      
-      // OPSI 3: Original method (kadang diblock CORS)
-      // return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
   }
   
@@ -792,17 +974,238 @@ function convertGoogleDriveLink(url) {
   return url;
 }
 
+// Show Toast Notification
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const toastIcon = document.getElementById('toastIcon');
+  const toastMessage = document.getElementById('toastMessage');
+  
+  // Set icon based on type
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠'
+  };
+  
+  toastIcon.textContent = icons[type] || icons.success;
+  toastMessage.textContent = message;
+  
+  // Remove old classes
+  toast.classList.remove('success', 'error', 'warning');
+  toast.classList.add(type);
+  toast.classList.add('show');
+  
+  // Auto hide - warning gets longer duration
+  const duration = type === 'warning' ? 7000 : 4000;
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, duration);
+}
+
+// Open Confirmation Modal
+function openRequestIdCardModal(personData) {
+  currentPersonilData = personData;
+  
+  const modal = document.getElementById('confirmModal');
+  const nameEl = document.getElementById('confirmPersonilName');
+  const unitEl = document.getElementById('confirmPersonilUnit');
+  
+  nameEl.textContent = personData['NAMA'] || '-';
+  unitEl.textContent = personData['UNIT KERJA'] || '-';
+  
+  modal.style.display = 'block';
+}
+
+// Close Confirmation Modal
+function closeConfirmModal() {
+  document.getElementById('confirmModal').style.display = 'none';
+  currentPersonilData = null;
+}
+
+// Show Info Modal (for warnings/info)
+function showInfoModal(title, message, icon = '⚠️', headerColor = 'linear-gradient(120deg, #ff9800, #ffa726)') {
+  const modal = document.getElementById('infoModal');
+  const modalTitle = document.getElementById('infoModalTitle');
+  const modalMessage = document.getElementById('infoModalMessage');
+  const modalIcon = document.getElementById('infoModalIcon');
+  const modalHeader = document.getElementById('infoModalHeader');
+  
+  modalTitle.textContent = title;
+  modalMessage.textContent = message;
+  modalIcon.textContent = icon;
+  modalHeader.style.background = headerColor;
+  
+  modal.style.display = 'block';
+}
+
+// Close Info Modal
+function closeInfoModal() {
+  document.getElementById('infoModal').style.display = 'none';
+}
+
+// FIXED: Confirm Request ID Card with better error handling
+async function confirmRequestIdCard() {
+  if (!currentPersonilData) return;
+  
+  const confirmBtn = document.querySelector('.btn-confirm-yes');
+  const originalText = confirmBtn.textContent;
+  
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = '⏳ Memproses...';
+  
+  try {
+    const requestData = {
+      action: 'REQUEST_ID_CARD',
+      id: currentPersonilData['ID'],
+      nama: currentPersonilData['NAMA'],
+      unit: currentPersonilData['UNIT KERJA'],
+      jabatan: currentPersonilData['JABATAN'],
+      nohp: currentPersonilData['NO. HP'],
+      email: currentPersonilData['ALAMAT EMAIL'],
+      fotoLink: currentPersonilData['LINK FOTO']
+    };
+    
+    // Save nama before closing modal (karena closeConfirmModal() akan set currentPersonilData = null)
+    const personilNama = currentPersonilData['NAMA'];
+    
+    console.log('=== REQUEST ID CARD DEBUG ===');
+    console.log('Sending request:', requestData);
+    
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      redirect: 'follow',
+      body: JSON.stringify(requestData)
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response statusText:', response.statusText);
+    console.log('Response ok:', response.ok);
+    console.log('Response headers:', [...response.headers.entries()]);
+    
+    // Get response as text first
+    const responseText = await response.text();
+    console.log('Response text length:', responseText.length);
+    console.log('Response text (first 500 chars):', responseText.substring(0, 500));
+    
+    // Try to parse as JSON
+    let result = null;
+    let parseSuccess = false;
+    
+    try {
+      // Try direct JSON parse
+      result = JSON.parse(responseText);
+      parseSuccess = true;
+      console.log('✓ JSON parse success:', result);
+    } catch (parseError) {
+      console.log('✗ Direct JSON parse failed:', parseError.message);
+      
+      // Try to extract JSON from HTML response (sometimes Apps Script wraps it)
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          result = JSON.parse(jsonMatch[0]);
+          parseSuccess = true;
+          console.log('✓ Extracted JSON from HTML:', result);
+        } catch (e) {
+          console.log('✗ Extracted JSON parse failed:', e.message);
+        }
+      }
+    }
+    
+    closeConfirmModal();
+    
+    // If we successfully parsed JSON, use it
+    if (parseSuccess && result) {
+      console.log('Using parsed result');
+      if (result.success) {
+        showInfoModal(
+          '✅ Request Berhasil!',
+          `Request cetak ID Card untuk ${personilNama} telah berhasil dikirim!`,
+          '🎉',
+          'linear-gradient(120deg, #2e7d32, #43a047)'
+        );
+      } else if (result.duplicate) {
+        showInfoModal(
+          '⚠️ Request Sudah Ada',
+          `${personilNama} sudah memiliki request cetak ID Card yang masih dalam proses.`,
+          '📋',
+          'linear-gradient(120deg, #ff9800, #ffa726)'
+        );
+      } else {
+        showInfoModal(
+          '⚠️ Request Sudah Ada',
+          result.message || `${personilNama} sudah memiliki request cetak ID Card yang masih dalam proses.`,
+          '📋',
+          'linear-gradient(120deg, #ff9800, #ffa726)'
+        );
+      }
+    } 
+    // If parsing failed but HTTP response is OK (200), assume success
+    else if (response.ok) {
+      console.log('⚠ JSON parse failed but HTTP OK - assuming success');
+      showInfoModal(
+        '✅ Request Berhasil!',
+        `Request cetak ID Card untuk ${personilNama} telah berhasil dikirim!`,
+        '🎉',
+        'linear-gradient(120deg, #2e7d32, #43a047)'
+      );
+      
+      // Show additional info for debugging
+      console.log('💡 TIP: Cek spreadsheet untuk memastikan data tersimpan');
+    }
+    // If both parsing failed AND HTTP not OK
+    else {
+      console.log('✗ Both JSON parse and HTTP status failed');
+      showInfoModal(
+        'Peringatan',
+        'Response tidak valid dari server, tapi request mungkin berhasil. Silakan cek spreadsheet untuk memastikan.',
+        '⚠️',
+        'linear-gradient(120deg, #ff9800, #ffa726)'
+      );
+    }
+    
+    console.log('=== END DEBUG ===');
+    
+  } catch (error) {
+    console.error('❌ CATCH ERROR:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    closeConfirmModal();
+    
+    // Check if it's a network error
+    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+      showInfoModal(
+        'Koneksi Gagal',
+        'Tidak dapat terhubung ke server. Periksa koneksi internet Anda dan coba lagi.',
+        '❌',
+        'linear-gradient(120deg, #ff6b6b, #ff8787)'
+      );
+    } else {
+      // For other errors, show warning but data might be saved
+      showInfoModal(
+        'Peringatan',
+        'Terjadi error saat memproses response. Request mungkin tetap berhasil tersimpan. Silakan cek spreadsheet untuk memastikan.',
+        '⚠️',
+        'linear-gradient(120deg, #ff9800, #ffa726)'
+      );
+    }
+  } finally {
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = originalText;
+  }
+}
+
 // Fungsi untuk menampilkan detail personil
 function showPersonilDetail(personData) {
   const modal = document.getElementById('detailModal');
   const modalBody = document.getElementById('modalBody');
   
-  // Debug: tampilkan data di console
-  console.log('Person Data:', personData);
-  
-  // Ambil data sesuai nama kolom di Google Sheets
   const id = personData['ID'] || '-';
-  const tanggal = personData['TANGGAL'] || '-';
+  const tanggal = personData['TANGGAL'] || personData['Tanggal'] || '-';
   const nama = personData['NAMA'] || '-';
   const unit = personData['UNIT KERJA'] || '-';
   const jabatan = personData['JABATAN'] || '-';
@@ -821,29 +1224,30 @@ function showPersonilDetail(personData) {
   // Konversi Google Drive link ke direct link
   const foto = convertGoogleDriveLink(fotoOriginal);
   
-  // Debug: tampilkan URL foto
-  console.log('Person Data:', personData);
-  console.log('Foto URL Original:', fotoOriginal);
-  console.log('Foto URL Converted:', foto);
-  console.log('All keys in personData:', Object.keys(personData));
-  
   let html = '';
   
   // Tampilkan foto jika ada
   if (foto && foto !== '-' && foto.trim() !== '') {
     html += `
       <div class="photo-container">
-        <img src="${foto}" alt="Foto ${nama}" onerror="console.error('Failed to load image:', '${foto}'); this.parentElement.innerHTML='<p style=color:#ff6b6b;>❌ Foto gagal dimuat<br><small>${foto}</small></p>'">
+        <img src="${foto}" alt="Foto ${nama}" onerror="this.parentElement.innerHTML='<p style=color:#ff6b6b;>❌ Foto gagal dimuat</p>'">
       </div>
     `;
   } else {
     html += `
       <div class="photo-container">
-        <p style="color: #999; font-size: 14px;">⚠️ Tidak ada foto<br><small>Original: ${fotoOriginal || 'kosong'}</small></p>
+        <p style="color: #999; font-size: 14px;">⚠️ Tidak ada foto</p>
       </div>
     `;
-    console.warn('No photo URL found. Original:', fotoOriginal);
   }
+  
+  // Button Request ID Card
+  html += `
+    <button class="btn-request-idcard" onclick='openRequestIdCardModal(${JSON.stringify(personData).replace(/'/g, "&#39;")})'>
+      <span>📸</span>
+      <span>Request Cetak ID Card</span>
+    </button>
+  `;
   
   // Data personil
   html += `
@@ -885,7 +1289,7 @@ function showPersonilDetail(personData) {
     </div>
   `;
   
-  // Detail alamat (collapsible)
+  // Detail alamat
   if (provinsi !== '-' || kabkota !== '-' || kecamatan !== '-') {
     html += `
       <div class="detail-row">
@@ -915,8 +1319,17 @@ function closeModal() {
 // Close modal when clicking outside of it
 window.onclick = function(event) {
   const modal = document.getElementById('detailModal');
+  const confirmModal = document.getElementById('confirmModal');
+  const infoModal = document.getElementById('infoModal');
+  
   if (event.target == modal) {
     modal.style.display = 'none';
+  }
+  if (event.target == confirmModal) {
+    closeConfirmModal();
+  }
+  if (event.target == infoModal) {
+    closeInfoModal();
   }
 }
 
@@ -951,6 +1364,16 @@ async function showAllUnits() {
   
   // Urutkan unit secara alfabetis
   const sortedUnits = Object.keys(groupedData).sort();
+  
+  // Populate unit filter dropdown
+  const unitFilter = document.getElementById('unitFilter');
+  unitFilter.innerHTML = '<option value="">-- Filter berdasarkan Unit --</option>';
+  sortedUnits.forEach(unit => {
+    const option = document.createElement('option');
+    option.value = unit;
+    option.textContent = unit;
+    unitFilter.appendChild(option);
+  });
   
   // Buat grid
   let html = '<div class="grid-container">';
