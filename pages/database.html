@@ -115,6 +115,7 @@ header h1 {
   align-items: center;
   justify-content: center;
   width: 100%;
+  flex-wrap: wrap;
 }
 @media (max-width: 600px) {
   .button-group {
@@ -131,6 +132,8 @@ header h1 {
   transition: 0.3s;
   font-family: 'Poppins', sans-serif;
   white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
 }
 @media (max-width: 600px) {
   .btn {
@@ -153,6 +156,14 @@ header h1 {
 .btn-secondary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 154, 203, 0.3);
+}
+.btn-success {
+  background: linear-gradient(120deg, #2e7d32, #43a047);
+  color: white;
+}
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
 }
 .filter-select {
   padding: 10px 15px;
@@ -369,6 +380,12 @@ footer {
 .personil-name {
   font-weight: 500;
   color: #2b2f4b;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.personil-name:hover {
+  color: #5f7cff;
+  text-decoration: underline;
 }
 
 /* Card untuk Filter Per Unit (Normal Size) */
@@ -422,6 +439,137 @@ footer {
     padding: 4px 8px;
     margin-left: 5px;
   }
+}
+
+/* Modal Detail Personil */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  animation: fadeIn 0.3s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-content {
+  background-color: white;
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 85vh;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: slideIn 0.3s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.modal-header {
+  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  color: white;
+  padding: 25px;
+  text-align: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+.close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  line-height: 1;
+}
+.close:hover {
+  transform: translateY(-50%) scale(1.2);
+}
+.modal-body {
+  padding: 30px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(95, 124, 255, 0.3);
+  border-radius: 3px;
+}
+.photo-container {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+}
+.photo-container img {
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.detail-row {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.detail-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.detail-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+.detail-value {
+  font-size: 15px;
+  color: #2b2f4b;
+  font-weight: 600;
+  word-wrap: break-word;
+}
+.detail-value.empty {
+  color: #ccc;
+  font-style: italic;
+  font-weight: 400;
+}
+.detail-value a {
+  color: #5f7cff;
+  text-decoration: none;
+}
+.detail-value a:hover {
+  text-decoration: underline;
 }
 
 /* Skeleton Loading */
@@ -494,6 +642,9 @@ footer {
       <button class="btn btn-secondary" onclick="resetView()">
         🔄 Reset
       </button>
+      <a href="data-personil.html" class="btn btn-success">
+        ✏️ Input/Ubah Data
+      </a>
     </div>
   </div>
 
@@ -569,6 +720,19 @@ footer {
   </div>
 </div>
 
+<!-- Modal Detail Personil -->
+<div id="detailModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Detail Personil</h2>
+      <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Content will be inserted by JavaScript -->
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>© 2025 Database Personil - BRI Magelang</p>
 </footer>
@@ -588,6 +752,158 @@ async function loadData() {
   } catch (error) {
     console.error('Error loading data:', error);
     return [];
+  }
+}
+
+// Fungsi untuk convert Google Drive link ke direct link
+function convertGoogleDriveLink(url) {
+  if (!url || url === '-' || url.trim() === '') return '';
+  
+  // Cek apakah ini link Google Drive
+  if (url.includes('drive.google.com')) {
+    // Extract file ID dari berbagai format link Google Drive
+    let fileId = '';
+    
+    // Format: https://drive.google.com/file/d/FILE_ID/view...
+    const match1 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match1) {
+      fileId = match1[1];
+    }
+    
+    // Format: https://drive.google.com/open?id=FILE_ID
+    const match2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (match2) {
+      fileId = match2[1];
+    }
+    
+    if (fileId) {
+      // Konversi ke direct link
+      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+  }
+  
+  // Kalau bukan Google Drive, return as is
+  return url;
+}
+
+// Fungsi untuk menampilkan detail personil
+function showPersonilDetail(personData) {
+  const modal = document.getElementById('detailModal');
+  const modalBody = document.getElementById('modalBody');
+  
+  // Debug: tampilkan data di console
+  console.log('Person Data:', personData);
+  
+  // Ambil data sesuai nama kolom di Google Sheets
+  const id = personData['ID'] || '-';
+  const tanggal = personData['TANGGAL'] || '-';
+  const nama = personData['NAMA'] || '-';
+  const unit = personData['UNIT KERJA'] || '-';
+  const jabatan = personData['JABATAN'] || '-';
+  const nohp = personData['NO. HP'] || '-';
+  const email = personData['ALAMAT EMAIL'] || '-';
+  const provinsi = personData['PROVINSI'] || '-';
+  const kabkota = personData['KOTA/KAB'] || '-';
+  const kecamatan = personData['KECAMATAN'] || '-';
+  const kelurahan = personData['KELURAHAN'] || '-';
+  const dusun = personData['DUSUN'] || '-';
+  const rt = personData['RT'] || '-';
+  const rw = personData['RW'] || '-';
+  const alamatLengkap = personData['ALAMAT LENGKAP'] || '-';
+  const fotoOriginal = personData['LINK FOTO'] || '';
+  
+  // Konversi Google Drive link ke direct link
+  const foto = convertGoogleDriveLink(fotoOriginal);
+  
+  // Debug: tampilkan URL foto
+  console.log('Foto URL Original:', fotoOriginal);
+  console.log('Foto URL Converted:', foto);
+  
+  let html = '';
+  
+  // Tampilkan foto jika ada
+  if (foto && foto !== '-' && foto.trim() !== '') {
+    html += `
+      <div class="photo-container">
+        <img src="${foto}" alt="Foto ${nama}" onerror="console.error('Failed to load image:', '${foto}'); this.parentElement.innerHTML='<p style=color:#ff6b6b;>❌ Foto gagal dimuat</p>'">
+      </div>
+    `;
+  } else {
+    console.warn('No photo URL found');
+  }
+  
+  // Data personil
+  html += `
+    <div class="detail-row">
+      <div class="detail-label">ID</div>
+      <div class="detail-value">${id}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Tanggal Input</div>
+      <div class="detail-value">${tanggal}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Nama Lengkap</div>
+      <div class="detail-value">${nama}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Unit Kerja</div>
+      <div class="detail-value">${unit}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Jabatan</div>
+      <div class="detail-value">${jabatan}</div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">No. HP</div>
+      <div class="detail-value ${nohp === '-' ? 'empty' : ''}">
+        ${nohp !== '-' ? `<a href="tel:${nohp}">${nohp}</a>` : nohp}
+      </div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Alamat Email</div>
+      <div class="detail-value ${email === '-' ? 'empty' : ''}">
+        ${email !== '-' ? `<a href="mailto:${email}">${email}</a>` : email}
+      </div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-label">Alamat Lengkap</div>
+      <div class="detail-value ${alamatLengkap === '-' ? 'empty' : ''}">${alamatLengkap}</div>
+    </div>
+  `;
+  
+  // Detail alamat (collapsible)
+  if (provinsi !== '-' || kabkota !== '-' || kecamatan !== '-') {
+    html += `
+      <div class="detail-row">
+        <div class="detail-label">Detail Alamat</div>
+        <div class="detail-value" style="font-size: 13px; line-height: 1.8;">
+          ${provinsi !== '-' ? `<div>📍 Provinsi: ${provinsi}</div>` : ''}
+          ${kabkota !== '-' ? `<div>🏙️ Kota/Kab: ${kabkota}</div>` : ''}
+          ${kecamatan !== '-' ? `<div>🗺️ Kecamatan: ${kecamatan}</div>` : ''}
+          ${kelurahan !== '-' ? `<div>🏘️ Kelurahan: ${kelurahan}</div>` : ''}
+          ${dusun !== '-' ? `<div>🏡 Dusun: ${dusun}</div>` : ''}
+          ${rt !== '-' && rw !== '-' ? `<div>🏠 RT/RW: ${rt}/${rw}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+  
+  modalBody.innerHTML = html;
+  modal.style.display = 'block';
+}
+
+// Fungsi untuk menutup modal
+function closeModal() {
+  const modal = document.getElementById('detailModal');
+  modal.style.display = 'none';
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+  const modal = document.getElementById('detailModal');
+  if (event.target == modal) {
+    modal.style.display = 'none';
   }
 }
 
@@ -613,7 +929,6 @@ async function showAllUnits() {
   // Kelompokkan data berdasarkan unit
   const groupedData = {};
   data.forEach(person => {
-    // Gunakan nama kolom yang sesuai dengan spreadsheet (huruf besar)
     const unit = person['UNIT KERJA'] || person['Unit Kerja'] || 'LAINNYA';
     if (!groupedData[unit]) {
       groupedData[unit] = [];
@@ -653,9 +968,10 @@ async function showAllUnits() {
     
     sortedPersonils.forEach(person => {
       const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
+      const personDataStr = JSON.stringify(person).replace(/"/g, '&quot;');
       html += `
         <div class="personil-item">
-          <span class="personil-name">${nama}</span>
+          <span class="personil-name" onclick='showPersonilDetail(${personDataStr})'>${nama}</span>
         </div>
       `;
     });
@@ -726,9 +1042,10 @@ async function filterByUnit() {
   
   sortedFilteredData.forEach(person => {
     const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
+    const personDataStr = JSON.stringify(person).replace(/"/g, '&quot;');
     html += `
       <div class="personil-item">
-        <span class="personil-name">${nama}</span>
+        <span class="personil-name" onclick='showPersonilDetail(${personDataStr})'>${nama}</span>
       </div>
     `;
   });
@@ -757,9 +1074,7 @@ function resetView() {
     </div>
   `;
 }
-</script>
 
-<script>
 // Panggil showAllUnits setelah DOM dan script siap
 showAllUnits();
 </script>
