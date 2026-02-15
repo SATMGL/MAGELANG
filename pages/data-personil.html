@@ -12,13 +12,13 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #f7f9ff, #eef3ff);
-  color: #2b2f4b;
+  background: linear-gradient(135deg, #ffffff, #e3f2fd);
+  color: #1a1a1a;
 }
 header {
   padding: 2%;
   text-align: center;
-  background: linear-gradient(120deg, #5f7cff, #8aa6ff, #ff9acb);
+  background: linear-gradient(120deg, #1976d2, #2196f3, #ff9800);
   color: white;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   position: fixed;
@@ -81,7 +81,7 @@ header h1 {
 }
 .form-card h2 {
   margin-top: 0;
-  color: #5f7cff;
+  color: #1976d2;
   font-size: 20px;
   margin-bottom: 25px;
 }
@@ -92,14 +92,14 @@ header h1 {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #2b2f4b;
+  color: #1565c0;
   font-size: 14px;
 }
 .form-group input,
 .form-group select {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #e0e7ff;
+  border: 2px solid #bbdefb;
   border-radius: 10px;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
@@ -113,13 +113,16 @@ header h1 {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #5f7cff;
+  border-color: #1976d2;
 }
 .form-group.hidden {
   display: none;
 }
+.hidden {
+  display: none !important;
+}
 .photo-upload {
-  border: 2px dashed #e0e7ff;
+  border: 2px dashed #bbdefb;
   border-radius: 10px;
   padding: 25px;
   text-align: center;
@@ -128,8 +131,8 @@ header h1 {
   position: relative;
 }
 .photo-upload:hover {
-  border-color: #5f7cff;
-  background: #f8f9ff;
+  border-color: #1976d2;
+  background: #e3f2fd;
 }
 .photo-upload input[type="file"] {
   display: none;
@@ -164,14 +167,14 @@ header h1 {
 .progress-bar {
   width: 100%;
   height: 30px;
-  background: #e0e7ff;
+  background: #bbdefb;
   border-radius: 15px;
   overflow: hidden;
   position: relative;
 }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  background: linear-gradient(120deg, #1976d2, #42a5f5);
   width: 0%;
   transition: width 0.3s;
   display: flex;
@@ -184,7 +187,7 @@ header h1 {
 .btn-submit {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  background: linear-gradient(120deg, #1976d2, #42a5f5);
   color: white;
   border: none;
   border-radius: 12px;
@@ -196,7 +199,7 @@ header h1 {
 }
 .btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(95, 124, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
 }
 .btn-submit:disabled {
   opacity: 0.6;
@@ -204,7 +207,7 @@ header h1 {
 }
 .btn-list {
   padding: 10px 20px;
-  background: linear-gradient(120deg, #ff9acb, #ffc5e0);
+  background: linear-gradient(120deg, #ff9800, #ffa726);
   color: white;
   border: none;
   border-radius: 10px;
@@ -219,7 +222,7 @@ header h1 {
 }
 .btn-list:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(255, 154, 203, 0.3);
+  box-shadow: 0 6px 15px rgba(255, 152, 0, 0.3);
 }
 .alert {
   padding: 15px 20px;
@@ -294,7 +297,7 @@ header h1 {
 }
 .modal-btn {
   padding: 12px 30px;
-  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  background: linear-gradient(120deg, #1976d2, #42a5f5);
   color: white;
   border: none;
   border-radius: 10px;
@@ -307,7 +310,7 @@ header h1 {
 }
 .modal-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(95, 124, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
 }
 .modal-btn-cancel {
   background: linear-gradient(120deg, #ff6b6b, #ff8787);
@@ -316,15 +319,15 @@ header h1 {
   box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
 }
 .modal-btn-secondary {
-  background: linear-gradient(120deg, #ff9acb, #ffc5e0);
+  background: linear-gradient(120deg, #ff9800, #ffa726);
 }
 .modal-btn-secondary:hover {
-  box-shadow: 0 8px 20px rgba(255, 154, 203, 0.3);
+  box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
 }
 .modal-input {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #e0e7ff;
+  border: 2px solid #bbdefb;
   border-radius: 10px;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
@@ -333,7 +336,7 @@ header h1 {
 }
 .modal-input:focus {
   outline: none;
-  border-color: #5f7cff;
+  border-color: #1976d2;
 }
 .modal-input-error {
   border-color: #ff4757;
@@ -364,7 +367,7 @@ header h1 {
 .photo-compare-label {
   font-size: 12px;
   font-weight: 600;
-  color: #5f7cff;
+  color: #1976d2;
   margin-bottom: 5px;
 }
 .photo-compare-unit {
@@ -376,13 +379,13 @@ header h1 {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #5f7cff;
+  color: #1976d2;
   font-weight: 500;
   margin-top: 5px;
 }
 .loading-spinner-small {
-  border: 2px solid #e0e7ff;
-  border-top: 2px solid #5f7cff;
+  border: 2px solid #bbdefb;
+  border-top: 2px solid #1976d2;
   border-radius: 50%;
   width: 14px;
   height: 14px;
@@ -391,6 +394,34 @@ header h1 {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.loading-banner {
+  display: none;
+  background: linear-gradient(120deg, #e3f2fd, #bbdefb);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  border: 2px solid #1976d2;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+}
+.loading-banner.show {
+  display: flex;
+}
+.loading-banner span {
+  font-weight: 600;
+  color: #1976d2;
+  font-size: 14px;
+}
+.loading-spinner {
+  border: 3px solid #bbdefb;
+  border-top: 3px solid #1976d2;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite;
 }
 .btn-pindah-unit {
   display: none;
@@ -455,19 +486,19 @@ header h1 {
   background: white;
   padding: 25px;
   border-radius: 15px;
-  border: 2px solid #e0e7ff;
+  border: 2px solid #bbdefb;
 }
 .section-data h3 {
   margin: 0 0 20px 0;
   font-size: 16px;
-  color: #5f7cff;
+  color: #1976d2;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 footer {
-  background: linear-gradient(120deg, #5f7cff, #8aa6ff);
+  background: linear-gradient(120deg, #1976d2, #42a5f5);
   color: white;
   text-align: center;
   padding: 1.5%;
@@ -507,6 +538,12 @@ footer p {
 
 <div class="container">
   <div id="alertContainer"></div>
+  
+  <!-- Loading Banner -->
+  <div id="loadingBanner" class="loading-banner">
+    <div class="loading-spinner"></div>
+    <span>Memuat data personil dari server...</span>
+  </div>
   
   <div class="form-card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 10px;">
@@ -566,7 +603,7 @@ footer p {
       </div>
 
       <!-- SECTION: DATA PERSONIL -->
-      <div class="section-data">
+      <div class="section-data hidden" id="dataPersonilSection">
         <h3>📝 Data Personil</h3>
         
         <div class="form-group">
@@ -656,7 +693,7 @@ footer p {
           <div id="uploadText">
             📷 Klik untuk ambil gambar dari galeri<br>
             <small style="color: #999;">Format: JPG, PNG (Max 10MB)</small><br>
-            <small style="color: #5f7cff; font-weight: 500; margin-top: 8px; display: block;">
+            <small style="color: #1976d2; font-weight: 500; margin-top: 8px; display: block;">
               📇 Foto untuk ID Card
             </small>
             <small style="color: #ff6b6b; font-weight: 500; margin-top: 5px; display: block;">
@@ -668,8 +705,8 @@ footer p {
           <img id="photoPreview" class="photo-preview" alt="Preview">
           <button type="button" class="remove-photo" onclick="removePhoto()">✕ Hapus Foto</button>
         </div>
-        <div id="photoExampleContainer" style="margin-top: 20px; padding: 20px; background: #f8f9ff; border-radius: 10px; border: 2px solid #e0e7ff;">
-          <div style="font-weight: 600; color: #5f7cff; margin-bottom: 15px; text-align: center;">📋 Contoh Foto yang Benar</div>
+        <div id="photoExampleContainer" style="margin-top: 20px; padding: 20px; background: #e3f2fd; border-radius: 10px; border: 2px solid #bbdefb;">
+          <div style="font-weight: 600; color: #1976d2; margin-bottom: 15px; text-align: center;">📋 Contoh Foto yang Benar</div>
           <img id="photoExample" src="../assets/contohfoto.jpg" alt="Contoh Foto" style="max-width: 100%; max-height: 400px; border-radius: 10px; display: block; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
           <small style="display: block; text-align: center; color: #666; margin-top: 15px; line-height: 1.8; background: white; padding: 12px; border-radius: 8px;">
             ✓ <strong>Posisi 3/4 profile menghadap ke kiri</strong> (seperti foto KTP/SIM)<br>
@@ -683,13 +720,15 @@ footer p {
       <!-- END SECTION: DATA PERSONIL -->
       </div>
 
-      <div class="progress-container" id="progressContainer">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill">0%</div>
+      <div id="submitSection" class="hidden">
+        <div class="progress-container" id="progressContainer">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+          </div>
         </div>
-      </div>
 
-      <button type="submit" class="btn-submit" id="submitBtn">✓ Simpan Data Personil</button>
+        <button type="submit" class="btn-submit" id="submitBtn">✓ Simpan Data Personil</button>
+      </div>
     </form>
   </div>
 
@@ -803,6 +842,7 @@ let pendingFormData = null;
 let currentMode = 'new';
 let selectedPersonData = null;
 let duplicateInOtherUnit = null;
+let isDataLoading = true; // Track loading state
 
 // Convert Google Drive link to thumbnail
 function convertGoogleDriveLink(url) {
@@ -822,15 +862,35 @@ function convertGoogleDriveLink(url) {
 
 // Load data personil dari spreadsheet
 async function loadAllPersonilData() {
+  isDataLoading = true;
+  showLoadingBanner();
+  
   try {
     const response = await fetch(APPS_SCRIPT_URL);
     const data = await response.json();
     allPersonilData = data || [];
     console.log('Loaded personil data:', allPersonilData.length, 'records');
+    isDataLoading = false;
+    hideLoadingBanner();
+    return true;
   } catch (error) {
     console.error('Error loading personil data:', error);
     allPersonilData = [];
+    isDataLoading = false;
+    hideLoadingBanner();
+    showAlert('⚠️ Gagal memuat data dari server. Silakan refresh halaman.', 'error');
+    return false;
   }
+}
+
+function showLoadingBanner() {
+  const banner = document.getElementById('loadingBanner');
+  if (banner) banner.classList.add('show');
+}
+
+function hideLoadingBanner() {
+  const banner = document.getElementById('loadingBanner');
+  if (banner) banner.classList.remove('show');
 }
 
 // Update mode indicator - FIXED: Show Pindah Unit button
@@ -845,7 +905,7 @@ function updateModeIndicator(mode, personName = '') {
     submitBtn.textContent = '✓ Update Data Personil';
     
     if (selectedPersonData) {
-      const unit = selectedPersonData['UNIT KERJA'] || '-';
+      const unit = selectedPersonData['Unit Kerja'] || selectedPersonData['UNIT KERJA'] || selectedPersonData['unit'] || '-';
       currentUnitText.textContent = unit;
       unitInfoContainer.classList.add('show');
       btnPindahUnit.classList.add('show'); // FIXED: Show button
@@ -867,8 +927,8 @@ function openPindahUnitModal() {
   const unitLamaText = document.getElementById('pindahUnitLamaText');
   const unitSelect = document.getElementById('pindahUnitSelect');
   
-  const nama = selectedPersonData['NAMA'] || '';
-  const unitLama = selectedPersonData['UNIT KERJA'] || '';
+  const nama = selectedPersonData['Nama'] || selectedPersonData['NAMA'] || selectedPersonData['nama'] || '';
+  const unitLama = selectedPersonData['Unit Kerja'] || selectedPersonData['UNIT KERJA'] || selectedPersonData['unit'] || '';
   
   namaText.textContent = nama;
   unitLamaText.textContent = unitLama;
@@ -909,7 +969,7 @@ function confirmPindahUnit() {
 }
 
 // Populate nama dropdown
-function populateNamaDropdown(selectedUnit) {
+async function populateNamaDropdown(selectedUnit) {
   const namaSelect = document.getElementById('namaSelect');
   const namaSelectGroup = document.getElementById('namaSelectGroup');
   const namaInput = document.getElementById('nama');
@@ -919,34 +979,81 @@ function populateNamaDropdown(selectedUnit) {
   loadingIndicator.style.display = 'flex';
   namaSelect.disabled = true;
   
-  setTimeout(() => {
-    namaSelect.innerHTML = '<option value="">-- Pilih Nama (opsional) --</option>';
+  // Jika data masih loading, tunggu sampai selesai
+  if (isDataLoading) {
+    loadingIndicator.querySelector('span').textContent = 'Memuat data dari server...';
     
-    const personilInUnit = allPersonilData.filter(p => {
-      const unit = p['UNIT KERJA'] || p['Unit Kerja'];
-      return unit === selectedUnit;
-    });
+    // Tunggu sampai data selesai di-load
+    const checkInterval = setInterval(() => {
+      if (!isDataLoading) {
+        clearInterval(checkInterval);
+        populateDropdownWithData(selectedUnit, namaSelect, loadingIndicator, namaInput);
+      }
+    }, 100);
     
-    personilInUnit.sort((a, b) => {
-      const namaA = (a['NAMA'] || '').toUpperCase();
-      const namaB = (b['NAMA'] || '').toUpperCase();
-      return namaA.localeCompare(namaB);
-    });
-    
-    personilInUnit.forEach(person => {
-      const nama = person['NAMA'] || person['Nama'];
+    // Timeout setelah 30 detik
+    setTimeout(() => {
+      if (isDataLoading) {
+        clearInterval(checkInterval);
+        loadingIndicator.style.display = 'none';
+        showAlert('⚠️ Gagal memuat data. Silakan refresh halaman.', 'error');
+      }
+    }, 30000);
+  } else {
+    // Data sudah ready, langsung populate
+    setTimeout(() => {
+      populateDropdownWithData(selectedUnit, namaSelect, loadingIndicator, namaInput);
+    }, 300);
+  }
+}
+
+// Helper function untuk populate dropdown dengan data
+function populateDropdownWithData(selectedUnit, namaSelect, loadingIndicator, namaInput) {
+  namaSelect.innerHTML = '<option value="">-- Pilih Nama (opsional) --</option>';
+  
+  console.log('All personil data:', allPersonilData);
+  console.log('Selected unit:', selectedUnit);
+  
+  const personilInUnit = allPersonilData.filter(p => {
+    // Check multiple possible header variations
+    const unit = p['Unit Kerja'] || p['UNIT KERJA'] || p['unit'] || p['Unit'];
+    console.log('Checking person:', p, 'Unit:', unit);
+    return unit === selectedUnit;
+  });
+  
+  console.log('Personil in unit:', personilInUnit.length);
+  
+  personilInUnit.sort((a, b) => {
+    const namaA = (a['Nama'] || a['NAMA'] || a['nama'] || '').toUpperCase();
+    const namaB = (b['Nama'] || b['NAMA'] || b['nama'] || '').toUpperCase();
+    return namaA.localeCompare(namaB);
+  });
+  
+  personilInUnit.forEach(person => {
+    const nama = person['Nama'] || person['NAMA'] || person['nama'];
+    if (nama) {
       const option = document.createElement('option');
       option.value = nama;
       option.textContent = nama;
       option.setAttribute('data-person', JSON.stringify(person));
       namaSelect.appendChild(option);
-    });
-    
-    loadingIndicator.style.display = 'none';
-    namaSelect.disabled = false;
-    namaInput.disabled = false;
-    namaInput.placeholder = 'Masukkan nama lengkap';
-  }, 300);
+    }
+  });
+  
+  // Add "TAMBAH PERSONIL" option at the end
+  const addOption = document.createElement('option');
+  addOption.value = '__ADD_NEW__';
+  addOption.textContent = '➕ TAMBAH PERSONIL BARU';
+  addOption.style.fontWeight = 'bold';
+  addOption.style.color = '#ff9800';
+  addOption.style.backgroundColor = '#fff3e0';
+  namaSelect.appendChild(addOption);
+  
+  loadingIndicator.style.display = 'none';
+  loadingIndicator.querySelector('span').textContent = 'Memuat daftar nama...';
+  namaSelect.disabled = false;
+  namaInput.disabled = false;
+  namaInput.placeholder = 'Masukkan nama lengkap';
 }
 
 // Handle unit selection
@@ -957,11 +1064,17 @@ document.getElementById('unit').addEventListener('change', function() {
   if (selectedUnit) {
     populateNamaDropdown(selectedUnit);
     resetFormToNew();
+    // Hide data personil section until user selects a name
+    document.getElementById('dataPersonilSection').classList.add('hidden');
+    document.getElementById('submitSection').classList.add('hidden');
   } else {
     document.getElementById('namaSelectGroup').classList.add('hidden');
     namaInput.disabled = true;
     namaInput.placeholder = 'Pilih unit terlebih dahulu...';
     resetFormToNew();
+    // Hide data personil section
+    document.getElementById('dataPersonilSection').classList.add('hidden');
+    document.getElementById('submitSection').classList.add('hidden');
   }
 });
 
@@ -969,13 +1082,27 @@ document.getElementById('unit').addEventListener('change', function() {
 document.getElementById('namaSelect').addEventListener('change', function() {
   const selectedValue = this.value;
   
-  if (selectedValue) {
+  if (selectedValue === '__ADD_NEW__') {
+    // User selected "TAMBAH PERSONIL" option
+    addNewPersonil();
+    // Show data personil section
+    document.getElementById('dataPersonilSection').classList.remove('hidden');
+    document.getElementById('submitSection').classList.remove('hidden');
+  } else if (selectedValue) {
+    // User selected an existing person
     const selectedOption = this.options[this.selectedIndex];
     const personData = JSON.parse(selectedOption.getAttribute('data-person'));
     fillFormWithPersonData(personData);
     updateModeIndicator('edit', personData['NAMA']);
+    // Show data personil section
+    document.getElementById('dataPersonilSection').classList.remove('hidden');
+    document.getElementById('submitSection').classList.remove('hidden');
   } else {
+    // User selected default option (-- Pilih Nama --)
     resetFormToNew();
+    // Hide data personil section
+    document.getElementById('dataPersonilSection').classList.add('hidden');
+    document.getElementById('submitSection').classList.add('hidden');
   }
 });
 
@@ -983,18 +1110,19 @@ document.getElementById('namaSelect').addEventListener('change', function() {
 async function fillFormWithPersonData(personData) {
   selectedPersonData = personData;
   
-  document.getElementById('nama').value = personData['NAMA'] || '';
-  document.getElementById('jabatan').value = personData['JABATAN'] || '';
-  document.getElementById('nohp').value = personData['NO. HP'] || '';
-  document.getElementById('email').value = personData['ALAMAT EMAIL'] || '';
-  document.getElementById('dusun').value = personData['DUSUN'] || '';
-  document.getElementById('rt').value = personData['RT'] || '';
-  document.getElementById('rw').value = personData['RW'] || '';
+  // Support various header formats from Google Sheets
+  document.getElementById('nama').value = personData['Nama'] || personData['NAMA'] || personData['nama'] || '';
+  document.getElementById('jabatan').value = personData['Jabatan'] || personData['JABATAN'] || personData['jabatan'] || '';
+  document.getElementById('nohp').value = personData['No HP'] || personData['NO. HP'] || personData['No. HP'] || personData['NO HP'] || personData['nohp'] || '';
+  document.getElementById('email').value = personData['Email'] || personData['ALAMAT EMAIL'] || personData['Alamat Email'] || personData['email'] || '';
+  document.getElementById('dusun').value = personData['Dusun'] || personData['DUSUN'] || personData['dusun'] || '';
+  document.getElementById('rt').value = personData['RT'] || personData['rt'] || '';
+  document.getElementById('rw').value = personData['RW'] || personData['rw'] || '';
   
-  const provinsi = personData['PROVINSI'] || '';
-  const kabkota = personData['KOTA/KAB'] || '';
-  const kecamatan = personData['KECAMATAN'] || '';
-  const kelurahan = personData['KELURAHAN'] || '';
+  const provinsi = personData['Provinsi'] || personData['PROVINSI'] || personData['provinsi'] || '';
+  const kabkota = personData['Kota/Kab'] || personData['KOTA/KAB'] || personData['Kabupaten'] || personData['kota'] || '';
+  const kecamatan = personData['Kecamatan'] || personData['KECAMATAN'] || personData['kecamatan'] || '';
+  const kelurahan = personData['Kelurahan'] || personData['KELURAHAN'] || personData['kelurahan'] || personData['Desa'] || personData['desa'] || '';
   
   if (provinsi) {
     const provinsiSelect = document.getElementById('provinsi');
@@ -1057,7 +1185,7 @@ async function fillFormWithPersonData(personData) {
     }
   }
   
-  const fotoUrl = personData['LINK FOTO'] || '';
+  const fotoUrl = personData['Link Foto'] || personData['LINK FOTO'] || personData['link foto'] || personData['Foto'] || personData['foto'] || '';
   if (fotoUrl) {
     const convertedUrl = convertGoogleDriveLink(fotoUrl);
     selectedPhoto = convertedUrl;
@@ -1089,6 +1217,51 @@ function resetFormToNew() {
   document.getElementById('foto').required = true;
 }
 
+// Add new personil - reset nama select and enable form for new entry
+function addNewPersonil() {
+  const namaSelect = document.getElementById('namaSelect');
+  const namaInput = document.getElementById('nama');
+  const unit = document.getElementById('unit').value;
+  
+  // Reset nama dropdown to default
+  namaSelect.value = '';
+  
+  // Clear all form fields except unit
+  document.getElementById('personilForm').reset();
+  document.getElementById('unit').value = unit;
+  
+  // Reset photo
+  removePhoto();
+  
+  // Enable nama input for new entry
+  namaInput.disabled = false;
+  namaInput.placeholder = 'Masukkan nama lengkap';
+  namaInput.value = '';
+  namaInput.focus();
+  
+  // Reset form to new mode
+  selectedPersonData = null;
+  updateModeIndicator('new');
+  
+  // Disable address fields until filled
+  document.getElementById('kabkota').disabled = true;
+  document.getElementById('kecamatan').disabled = true;
+  document.getElementById('kelurahan').disabled = true;
+  document.getElementById('foto').required = true;
+  
+  // Show success message
+  showAlert('✏️ Siap menambahkan personil baru! Silakan isi form.', 'warning');
+}
+
+// Refresh nama dropdown in current unit
+async function refreshNamaDropdown() {
+  const unit = document.getElementById('unit').value;
+  if (unit) {
+    await loadAllPersonilData(); // Reload data from server
+    populateNamaDropdown(unit); // Repopulate dropdown
+  }
+}
+
 // Check for duplicate name in other units
 function checkDuplicateNameInOtherUnits(nama, currentUnit) {
   return allPersonilData.find(p => {
@@ -1106,9 +1279,9 @@ function showDuplicateNameModal(duplicate, currentFoto) {
   const dupNameText = document.getElementById('dupNameText');
   const photoComparison = document.getElementById('photoComparison');
   
-  const nama = duplicate['NAMA'] || '';
-  const unit = duplicate['UNIT KERJA'] || '';
-  const fotoUrl = convertGoogleDriveLink(duplicate['LINK FOTO'] || '');
+  const nama = duplicate['Nama'] || duplicate['NAMA'] || duplicate['nama'] || '';
+  const unit = duplicate['Unit Kerja'] || duplicate['UNIT KERJA'] || duplicate['unit'] || '';
+  const fotoUrl = convertGoogleDriveLink(duplicate['Link Foto'] || duplicate['LINK FOTO'] || duplicate['link foto'] || '');
   
   dupNameText.textContent = nama;
   
@@ -1278,7 +1451,7 @@ document.getElementById('email').addEventListener('input', function() {
     this.style.borderColor = '#ff4757';
   } else {
     emailError.style.display = 'none';
-    this.style.borderColor = '#e0e7ff';
+    this.style.borderColor = '#bbdefb';
   }
 });
 
@@ -1414,10 +1587,12 @@ async function submitData(isUpdate = false, isPindahUnit = false) {
     
     let dataId = Date.now();
     if (isUpdate && selectedPersonData) {
-      dataId = selectedPersonData['ID'];
+      dataId = selectedPersonData['ID'] || selectedPersonData['Id'] || selectedPersonData['id'] || Date.now();
     } else if (isPindahUnit && duplicateInOtherUnit) {
-      dataId = duplicateInOtherUnit['ID'];
+      dataId = duplicateInOtherUnit['ID'] || duplicateInOtherUnit['Id'] || duplicateInOtherUnit['id'] || Date.now();
     }
+    
+    console.log('Submit data - isPindahUnit:', isPindahUnit, 'dataId:', dataId, 'selectedPersonData:', selectedPersonData);
     
     const personilData = {
       id: dataId,
@@ -1467,10 +1642,20 @@ async function submitData(isUpdate = false, isPindahUnit = false) {
         showAlert('⚠️ Data mungkin tersimpan, tapi ada peringatan: ' + (result?.message || 'Unknown'), 'error');
       }
       
+      // Save current unit before reset
+      const currentUnit = document.getElementById('unit').value;
+      
       document.getElementById('personilForm').reset();
-      document.getElementById('namaSelectGroup').classList.add('hidden');
       removePhoto();
       updateModeIndicator('new');
+      
+      // Restore unit and show nama dropdown again
+      document.getElementById('unit').value = currentUnit;
+      document.getElementById('namaSelectGroup').classList.remove('hidden');
+      
+      // Hide data personil section after submit - user must choose again
+      document.getElementById('dataPersonilSection').classList.add('hidden');
+      document.getElementById('submitSection').classList.add('hidden');
       
       document.getElementById('kabkota').disabled = true;
       document.getElementById('kecamatan').disabled = true;
@@ -1481,7 +1666,12 @@ async function submitData(isUpdate = false, isPindahUnit = false) {
       progressContainer.style.display = 'none';
       progressFill.style.width = '0%';
       
-      loadAllPersonilData();
+      // Reload data dan refresh dropdown
+      loadAllPersonilData().then(() => {
+        if (currentUnit) {
+          populateNamaDropdown(currentUnit);
+        }
+      });
     }, 500);
     
   } catch (error) {
