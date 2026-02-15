@@ -1042,26 +1042,16 @@ function showRequestedPhotoModal(personData, requestData) {
   const fotoSekarang = convertGoogleDriveLink(personData['LINK FOTO']);
   const fotoRequest = convertGoogleDriveLink(requestData.fotoReq);
   
-  // Cek apakah foto berbeda (bandingkan URL asli, bukan converted)
-  const fotoBerbeda = personData['LINK FOTO'] !== requestData.fotoReq && requestData.fotoReq !== '';
-  
   const modal = document.getElementById('infoModal');
   const modalTitle = document.getElementById('infoModalTitle');
   const modalMessage = document.getElementById('infoModalMessage');
   const modalIcon = document.getElementById('infoModalIcon');
   const modalHeader = document.getElementById('infoModalHeader');
   
-  if (fotoBerbeda) {
-    modalTitle.textContent = '🔄 Foto Sudah Diupdate!';
-    modalMessage.textContent = `${personData['NAMA']} sudah pernah di-request pada ${requestData.timestamp}.\n\n⚠️ FOTO DI DATABASE BERBEDA dengan foto yang di-request!\n\nLihat perbandingan di bawah:`;
-    modalIcon.textContent = '🔄';
-    modalHeader.style.background = 'linear-gradient(120deg, #2196f3, #42a5f5)';
-  } else {
-    modalTitle.textContent = '⚠️ Sudah Pernah Request';
-    modalMessage.textContent = `${personData['NAMA']} sudah pernah di-request pada ${requestData.timestamp}.\n\nStatus: ${requestData.status}`;
-    modalIcon.textContent = '⚠️';
-    modalHeader.style.background = 'linear-gradient(120deg, #ff9800, #ffa726)';
-  }
+  modalTitle.textContent = '📸 Sudah Pernah Request';
+  modalMessage.textContent = `${personData['NAMA']} sudah pernah di-request pada ${requestData.timestamp}.\n\nStatus: ${requestData.status}`;
+  modalIcon.textContent = '⚠️';
+  modalHeader.style.background = 'linear-gradient(120deg, #ff9800, #ffa726)';
   
   // Hapus konten lama
   const modalBody = modal.querySelector('.confirm-modal-body');
@@ -1070,39 +1060,18 @@ function showRequestedPhotoModal(personData, requestData) {
   const existingButtons = modalBody.querySelector('.update-buttons');
   if (existingButtons) existingButtons.remove();
   
-  // Tambahkan preview foto dengan perbandingan
+  // Tambahkan preview foto
   const previewHTML = `
-    <div class="foto-preview-container" style="margin: 20px 0;">
-      <div style="display: flex; gap: 20px; justify-content: center; align-items: start; flex-wrap: wrap;">
-        <div style="text-align: center; flex: 1; min-width: 150px;">
-          <p style="font-size: 13px; font-weight: 600; color: ${fotoBerbeda ? '#999' : '#4caf50'}; margin-bottom: 10px; padding: 5px 10px; background: ${fotoBerbeda ? '#f5f5f5' : '#e8f5e9'}; border-radius: 6px;">
-            ${fotoBerbeda ? '📋 Foto yang Di-request (Lama)' : '✅ Foto yang Di-request'}
-          </p>
-          <img src="${fotoRequest}" style="max-width: 180px; max-height: 180px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border: 2px solid ${fotoBerbeda ? '#999' : '#4caf50'};" onerror="this.alt='❌ Foto tidak dapat dimuat'">
-        </div>
-        ${fotoBerbeda ? `
-        <div style="display: flex; align-items: center; justify-content: center; padding: 0 10px;">
-          <div style="font-size: 28px; color: #2196f3; font-weight: bold;">→</div>
-        </div>
-        <div style="text-align: center; flex: 1; min-width: 150px;">
-          <p style="font-size: 13px; font-weight: 600; color: #2196f3; margin-bottom: 10px; padding: 5px 10px; background: #e3f2fd; border-radius: 6px;">
-            ✨ Foto Terbaru (Database)
-          </p>
-          <img src="${fotoSekarang}" style="max-width: 180px; max-height: 180px; border-radius: 8px; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); border: 3px solid #2196f3;" onerror="this.alt='❌ Foto tidak dapat dimuat'">
-        </div>
-        ` : ''}
+    <div class="foto-preview-container" style="margin: 15px 0; text-align: center;">
+      <div style="margin-bottom: 10px;">
+        <p style="font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">Foto yang sudah di-request:</p>
+        <img src="${fotoRequest}" style="max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);" onerror="this.src=''; this.alt='Foto tidak dapat dimuat'">
       </div>
     </div>
-    ${fotoBerbeda ? `
     <div class="update-buttons" style="margin-top: 20px; display: flex; gap: 10px;">
       <button class="btn-confirm btn-confirm-no" onclick="closeInfoModal()" style="flex: 1;">Batal</button>
-      <button class="btn-confirm btn-confirm-yes" onclick='updateRequest(${JSON.stringify(personData).replace(/'/g, "&#39;")})' style="flex: 1; background: linear-gradient(120deg, #2196f3, #42a5f5);">🔄 Update Foto Request</button>
+      <button class="btn-confirm btn-confirm-yes" onclick='updateRequest(${JSON.stringify(personData).replace(/'/g, "&#39;")})' style="flex: 1; background: linear-gradient(120deg, #2196f3, #42a5f5);">🔄 Update Foto</button>
     </div>
-    ` : `
-    <div style="margin-top: 20px;">
-      <button class="btn-confirm btn-confirm-yes" onclick="closeInfoModal()" style="width: 100%;">OK, Mengerti</button>
-    </div>
-    `}
   `;
   
   const messageEl = document.getElementById('infoModalMessage');
@@ -1111,6 +1080,102 @@ function showRequestedPhotoModal(personData, requestData) {
   modal.style.display = 'block';
 }
 
+// Handle update foto personil
+async function handleFotoUpdate(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const personData = window.currentPersonData;
+  if (!personData) {
+    alert('Data personil tidak ditemukan');
+    return;
+  }
+  
+  // Validasi ukuran (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showInfoModal(
+      '❌ File Terlalu Besar',
+      'Ukuran foto maksimal 5MB',
+      '⚠️',
+      'linear-gradient(120deg, #ff6b6b, #ff8787)'
+    );
+    return;
+  }
+  
+  // Preview foto
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById('previewFotoPersonil');
+    if (preview) {
+      preview.src = e.target.result;
+    }
+  };
+  reader.readAsDataURL(file);
+  
+  // Convert ke base64 dan upload
+  const readerBase64 = new FileReader();
+  readerBase64.onload = async function(e) {
+    const base64Foto = e.target.result;
+    
+    try {
+      const updateData = {
+        action: 'UPDATE_FOTO',
+        id: personData['ID'],
+        nama: (personData['NAMA'] || '').trim(),
+        unit: (personData['UNIT KERJA'] || '').trim(),
+        jabatan: (personData['JABATAN'] || '').trim(),
+        foto: base64Foto
+      };
+      
+      showInfoModal(
+        '⏳ Uploading...',
+        'Sedang mengupload foto, mohon tunggu...',
+        '⏳',
+        'linear-gradient(120deg, #2196f3, #42a5f5)'
+      );
+      
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(updateData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showInfoModal(
+          '✅ Foto Berhasil Diupdate!',
+          'Foto telah diupdate di database dan Google Drive.',
+          '🎉',
+          'linear-gradient(120deg, #4caf50, #66bb6a)'
+        );
+        
+        // Reload data
+        setTimeout(() => {
+          closeInfoModal();
+          closeModal();
+          showAllUnits();
+        }, 2000);
+      } else {
+        showInfoModal(
+          '❌ Upload Gagal',
+          result.message || 'Terjadi kesalahan saat upload foto',
+          '❌',
+          'linear-gradient(120deg, #ff6b6b, #ff8787)'
+        );
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showInfoModal(
+        '❌ Kesalahan Sistem',
+        'Terjadi kesalahan saat upload: ' + error.message,
+        '❌',
+        'linear-gradient(120deg, #ff6b6b, #ff8787)'
+      );
+    }
+  };
+  readerBase64.readAsDataURL(file);
+}
 
 // Fungsi untuk update request dengan foto terbaru
 async function updateRequest(personData) {
@@ -1345,17 +1410,28 @@ function showPersonilDetail(personData) {
   
   let html = '';
   
+  // Simpan personData untuk digunakan saat upload foto
+  window.currentPersonData = personData;
+  
   // Tampilkan foto jika ada
   if (foto && foto !== '-' && foto.trim() !== '') {
     html += `
       <div class="photo-container">
         <img id="previewFotoPersonil" src="${foto}" alt="Foto ${nama}" onerror="this.parentElement.innerHTML='<p style=color:#ff6b6b;>❌ Foto gagal dimuat</p>'">
+        <input type="file" id="uploadFotoPersonil" accept="image/*" style="display: none;" onchange="handleFotoUpdate(this)">
+        <button onclick="document.getElementById('uploadFotoPersonil').click()" style="margin-top: 10px; padding: 6px 12px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+          📷 Update Foto
+        </button>
       </div>
     `;
   } else {
     html += `
       <div class="photo-container">
         <p style="color: #999; font-size: 14px;">⚠️ Tidak ada foto</p>
+        <input type="file" id="uploadFotoPersonil" accept="image/*" style="display: none;" onchange="handleFotoUpdate(this)">
+        <button onclick="document.getElementById('uploadFotoPersonil').click()" style="margin-top: 10px; padding: 6px 12px; background: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+          📷 Upload Foto
+        </button>
       </div>
     `;
   }
@@ -1514,7 +1590,7 @@ async function showAllUnits() {
     
     sortedPersonils.forEach(person => {
       const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
-      const personDataStr = JSON.stringify(person).replace(/"/g, '&quot;');
+      const personDataStr = JSON.stringify(person).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
       html += `
         <div class="personil-item">
           <span class="personil-name" onclick='showPersonilDetail(${personDataStr})'>${nama}</span>
@@ -1588,7 +1664,7 @@ async function filterByUnit() {
   
   sortedFilteredData.forEach(person => {
     const nama = person['NAMA'] || person['Nama'] || 'Nama tidak tersedia';
-    const personDataStr = JSON.stringify(person).replace(/"/g, '&quot;');
+    const personDataStr = JSON.stringify(person).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     html += `
       <div class="personil-item">
         <span class="personil-name" onclick='showPersonilDetail(${personDataStr})'>${nama}</span>
